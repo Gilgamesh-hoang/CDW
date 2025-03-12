@@ -2,7 +2,7 @@ name: shoes-container
 services:
   mysql:
     image: debezium/example-mysql:2.7.3.Final
-    container_name: mysql
+    container_name: shoes-mysql
     hostname: mysql
     ports:
       - '3306:3306'
@@ -10,12 +10,13 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_ROOT_PASSWORD: ""
     volumes:
-      - mysql_data:/var/lib/mysql
+      - shoes_mysql_data:/var/lib/mysql
     networks:
-      - kafka-network
+      - shoes-network
 
   elasticsearch:
     image: elasticsearch:8.2.3
+    container_name: shoes-elasticsearch
     ports:
       - "9200:9200"
     environment:
@@ -24,12 +25,12 @@ services:
       - ELASTIC_PASSWORD=elasticsearch
       - ES_JAVA_OPTS=-Xmx500m -Xms500m
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - shoes_elasticsearch_data:/usr/share/elasticsearch/data
 
   kafka:
     image: 'bitnami/kafka:3.7.0'
-    container_name: kafka
-    hostname: kafka
+    container_name: shoes-kafka
+    hostname: shoes-kafka
     ports:
       - '9094:9094'
     environment:
@@ -41,27 +42,27 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
     networks:
-      - kafka-network
+      - shoes-network
 
   kafka-ui:
-    container_name: kafka-ui
+    container_name: shoes-kafka-ui
     image: provectuslabs/kafka-ui:v0.7.2
     ports:
       - '9095:8080' # Mặc định Kafka UI chạy trên cổng 8080 trong container
     environment:
       - DYNAMIC_CONFIG_ENABLED=true
       - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 # Điểm kết nối Kafka broker
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=shoes-kafka:9092 # Điểm kết nối Kafka broker
     depends_on:
       - kafka
     networks:
-      - kafka-network
+      - shoes-network
 
   debezium:
     image: debezium/connect:2.7.3.Final
-    container_name: debezium
+    container_name: shoes-debezium
     environment:
-      - BOOTSTRAP_SERVERS=kafka:9092
+      - BOOTSTRAP_SERVERS=shoes-kafka:9092
       - GROUP_ID=1
       - CONFIG_STORAGE_TOPIC=debezium_connect_configs
       - OFFSET_STORAGE_TOPIC=debezium_connect_offsets
@@ -73,19 +74,25 @@ services:
       - kafka
       - mysql
     networks:
-      - kafka-network
+      - shoes-network
 
   redis-stack:
     image: redis/redis-stack:7.4.0-v0
-    container_name: redis-stack
+    container_name: shoes-redis-stack
     ports:
       - "6379:6379"  # Redis default port
       - "8001:8001"  # RedisInsight default port
     environment:
       - REDIS_PASSWORD=root
+    volumes:
+      - shoes_redis_data:/data
+    networks:
+      - shoes-network
+
 volumes:
-  mysql_data:
-  elasticsearch_data:
+  shoes_mysql_data:
+  shoes_elasticsearch_data:
+  shoes_redis_data:
 networks:
-  kafka-network:
+  shoes-network:
     driver: bridge
