@@ -3,6 +3,8 @@ package org.cdwbackend.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,4 +27,5 @@ public class ProductDTO {
     Integer available;
     Double subTotal;
     Long productSizeId;
+    Date createAt;
 }

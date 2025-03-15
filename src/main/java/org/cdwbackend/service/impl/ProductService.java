@@ -30,6 +30,14 @@ public class ProductService implements IProductService {
         return results;
     }
 
+    @Override
+    public List<ProductDTO> searchByCategoryAndSize(List<Long> productIds, List<Long> categoryIds, List<Long> sizeIds, Pageable pageable) {
+        List<Product> products = productRepository.findAllByCategoryAndSize(productIds, categoryIds, sizeIds, pageable);
+        List<ProductDTO> results = productMapper.toDTOs(products);
+        results.forEach(this::setPrice);
+        return results;
+    }
+
     private void setPrice(ProductDTO product) {
         productSizeRepository.findByProductId(product.getId())
                 .stream()
