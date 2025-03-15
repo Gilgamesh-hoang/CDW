@@ -6,7 +6,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -55,4 +58,7 @@ public class Product {
 
     @Column(name = "totalViewAndSearch")
     private Integer totalViewAndSearch = 0;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductSize> productSizes = new ArrayList<>();
 }
