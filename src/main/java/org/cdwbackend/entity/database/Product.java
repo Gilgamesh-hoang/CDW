@@ -37,7 +37,7 @@ public class Product {
     private String slug;
 
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "categoryId", referencedColumnName = "id")
     private Category category;
 
     @Column(name = "createAt")
