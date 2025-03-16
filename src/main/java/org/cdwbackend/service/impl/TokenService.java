@@ -38,50 +38,10 @@ public class TokenService implements ITokenService {
                 tokenExpired.add(key.toString());
             }
         });
-        redisService.deleteEntriesFromMap(RedisKeyUtil.JWT_BLACKLIST, tokenExpired);
-    }
 
-//    @Override
-//    @Async
-//    @Transactional
-//    public CompletableFuture<Void> blacklistAllUserTokens(UUID userId) {
-//        List<Token> tokens = tokenRepository.findByUser(User.builder().id(userId).build());
-//        HashMap<String, Object> tokenMap = new HashMap<>();
-//        tokens.forEach(token -> {
-//            // check if token is expired
-//            if (!token.getExpireRT().before(new Date())) {
-//                TokenDTO refreshObj = TokenDTO.builder()
-//                        .expiredDate(new Date(token.getExpireRT().getTime() + REFRESH_TOKEN_LIFETIME))
-//                        .build();
-//                tokenMap.put(token.getRefreshTokenId().toString(), refreshObj);
-//            }
-//        });
-//        redisProducer.sendSaveMap(RedisKeyUtil.JWT_BLACKLIST, tokenMap);
-//        tokenRepository.deleteAllByRefreshTokenIdIn(tokens.stream().map(Token::getRefreshTokenId).toList());
-//        return CompletableFuture.completedFuture(null);
-//    }
-//
-//    @Override
-//    public void blacklistAllUserTokens(UUID userId, String... exceptToken) {
-//        List<Token> tokens = tokenRepository.findByUser(User.builder().id(userId).build());
-//        HashMap<String, Object> tokenMap = new HashMap<>();
-//        List<UUID> exceptArr = Arrays.stream(exceptToken).map(token ->
-//                UUID.fromString(jwtHelper.getJidFromRefreshToken(token))
-//        ).toList();
-//        List<Token> temp = new ArrayList<>();
-//        tokens.forEach(token -> {
-//            // check if token is expired
-//            if (!token.getExpireRT().before(new Date()) && !exceptArr.contains(token.getRefreshTokenId())) {
-//                TokenDTO refreshObj = TokenDTO.builder()
-//                        .expiredDate(new Date(token.getExpireRT().getTime() + REFRESH_TOKEN_LIFETIME))
-//                        .build();
-//                tokenMap.put(token.getRefreshTokenId().toString(), refreshObj);
-//                temp.add(token);
-//            }
-//        });
-//        redisProducer.sendSaveMap(RedisKeyUtil.JWT_BLACKLIST, tokenMap);
-//        tokenRepository.deleteAllByRefreshTokenIdIn(temp.stream().map(Token::getRefreshTokenId).toList());
-//    }
+        if(!tokenExpired.isEmpty())
+            redisService.deleteEntriesFromMap(RedisKeyUtil.JWT_BLACKLIST, tokenExpired);
+    }
 
 
     @Override
@@ -103,70 +63,6 @@ public class TokenService implements ITokenService {
         // Asynchronously blacklist the provided refresh token
         asyncTokenService.blacklistRefreshToken(refreshToken, keyPair.getPublicKey());
     }
-
-//    @Override
-//    public TokenDTO getTokenFromBlacklist(String token, boolean isRefreshToken) {
-//        String jid;
-//        if (isRefreshToken) {
-//            jid = jwtHelper.getJidFromRefreshToken(token);
-//        } else {
-//            jid = jwtHelper.getJidFromAccessToken(token);
-//        }
-//        return redisService.getEntryFromMap(RedisKeyUtil.JWT_BLACKLIST, jid, TokenDTO.class);
-//    }
-
-//    @Override
-//    public TokenDTO getTokenFromBlacklist(String jid) {
-//        return redisService.getEntryFromMap(RedisKeyUtil.JWT_BLACKLIST, jid, TokenDTO.class);
-//    }
-
-//    @Override
-//    @Async
-//    public CompletableFuture<Void> storeRefreshToken(String refreshToken, UUID userId) {
-//        // check if user has 3 refresh token
-//        User user = User.builder().id(userId).build();
-//        List<Token> tokens = tokenRepository.findByUser(user);
-//        if (tokens.size() == 3) {
-//            tokens.sort(Comparator.comparing(Token::getExpireRT));
-//            Token token = tokens.get(0);
-//            // check if token is expired
-//            if (!token.getExpireRT().before(new Date())) {
-//                TokenDTO refreshObj = TokenDTO.builder()
-//                        .expiredDate(token.getExpireRT())
-//                        .build();
-//                HashMap<String, Object> map = new HashMap<>();
-//                map.put(token.getRefreshTokenId().toString(), refreshObj);
-//                redisProducer.sendSaveMap(RedisKeyUtil.JWT_BLACKLIST, map);
-//            }
-//            tokenRepository.delete(token);
-//        }
-//        Token token = Token.builder()
-//                .refreshTokenId(UUID.fromString(jwtHelper.getJidFromRefreshToken(refreshToken)))
-//                .user(user)
-//                .expireRT(jwtHelper.getRefreshTokenExpiry(refreshToken))
-//                .build();
-//        tokenRepository.save(token);
-//        return CompletableFuture.completedFuture(null);
-//    }
-
-//    @Override
-//    @Async
-//    public CompletableFuture<Void> storeRefreshToken(String oldRT, String newRT) {
-//        Token token = tokenRepository.findByRefreshTokenId(UUID.fromString(jwtHelper.getJidFromRefreshToken(oldRT)))
-//                .orElseThrow(() -> new NoSuchElementException("Token not found"));
-//
-//        token.setRefreshTokenId(UUID.fromString(jwtHelper.getJidFromRefreshToken(newRT)));
-//        token.setExpireRT(jwtHelper.getRefreshTokenExpiry(newRT));
-//        tokenRepository.save(token);
-//        return CompletableFuture.completedFuture(null);
-//    }
-//
-//    @Override
-//    @Transactional
-//    public void removeRefreshToken(String refreshToken) {
-//        UUID refreshTokenId = UUID.fromString(jwtHelper.getJidFromRefreshToken(refreshToken));
-//        tokenRepository.deleteByRefreshTokenId(refreshTokenId);
-//    }
 
 
 }

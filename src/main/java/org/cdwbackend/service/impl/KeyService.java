@@ -84,15 +84,4 @@ public class KeyService implements IKeyService {
         log.info("Key pair saved for user: {}", userId);
     }
 
-//    @Override
-//    public void deleteAndSave(KeyPair keyPair, Long userId) {
-//        deleteUserKey(userId);
-//        save(keyPair, userId);
-//    }
-//
-//    @Override
-//    public void deleteUserKey(Long userId) {
-//        redisService.deleteEntriesFromMap(RedisKeyUtil.ASYM_KEYPAIR, List.of(userId.toString()));
-//    }
-
 }

@@ -88,31 +88,43 @@ public class AuthenticationService implements IAuthenticationService {
         // Clear the security context
         SecurityContextHolder.clearContext();
     }
-//
-//    @Override
-//    public JwtResponse refreshToken(String token) {
-//        String email = jwtHelper.getEmailFromRefreshToken(token);
-//        if (email == null) {
-//            throw new BadCredentialsException("Invalid refresh token");
-//        }
-//        CustomUserSecurity user = (CustomUserSecurity) userDetailsService.loadUserByUsername(email);
-//        KeyPair keyPair = keyService.getKeyPairByUser(user.getId());
-//        boolean isValid = jwtService.validateRefreshToken(token, keyPair.getPublicKeyRT());
-//        if (!isValid) {
-//            throw new BadCredentialsException("Invalid refresh token");
-//        }
-//        try {
-//            JwtResponse jwtResponse = generateJwtResponse(user.getEmail(), keyPair);
-//            tokenService.storeRefreshToken(token, jwtResponse.getRefreshToken());
-//            tokenService.blacklistRefreshToken(token);
-//
-//            // Save last refresh token used
-//            redisProducer.sendSaveMap(RedisKeyUtil.LAST_REFRESH_TOKEN, Map.of(user.getId(), new Timestamp(System.currentTimeMillis())));
-//            return jwtResponse;
-//        } catch (InterruptedException | ExecutionException e) {
-//            Thread.currentThread().interrupt();
-//            throw new BadCredentialsException("Error while generating token");
-//        }
-//    }
+
+    @Override
+    // Refreshes the JWT token using the provided refresh token
+    public JwtResponse refreshToken(String token) {
+        // Extract email from the token payload
+        String email = jwtHelper.extractEmailFromPayload(token);
+        if (email == null) {
+            // Throw an exception if the email is not found in the token
+            throw new BadCredentialsException("Invalid refresh token");
+        }
+
+        // Load user details by email
+        CustomUserSecurity user = (CustomUserSecurity) userDetailsService.loadUserByUsername(email);
+        // Retrieve the key pair associated with the user
+        KeyPair keyPair = keyService.getKeyPairByUser(user.getId());
+        // Validate the provided token using the user's public key
+        boolean isValid = jwtService.validateToken(token, keyPair.getPublicKey());
+        if (!isValid) {
+            // Throw an exception if the token is invalid
+            throw new BadCredentialsException("Invalid refresh token");
+        }
+
+        try {
+            // Generate a new JWT response with access and refresh tokens
+            JwtResponse jwtResponse = generateJwtResponse(user.getEmail(), keyPair);
+            // Set the public key to null in the response
+            jwtResponse.setPublicKey(null);
+            // Blacklist the old refresh token
+            tokenService.blacklistTokens(null, token);
+
+            // Return the new JWT response
+            return jwtResponse;
+        } catch (InterruptedException | ExecutionException e) {
+            // Handle exceptions by interrupting the thread and throwing a BadCredentialsException
+            Thread.currentThread().interrupt();
+            throw new BadCredentialsException("Error while generating token");
+        }
+    }
 
 }

@@ -29,27 +29,29 @@ public class AuthenticationController {
     IAuthenticationService authenticationService;
 
 
-    private ResponseObject<JwtResponse> createResponse(HttpServletResponse response, JwtResponse jwtObj) {
+    private ResponseObject<JwtResponse> createResponse(HttpServletResponse response, JwtResponse jwtObj, String message) {
         // Set refresh token in HTTP-Only cookie
         Cookie refreshTokenCookie = CookieUtil.createCookie(SystemConstant.REFRESH_TOKEN, jwtObj.getRefreshToken(),
                 "localhost", 604800, true, false);
         response.addCookie(refreshTokenCookie);
-        return new ResponseObject<>(HttpStatus.OK, "Login successfully", jwtObj);
+        return new ResponseObject<>(HttpStatus.OK, message, jwtObj);
     }
 
 
     @PostMapping("/login")
     public ResponseObject<JwtResponse> authenticate(@RequestBody @Valid AuthenticationRequest request, HttpServletResponse response) {
         JwtResponse jwtObj = authenticationService.login(request);
-        return createResponse(response, jwtObj);
+        return createResponse(response, jwtObj, "Login successfully");
     }
 
-//    @PostMapping("/refresh-token")
-//    public ResponseObject<JwtResponse> refreshToken(@CookieValue(AppConstant.REFRESH_TOKEN) @NotBlank String refreshToken) {
-//        JwtResponse jwtObj = authenticationService.refreshToken(refreshToken);
-//        return new ResponseObject<>(HttpStatus.OK, "Refresh token successfully", jwtObj);
-//    }
-//
+    @PostMapping("/refresh-token")
+    public ResponseObject<JwtResponse> refreshToken(
+            @CookieValue(SystemConstant.REFRESH_TOKEN) @NotBlank String refreshToken,
+            HttpServletResponse response) {
+        JwtResponse jwtObj = authenticationService.refreshToken(refreshToken);
+        return createResponse(response, jwtObj, "Refresh token successfully");
+    }
+
     @PostMapping("/logout")
     public ResponseObject<Void> logout(@RequestHeader("Authorization") String authHeader,
                                        @CookieValue(SystemConstant.REFRESH_TOKEN) @NotBlank String refreshToken,

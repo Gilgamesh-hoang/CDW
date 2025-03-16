@@ -9,6 +9,6 @@ public interface IAuthenticationService {
 
     void logout(String token,String refreshToken);
 
-//    JwtResponse refreshToken(String token);
+    JwtResponse refreshToken(String token);
 
 }
