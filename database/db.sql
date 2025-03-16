@@ -16,7 +16,6 @@
 
 
 -- Dumping database structure for shoes_web
-DROP DATABASE IF EXISTS `shoes_web`;
 CREATE DATABASE IF NOT EXISTS `shoes_web` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `shoes_web`;
 
@@ -251,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `opinions` (
   CONSTRAINT `opinion_user_id_fk` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table shoes_web.opinions: ~1 rows (approximately)
+-- Dumping data for table shoes_web.opinions: ~0 rows (approximately)
 INSERT INTO `opinions` (`id`, `title`, `content`, `rating`, `productId`, `userId`, `createAt`, `updateAt`, `isDeleted`) VALUES
 	(60, 'bai viet 2', 'sản phẩm đẹp lắm', 4, 4, 14, '2024-06-04 09:20:19', '2024-06-04 09:20:19', 0);
 
@@ -606,19 +605,17 @@ INSERT INTO `product_sizes` (`id`, `sizeId`, `productId`, `price`, `createAt`, `
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `isDeleted` tinyint DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `roles_pk` (`code`),
-  UNIQUE KEY `roles_pk_2` (`value`)
+  UNIQUE KEY `roles_pk` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table shoes_web.roles: ~2 rows (approximately)
-INSERT INTO `roles` (`id`, `code`, `value`, `createAt`, `updateAt`, `isDeleted`) VALUES
-	(1, 'R1', 'admin', '2024-04-05 20:18:44', '2024-04-05 20:18:44', 0),
-	(2, 'R2', 'user', '2024-04-05 20:18:44', '2024-04-05 20:18:44', 0);
+INSERT INTO `roles` (`id`, `code`, `createAt`, `updateAt`, `isDeleted`) VALUES
+	(1, 'ADMIN', '2024-04-05 20:18:44', '2024-04-05 20:18:44', 0),
+	(2, 'CUSTOMER', '2024-04-05 20:18:44', '2024-04-05 20:18:44', 0);
 
 -- Dumping structure for table shoes_web.sizes
 CREATE TABLE IF NOT EXISTS `sizes` (
@@ -684,12 +681,12 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Dumping data for table shoes_web.users: ~6 rows (approximately)
 INSERT INTO `users` (`id`, `userName`, `email`, `password`, `fullName`, `birthDay`, `association`, `lastLogged`, `roleId`, `createAt`, `updateAt`, `isDeleted`) VALUES
-	(6, 'hoanghuydev', 'tranvohoanghuy12ab@gmail.com', 'kRAvBltR/iC1jFdVVebV4Ofm3DqWOgSbm/RtnMJchIeR3nM104eLkg2Dd7JGa9sNdzP3k9GLDgCmbR3is69F9A==', 'Tran Vo Hoang Huy', NULL, 'none', '2024-07-11 08:15:30', 1, '2023-12-27 01:23:38', '2024-07-11 12:39:39', 0),
-	(8, '111635119529567317993', '21130386@st.hcmuaf.edu.vn', 'fNxmj6inlbiBipFzj001BXYM/52HgNQTnBck6fcOhoGk2KBEFtMgZUNoApzM8TJHGjQ/Zu/9wCrUxzo/KFja7A==', 'Trần Võ Hoàng Huy', NULL, 'google', '2024-05-25 08:24:47', 1, '2023-12-27 21:21:13', '2024-05-25 08:24:47', 0),
-	(14, 'a', 'vophihoang252003@gmail.com', 'mpLO/jeDL4uGKegIZuIITfQ7jeaoWvqs+NVr+8E6FMGTRutiISjIqUjavAvefWNA9Kv8DrYYavJbH/Xc7XNRNg==', 'Vo Hoang', '2024-08-17', 'none', '2024-11-19 14:00:50', 1, '2024-03-13 01:14:47', '2024-11-19 14:00:50', 0),
-	(16, 'b', 'vophihoang@gmail.com', 'KStJEsxxtfl1JRqI5KUx824NkEy2U8OcYRbq5yCCesmfk11EC2fTBV73F75jBSfZPzBCvoAveI/+BUUvIwAlwg==', 'Vo Hoang', NULL, 'none', '2024-04-07 05:15:04', 1, '2024-03-13 01:14:47', '2024-04-07 05:15:05', 0),
-	(17, 'zxc', '21130363@st.hcmuaf.edu.vn', 'ugpLUbYu4iNTBkAO2T4RC+3QdKb7EVSwSajafs/sX9wOlvWybyA6rGLOGN7HIvtoAAFNMrv6BO5jV0bDN8uKQA==', 'Phi Nhan', NULL, 'none', '2024-04-19 01:42:01', 1, '2024-04-19 01:42:01', '2024-04-19 02:24:13', 1),
-	(20, 'hoang', 'hoanghoangking01@gmail.com', 'dB7droXGR+dTELvyS6oiGaQs+kiBYpDkS0KHOG0XkCOWMGCHmmrBnKL3PfkTjLxg5/dYCvhmyGLTG4x6pTyZvg==', 'Phi Nhan', NULL, 'none', '2024-10-28 13:20:51', 1, '2024-07-11 08:13:12', '2024-10-28 13:20:51', 0);
+	(6, 'hoanghuydev', 'tranvohoanghuy12ab@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Tran Vo Hoang Huy', NULL, 'none', '2024-07-11 08:15:30', 1, '2023-12-27 01:23:38', '2024-07-11 12:39:39', 0),
+	(8, '111635119529567317993', '21130386@st.hcmuaf.edu.vn', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Trần Võ Hoàng Huy', NULL, 'google', '2024-05-25 08:24:47', 1, '2023-12-27 21:21:13', '2024-05-25 08:24:47', 0),
+	(14, 'a', 'vophihoang252003@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Vo Hoang', '2024-08-17', 'none', '2024-11-19 14:00:50', 1, '2024-03-13 01:14:47', '2024-11-19 14:00:50', 0),
+	(16, 'b', 'vophihoang@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Vo Hoang', NULL, 'none', '2024-04-07 05:15:04', 1, '2024-03-13 01:14:47', '2024-04-07 05:15:05', 0),
+	(17, 'zxc', '21130363@st.hcmuaf.edu.vn', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Phi Nhan', NULL, 'none', '2024-04-19 01:42:01', 1, '2024-04-19 01:42:01', '2024-04-19 02:24:13', 1),
+	(20, 'hoang', 'hoanghoangking01@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Phi Nhan', NULL, 'none', '2024-10-28 13:20:51', 1, '2024-07-11 08:13:12', '2024-10-28 13:20:51', 0);
 
 -- Dumping structure for table shoes_web.user_addresses
 CREATE TABLE IF NOT EXISTS `user_addresses` (

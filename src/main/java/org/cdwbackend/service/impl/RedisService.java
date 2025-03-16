@@ -6,11 +6,15 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.cdwbackend.service.IRedisService;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -43,6 +47,42 @@ public class RedisService implements IRedisService {
             return new ArrayList<>();
         }
         return data.stream().map(item -> objectMapper.convertValue(item, clazz)).toList();
+    }
+
+    @Override
+    public void addEntriesToMap(String key, Map<String, Object> map) {
+        redisTemplate.opsForHash().putAll(key, map);
+    }
+
+    @Override
+    public void deleteEntriesFromMap(String key, List<String> hashKeys) {
+        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            StringRedisConnection stringRedisConn = (StringRedisConnection) connection;
+            for (String field : hashKeys) {
+                stringRedisConn.hDel(key, field);
+            }
+            return null;
+        });
+    }
+
+    @Override
+    public <K, V> Map<K, V> getMap(String key, Class<K> clazzKey, Class<V> clazzValue) {
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+        Map<K, V> results = new HashMap<>();
+        entries.forEach((k, v) -> {
+            results.put(objectMapper.convertValue(k, clazzKey), objectMapper.convertValue(v, clazzValue));
+        });
+        return results;
+    }
+
+    @Override
+    public <V> V getEntryFromMap(String key, String hashKey, Class<V> clazzValue) {
+        Object data = redisTemplate.opsForHash().get(key, hashKey);
+        if (data == null) {
+            return null;
+        }
+        // Convert data from JSON (String) to the desired type
+        return objectMapper.convertValue(data, clazzValue);
     }
 
 
