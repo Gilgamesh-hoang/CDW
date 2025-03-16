@@ -1,5 +1,6 @@
 package org.cdwbackend.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.cdwbackend.dto.response.ErrorResponse;
@@ -52,6 +53,16 @@ public class GlobalExceptionHandler {
         return new ResponseObject<>(HttpStatus.PAYLOAD_TOO_LARGE, error);
     }
 
+    @ExceptionHandler(KeyGenerationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseObject<ErrorResponse> handleKeyPairGenerationException(KeyGenerationException ex, WebRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .error("Key Generation Error")
+                .path(getPath(request))
+                .message(ex.getMessage())
+                .build();
+        return new ResponseObject<>(HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
 
 //    @ExceptionHandler(OAuth2AuthenticationException.class)
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -64,16 +75,16 @@ public class GlobalExceptionHandler {
 //        return new ResponseObject<>(HttpStatus.BAD_REQUEST, error);
 //    }
 //
-//    @ExceptionHandler(ExpiredJwtException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ResponseObject<ErrorResponse> handleExpiredJwtException(ExpiredJwtException ex, WebRequest request) {
-//        ErrorResponse error = ErrorResponse.builder()
-//                .error("JWT Token Expired")
-//                .path(getPath(request))
-//                .message(ex.getMessage())
-//                .build();
-//        return new ResponseObject<>(HttpStatus.BAD_REQUEST, error);
-//    }
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseObject<ErrorResponse> handleExpiredJwtException(ExpiredJwtException ex, WebRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .error("JWT Token Expired")
+                .path(getPath(request))
+                .message(ex.getMessage())
+                .build();
+        return new ResponseObject<>(HttpStatus.BAD_REQUEST, error);
+    }
 
     @ExceptionHandler(RedisConnectionFailureException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

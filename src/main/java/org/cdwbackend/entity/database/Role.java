@@ -20,9 +20,6 @@ public class Role {
     @Column(unique = true)
     private String code;
 
-    @Column(unique = true)
-    private String value;
-
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
