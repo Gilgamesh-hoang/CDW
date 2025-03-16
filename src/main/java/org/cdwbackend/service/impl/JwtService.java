@@ -7,10 +7,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.cdwbackend.dto.CustomUserSecurity;
-import org.cdwbackend.dto.TokenDTO;
 import org.cdwbackend.exception.KeyGenerationException;
 import org.cdwbackend.service.IRedisService;
-import org.cdwbackend.service.ITokenService;
 import org.cdwbackend.util.JwtHelper;
 import org.cdwbackend.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,31 +49,39 @@ public class JwtService {
         return generateToken(email, privateKey, REFRESH_TOKEN_LIFETIME);
     }
 
+    // Generates a JWT token asynchronously
     private CompletableFuture<String> generateToken(String email, String privateKey, long lifetime) {
         return CompletableFuture.supplyAsync(() -> {
+            // Return null if email is null
             if (email == null) return null;
 
+            // Load user details by email
             CustomUserSecurity user = (CustomUserSecurity) userDetailService.loadUserByUsername(email);
+            // Create claims map and add JID and role
             Map<String, Object> claims = new HashMap<>();
             claims.put("jid", UUID.randomUUID().toString());
             claims.put("role", user.getAuthorities().stream().findFirst().get().getAuthority());
 
             try {
+                // Get private key from base64 string
                 PrivateKey key = getPrivateKeyFromBase64String(privateKey);
+                // Build JWT token
                 JwtBuilder jwt = Jwts.builder().setHeaderParam("type", "JWT")
                         .setClaims(claims)
                         .setSubject(email)
                         .setIssuedAt(new Date(System.currentTimeMillis()))
                         .setExpiration(new Date(System.currentTimeMillis() + lifetime))
                         .signWith(key, SignatureAlgorithm.RS256);
+                // Return the compact JWT token
                 return jwt.compact();
             } catch (Exception e) {
+                // Throw KeyGenerationException if an error occurs
                 throw new KeyGenerationException("Error while creating token", e);
             }
         });
     }
 
-
+    // Converts a base64 encoded private key string to a PrivateKey object
     private PrivateKey getPrivateKeyFromBase64String(String privateKey) {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -86,6 +92,7 @@ public class JwtService {
         }
     }
 
+    // Converts a base64 encoded public key string to a PublicKey object
     public PublicKey getPublicKeyFromBase64String(String publicKey) {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -96,12 +103,18 @@ public class JwtService {
         }
     }
 
-    public boolean validateAccessToken(String token, String publicKey) {
+    // Validates a JWT token using the provided public key
+    public boolean validateToken(String token, String publicKey) {
         try {
+            // Get public key from base64 string
             PublicKey key = getPublicKeyFromBase64String(publicKey);
+            // Extract email from token
             final String emailEx = jwtHelper.getEmailFromToken(token, key);
+            // Load user details by email
             userDetailService.loadUserByUsername(emailEx);
+            // Extract JID from token
             String jid = jwtHelper.getJidToken(token, key);
+            // Check if token is not expired and not in blacklist
             return !isTokenExpired(token, key) && !isExistsInBlacklist(jid);
         } catch (Exception e) {
             return false;

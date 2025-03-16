@@ -67,7 +67,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String publicKey = keyService.getKeyPairByUser(userDetails.getId()).getPublicKey();
             // if token is valid configure Spring Security to manually set
             // authentication
-            if (jwtService.validateAccessToken(jwtToken, publicKey)) {
+            if (jwtService.validateToken(jwtToken, publicKey)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

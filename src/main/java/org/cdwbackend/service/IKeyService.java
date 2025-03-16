@@ -10,7 +10,7 @@ public interface IKeyService {
 
     void save(KeyPair keyPair, Long userId);
 
-    void deleteAndSave(KeyPair keyPair, Long userId);
-
-    void deleteUserKey(Long userId);
+//    void deleteAndSave(KeyPair keyPair, Long userId);
+//
+//    void deleteUserKey(Long userId);
 }

@@ -3,34 +3,30 @@ package org.cdwbackend.service.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.cdwbackend.dto.CustomUserSecurity;
-import org.cdwbackend.dto.TokenDTO;
+import org.cdwbackend.dto.KeyPair;
+import org.cdwbackend.exception.UnauthorizedActionException;
+import org.cdwbackend.service.IKeyService;
 import org.cdwbackend.service.IRedisService;
 import org.cdwbackend.service.ITokenService;
-import org.cdwbackend.util.JwtHelper;
 import org.cdwbackend.util.RedisKeyUtil;
 import org.cdwbackend.util.UserSecurityHelper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TokenService implements ITokenService {
-    @Value("${jwt.refresh_token.duration}")
-    @NonFinal
-    long REFRESH_TOKEN_LIFETIME;
-    JwtHelper jwtHelper;
+    JwtService jwtService;
     IRedisService redisService;
+    IKeyService keyService;
     AsyncTokenService asyncTokenService;
 
     @Override
@@ -89,13 +85,23 @@ public class TokenService implements ITokenService {
 
 
     @Override
+    // Blacklists the provided access and refresh tokens for the current user
     public void blacklistTokens(String accessToken, String refreshToken) {
+        // Retrieve the current user from the security context
         CustomUserSecurity currentUser = UserSecurityHelper.getCurrentUser();
-        if (!StringUtils.isBlank(accessToken))
-            asyncTokenService.blacklistAccessToken(accessToken, currentUser.getId());
+        // Retrieve the key pair associated with the current user
+        KeyPair keyPair = keyService.getKeyPairByUser(currentUser.getId());
 
-        if (!StringUtils.isBlank(refreshToken))
-            asyncTokenService.blacklistRefreshToken(refreshToken, currentUser.getId());
+        // Validate the provided refresh token using the user's public key
+        if (!jwtService.validateToken(refreshToken, keyPair.getPublicKey())) {
+            // Throw an exception if the refresh token is invalid
+            throw new UnauthorizedActionException("Invalid refresh token");
+        }
+
+        // Asynchronously blacklist the provided access token
+        asyncTokenService.blacklistAccessToken(accessToken, keyPair.getPublicKey());
+        // Asynchronously blacklist the provided refresh token
+        asyncTokenService.blacklistRefreshToken(refreshToken, keyPair.getPublicKey());
     }
 
 //    @Override
