@@ -10,4 +10,6 @@ public interface ICartService {
     List<ProductDTO> getCartByUser(Long userId);
 
     void updateCart(Long id, CartRequest request);
+
+    void deleteCart(Long id, Long productId, Long sizeId);
 }

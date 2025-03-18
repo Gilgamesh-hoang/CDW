@@ -89,6 +89,33 @@ public class CartService implements ICartService {
         }
     }
 
+    @Override
+    public void deleteCart(Long id, Long productId, Long sizeId) {
+        // Create an example of ProductSize based on the request
+        Example<ProductSize> sizeExample = Example.of(
+                ProductSize.builder()
+                        .product(new Product(productId))
+                        .size(new Size(sizeId))
+                        .build()
+        );
+
+        // Find the ProductSize or throw an exception if not found
+        ProductSize productSize = productSizeRepository.findOne(sizeExample)
+                .orElseThrow(() -> new ResourceNotFoundException("Product size not found"));
+
+        // Find the cart item for the user and product size
+        Cart cartItemByUser = cartRepository.findCartItemByUser(id, productSize.getId());
+
+        // If the cart item does not exist, throw an exception
+        if (cartItemByUser == null) {
+            throw new ResourceNotFoundException("Cart item not found");
+        }
+
+        // Delete the cart item
+        cartRepository.delete(cartItemByUser);
+        orderDetailRepo.delete(cartItemByUser.getOrderDetail());
+    }
+
     private void createNewCart(Long userId, CartRequest request, ProductSize productSize) {
         // Create a new OrderDetail
         OrderDetail orderDetail = OrderDetail.builder()

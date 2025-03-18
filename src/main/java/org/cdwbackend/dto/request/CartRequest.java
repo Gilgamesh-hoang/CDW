@@ -17,7 +17,5 @@ public class CartRequest {
     @Min(message = "Size id must be greater than 0", value = 1)
     Long sizeId;
 
-    @NotNull(message = "Quantity is required")
-    @Min(message = "Quantity must be greater than 0", value = 1)
     Integer quantity;
 }
