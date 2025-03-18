@@ -1,5 +1,7 @@
 package org.cdwbackend.entity.database;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -9,8 +11,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.Date;
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
+@Builder
 @Table(name = "carts")
 public class Cart {
     @Id
@@ -33,5 +37,5 @@ public class Cart {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateAt;
 
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 }

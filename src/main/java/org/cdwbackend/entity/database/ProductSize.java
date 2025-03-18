@@ -1,5 +1,7 @@
 package org.cdwbackend.entity.database;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -9,6 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.Date;
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "product_sizes")
@@ -28,6 +32,9 @@ public class ProductSize {
     @Column
     private Double price;
 
+    @Column
+    private Integer available;
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
@@ -36,5 +43,5 @@ public class ProductSize {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateAt;
 
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 }

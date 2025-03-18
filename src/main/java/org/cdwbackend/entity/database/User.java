@@ -60,5 +60,9 @@ public class User {
     private Date updateAt;
 
     @Column(name = "isDeleted")
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
+
+    public User(Long id) {
+        this.id = id;
+    }
 }
