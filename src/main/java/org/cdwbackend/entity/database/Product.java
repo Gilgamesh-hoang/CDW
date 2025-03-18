@@ -1,5 +1,7 @@
 package org.cdwbackend.entity.database;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "products")
@@ -54,11 +58,15 @@ public class Product {
     private Date updateAt;
 
     @Column(name = "isDeleted")
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
     @Column(name = "totalViewAndSearch")
-    private Integer totalViewAndSearch = 0;
+    private Integer totalViewAndSearch;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductSize> productSizes = new ArrayList<>();
+
+    public Product(Long id) {
+        this.id = id;
+    }
 }
