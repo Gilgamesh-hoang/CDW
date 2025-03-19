@@ -14,10 +14,13 @@ import org.cdwbackend.exception.ResourceNotFoundException;
 import org.cdwbackend.mapper.OrderMapper;
 import org.cdwbackend.repository.database.OrderRepository;
 import org.cdwbackend.service.IOrderService;
+import org.cdwbackend.service.IRedisService;
+import org.cdwbackend.util.RedisKeyUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -25,10 +28,17 @@ import java.util.List;
 public class OrderService implements IOrderService {
     OrderRepository orderRepository;
     OrderMapper orderMapper;
+    IRedisService redisService;
 
     @Override
     // Find an order by its ID and return its details along with the list of products in the order
     public OrderDTO findById(Long id) {
+        String redisKey = RedisKeyUtil.getOrderKey(id);
+        OrderDTO result = redisService.getValue(redisKey, OrderDTO.class);
+        if (result != null) {
+            return result;
+        }
+
         // Retrieve the order from the repository, throw an exception if not found
         Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         // Get the list of order details associated with the order
@@ -55,6 +65,8 @@ public class OrderService implements IOrderService {
         // Set the list of products in the OrderDTO
         orderDTO.setListProduct(listProduct);
 
+        redisService.saveValue(redisKey, orderDTO);
+
         // Return the OrderDTO
         return orderDTO;
     }
@@ -62,10 +74,20 @@ public class OrderService implements IOrderService {
     // Find all orders with pagination and return them as a list of OrderDTOs
     @Override
     public List<OrderDTO> findAll(Pageable pageable) {
+        String redisKey = RedisKeyUtil.getOrdersKey(pageable.getPageNumber(), pageable.getPageSize());
+        List<OrderDTO> results = redisService.getList(redisKey, OrderDTO.class);
+
+        if (results != null) {
+            return results;
+        }
         // Retrieve the paginated list of orders from the repository
         List<Order> orders = orderRepository.findAll(pageable).toList();
         // Map the list of orders to a list of OrderDTOs and return it
-        return orderMapper.toDTOs(orders);
+        results = orderMapper.toDTOs(orders);
+        redisService.saveList(redisKey, results);
+        redisService.setTTL(redisKey, 1, TimeUnit.HOURS);
+
+        return results;
     }
 
     // Update the status of an order and return the updated OrderDTO
@@ -85,7 +107,15 @@ public class OrderService implements IOrderService {
         order.setStatus(newStatus);
         orderRepository.save(order);
         // Map the updated order entity to an OrderDTO and return it
-        return orderMapper.toDTO(order);
+
+        String redisKey = RedisKeyUtil.getOrdersKey(0, 0);
+        redisService.deleteByPattern(redisKey.substring(0, 10));
+
+        OrderDTO orderDTO = orderMapper.toDTO(order);
+        // overwrite the cache
+        redisService.saveValue(RedisKeyUtil.getOrderKey(order.getId()), orderDTO);
+
+        return orderDTO;
     }
 
     // Validate if the status transition is allowed

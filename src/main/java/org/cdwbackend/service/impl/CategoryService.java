@@ -10,21 +10,35 @@ import org.cdwbackend.exception.ResourceNotFoundException;
 import org.cdwbackend.mapper.CategoryMapper;
 import org.cdwbackend.repository.database.CategoryRepository;
 import org.cdwbackend.service.ICategoryService;
+import org.cdwbackend.service.IRedisService;
+import org.cdwbackend.util.RedisKeyUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class CategoryService implements ICategoryService {
+    IRedisService redisService;
     CategoryMapper categoryMapper;
     CategoryRepository categoryRepository;
 
     @Override
     public List<CategoryDTO> findAll(Pageable pageable) {
-        return categoryMapper.toDTOs(categoryRepository.findAll(pageable).getContent());
+        String redisKey = RedisKeyUtil.getListCategoriesKey(pageable.getPageNumber(), pageable.getPageSize());
+        List<CategoryDTO> categories = redisService.getList(redisKey, CategoryDTO.class);
+
+        if (categories != null) {
+            return categories;
+        }
+
+        categories = categoryMapper.toDTOs(categoryRepository.findAll(pageable).getContent());
+        redisService.saveList(redisKey, categories);
+        redisService.setTTL(redisKey, 60, TimeUnit.MINUTES);
+        return categories;
     }
 
     @Override
@@ -64,6 +78,7 @@ public class CategoryService implements ICategoryService {
                 .build();
 
         categoryRepository.save(category);
+        redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 10));
         return categoryMapper.toDTO(category);
     }
 
@@ -75,6 +90,8 @@ public class CategoryService implements ICategoryService {
         }
 
         category.setIsDeleted(true);
+        redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 10));
         categoryRepository.save(category);
     }
+
 }

@@ -11,10 +11,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -24,6 +21,25 @@ import java.util.concurrent.TimeUnit;
 public class RedisService implements IRedisService {
     RedisTemplate<String, Object> redisTemplate;
     ObjectMapper objectMapper;
+
+    @Override
+    public <T> T getValue(String key, Class<T> clazz) {
+        Object data = redisTemplate.opsForValue().get(key);
+        // Convert data from JSON (String) to the desired type
+        if (data == null) {
+            return null;
+        }
+        if (data instanceof Map<?, ?>) {
+            data = objectMapper.convertValue(data, clazz);
+            return (T) data;
+        }
+        return clazz.cast(data);
+    }
+
+    @Override
+    public <T> void saveValue(String key, T value) {
+        redisTemplate.opsForValue().set(key, value);
+    }
 
     @Override
     public <T> void saveList(String key, List<T> list) {
@@ -89,5 +105,13 @@ public class RedisService implements IRedisService {
     @Override
     public void setTTL(String key, long timeout, TimeUnit timeUnit) {
         redisTemplate.expire(key, timeout, timeUnit);
+    }
+
+    @Override
+    public void deleteByPattern(String pattern) {
+        Set<String> keys = redisTemplate.keys(pattern);
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
     }
 }

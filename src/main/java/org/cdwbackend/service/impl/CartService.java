@@ -13,10 +13,13 @@ import org.cdwbackend.repository.database.CartRepository;
 import org.cdwbackend.repository.database.OrderDetailRepository;
 import org.cdwbackend.repository.database.ProductSizeRepository;
 import org.cdwbackend.service.ICartService;
+import org.cdwbackend.service.IRedisService;
+import org.cdwbackend.util.RedisKeyUtil;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +30,17 @@ public class CartService implements ICartService {
     ProductMapper productMapper;
     ProductSizeRepository productSizeRepository;
     OrderDetailRepository orderDetailRepo;
+    IRedisService redisService;
 
     @Override
     public List<ProductDTO> getCartByUser(Long userId) {
+        String redisKey = RedisKeyUtil.getCartKey(userId);
+        List<ProductDTO> cartItems = redisService.getList(redisKey, ProductDTO.class);
+
+        if (cartItems != null) {
+            return cartItems;
+        }
+
         // Retrieve the cart items for the given user
         List<Cart> cartByUser = cartRepository.getCartByUser(userId);
 
@@ -54,6 +65,9 @@ public class CartService implements ICartService {
 
             return productDTO; // Return the populated ProductDTO
         }).toList();
+
+        redisService.saveList(redisKey, results);
+        redisService.setTTL(redisKey, 1, TimeUnit.HOURS);
 
         return results; // Return the list of ProductDTOs
     }
@@ -87,10 +101,11 @@ public class CartService implements ICartService {
             // If the cart item exists, update it
             updateExistingCart(cartItemByUser, request, productSize);
         }
+        redisService.deleteByPattern(RedisKeyUtil.getCartKey(userId));
     }
 
     @Override
-    public void deleteCart(Long id, Long productId, Long sizeId) {
+    public void deleteCart(Long userId, Long productId, Long sizeId) {
         // Create an example of ProductSize based on the request
         Example<ProductSize> sizeExample = Example.of(
                 ProductSize.builder()
@@ -104,7 +119,7 @@ public class CartService implements ICartService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product size not found"));
 
         // Find the cart item for the user and product size
-        Cart cartItemByUser = cartRepository.findCartItemByUser(id, productSize.getId());
+        Cart cartItemByUser = cartRepository.findCartItemByUser(userId, productSize.getId());
 
         // If the cart item does not exist, throw an exception
         if (cartItemByUser == null) {
@@ -114,6 +129,7 @@ public class CartService implements ICartService {
         // Delete the cart item
         cartRepository.delete(cartItemByUser);
         orderDetailRepo.delete(cartItemByUser.getOrderDetail());
+        redisService.deleteByPattern(RedisKeyUtil.getCartKey(userId));
     }
 
     private void createNewCart(Long userId, CartRequest request, ProductSize productSize) {
