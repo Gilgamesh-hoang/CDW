@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -26,6 +28,9 @@ public class Order {
 
     @Column(name = "totalAmount")
     private Double totalAmount ;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails;
 
     @ManyToOne
     @JoinColumn(name = "addressId")
