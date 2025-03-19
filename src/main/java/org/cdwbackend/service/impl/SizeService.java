@@ -8,23 +8,37 @@ import org.cdwbackend.dto.request.SizeRequest;
 import org.cdwbackend.entity.database.Size;
 import org.cdwbackend.mapper.SizeMapper;
 import org.cdwbackend.repository.database.SizeRepository;
+import org.cdwbackend.service.IRedisService;
 import org.cdwbackend.service.ISizeService;
+import org.cdwbackend.util.RedisKeyUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class SizeService implements ISizeService {
+    IRedisService redisService;
     SizeRepository sizeRepository;
     SizeMapper sizeMapper;
 
     @Override
     public List<SizeDTO> findAll(Pageable pageable) {
-        return sizeMapper.toDTOs(sizeRepository.findAll(pageable).getContent());
+        String redisKey = RedisKeyUtil.getListSizesKey(pageable.getPageNumber(), pageable.getPageSize());
+        List<SizeDTO> sizes = redisService.getList(redisKey, SizeDTO.class);
+        if (sizes != null) {
+            return sizes;
+        }
+
+        sizes = sizeMapper.toDTOs(sizeRepository.findAll(pageable).getContent());
+        redisService.saveList(redisKey, sizes);
+        redisService.setTTL(redisKey, 30, TimeUnit.MINUTES);
+
+        return sizes;
     }
 
     @Override
@@ -63,7 +77,7 @@ public class SizeService implements ISizeService {
                 .orElseThrow(() -> new ResolutionException("Size with id " + id + " not found"));
 
         size.setIsDeleted(true);
+        redisService.deleteByPattern(RedisKeyUtil.getListSizesKey(0, 0).substring(0, 10));
         sizeRepository.save(size);
-
     }
 }

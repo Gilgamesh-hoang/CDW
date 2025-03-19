@@ -9,8 +9,8 @@ import java.util.List;
 public class OrderDTO {
     private Long id;
     private String status;
-    private String note ;
-    private Double totalAmount ;
+    private String note;
+    private Double totalAmount;
     private AddressDTO address;
     private Boolean isPaid;
     private String slug;

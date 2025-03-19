@@ -9,10 +9,13 @@ import org.cdwbackend.mapper.ProductMapper;
 import org.cdwbackend.repository.database.ProductRepository;
 import org.cdwbackend.repository.database.ProductSizeRepository;
 import org.cdwbackend.service.IProductService;
+import org.cdwbackend.service.IRedisService;
+import org.cdwbackend.util.RedisKeyUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -21,12 +24,23 @@ public class ProductService implements IProductService {
     ProductRepository productRepository;
     ProductSizeRepository productSizeRepository;
     ProductMapper productMapper;
+    IRedisService redisService;
 
     @Override
     public List<ProductDTO> findAll(Pageable pageable) {
+        String redisKey = RedisKeyUtil.getKeyForProductList(pageable);
+        List<ProductDTO> results = redisService.getList(redisKey, ProductDTO.class);
+        if(results!=null) {
+            return results;
+        }
+
         List<Product> products = productRepository.findAll(pageable).getContent();
-        List<ProductDTO> results = productMapper.toDTOs(products);
+        results = productMapper.toDTOs(products);
         results.forEach(this::setPrice);
+
+        redisService.saveList(redisKey, results);
+        redisService.setTTL(redisKey, 1, TimeUnit.HOURS);
+
         return results;
     }
 

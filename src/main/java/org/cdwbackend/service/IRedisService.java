@@ -6,6 +6,10 @@ import java.util.concurrent.TimeUnit;
 
 public interface IRedisService {
 
+    <T> T getValue(String key, Class<T> clazz);
+
+    <T> void saveValue(String key, T value);
+
     <T> void saveList(String key, List<T> list);
 
     <T> List<T> getList(String key, Class<T> clazz);
@@ -19,4 +23,6 @@ public interface IRedisService {
     void deleteEntriesFromMap(String key, List<String> hashKeys);
 
     <K, V> Map<K, V> getMap(String key, Class<K> clazzKey, Class<V> clazzValue);
+
+    void deleteByPattern(String pattern);
 }

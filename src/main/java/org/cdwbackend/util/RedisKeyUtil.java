@@ -1,6 +1,7 @@
 package org.cdwbackend.util;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -23,5 +24,29 @@ public class RedisKeyUtil {
 
         return String.format("search:%s:page:%d:size:%d:sort:%s:direction:%s:categoryIds:%s:sizeIds:%s",
                 keyword, pageNumber, pageSize, string, direction, categoryIdsString, sizeIdsString);
+    }
+
+    public static String getListSizesKey(int pageNumber, int pageSize) {
+        return String.format("size:page:%d:size:%d", pageNumber, pageSize);
+    }
+
+    public static String getListCategoriesKey(int pageNumber, int pageSize) {
+        return String.format("category:page:%d:size:%d", pageNumber, pageSize);
+    }
+
+    public static String getCartKey(Long userId) {
+        return String.format("cart:%d", userId);
+    }
+
+    public static String getOrdersKey(int pageNumber, int pageSize) {
+        return String.format("order:page:%d:size:%d", pageNumber, pageSize);
+    }
+
+    public static String getOrderKey(Long orderId) {
+        return String.format("order:%d", orderId);
+    }
+
+    public static String getKeyForProductList(Pageable pageable) {
+        return String.format("product:page:%d:size:%d", pageable.getPageNumber(), pageable.getPageSize());
     }
 }
