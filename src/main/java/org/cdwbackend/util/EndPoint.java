@@ -11,6 +11,7 @@ public class EndPoint {
                 "/api-docs/**",
                 "/api/v1/home",
                 "/api/v1/categories",
+                "/api/v1/sizes",
         };
     }
 
