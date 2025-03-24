@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import logo from '@/assets/logo.webp';
-import logoMd from '@/assets/logo-md.webp';
+import logo from '@/assets/logo.png';
 import Button from '../Button';
 import { FaArrowRight } from 'react-icons/fa6';
 import { RiMenu2Line } from 'react-icons/ri';
@@ -8,75 +7,37 @@ import MobileSideMenu from './components/MobileSideMenu';
 import NavItem, { NavItemInterface } from './components/NavItem';
 import { ROUTES } from '@/utils/constant';
 import { Link } from 'react-router-dom';
-import OptimizedImage from '../OptimizedImage';
 
 const listNavItems: NavItemInterface[] = [
   {
-    label: 'CTV',
+    label: 'Trang chủ',
     href: ROUTES.HOME,
-    dropDown: true,
-    items: [
-      { label: 'Đăng ký CTV', href: '#' },
-      { label: 'Quyền lợi CTV', href: '#' },
-      { label: 'Hướng dẫn', href: '#' },
-    ],
+    dropDown: false,
   },
   {
-    label: 'Đại Lý',
-    href: ROUTES.ROLLOVER,
-    dropDown: true,
-    items: [
-      { label: 'Đăng ký Đại Lý', href: '#' },
-      { label: 'Quyền lợi Đại Lý', href: '#' },
-      { label: 'Thông tin thêm', href: '#' },
-    ],
+    label: 'Cửa hàng',
+    href: ROUTES.SHOP,
+    dropDown: false,
   },
   {
-    label: 'Tăng Thu Nhập',
-    href: ROUTES.INCOME,
-    dropDown: true,
-    items: [
-      { label: 'Hướng dẫn', href: '#' },
-      { label: 'Chiến lược', href: '#' },
-    ],
-  },
-  {
-    label: 'Công Việc',
-    href: ROUTES.JOBS,
-    dropDown: true,
-    items: [
-      { label: 'Tìm việc', href: '#' },
-      { label: 'Đăng việc', href: '#' },
-    ],
-  },
-  {
-    label: 'Về Chúng Tôi',
+    label: 'Về chúng tôi',
     href: ROUTES.ABOUT_US,
-    dropDown: true,
-    items: [
-      { label: 'Giới thiệu', href: '#' },
-      { label: 'Lịch sử', href: '#' },
-      { label: 'Tầm nhìn', href: '#' },
-    ],
+    dropDown: false,
   },
   {
-    label: 'Đối Tác',
-    href: '#',
-    dropDown: true,
-    items: [
-      { label: 'Danh sách đối tác', href: '#' },
-      { label: 'Trở thành đối tác', href: '#' },
-    ],
+    label: 'Dịch vụ',
+    href: ROUTES.SERVICE,
+    dropDown: false,
   },
   {
-    label: 'Hỗ Trợ',
-    href: ROUTES.SUPPORT,
-    dropDown: true,
-    items: [
-      { label: 'FAQ', href: '#' },
-      { label: 'Liên hệ', href: '#' },
-      { label: 'Trung tâm hỗ trợ', href: '#' },
-    ],
+    label: 'Tin tức',
+    href: ROUTES.NEWS,
+    dropDown: false,
+  },
+  {
+    label: 'Liên hệ',
+    href: ROUTES.CONTACT,
+    dropDown: false,
   },
 ];
 
@@ -87,20 +48,7 @@ const Header: React.FC = () => {
     <header className="h-[72px] grid place-items-center bg-white text-[#584f78] border-b-[1px] border-b-[#584f78]">
       <div className="lg:container h-full w-full px-5 lg:px-0 flex justify-between items-center">
         <Link to={ROUTES.HOME}>
-          <OptimizedImage
-            sizes="(max-width: 1024px) 211px, (min-width: 1280px) 211px"
-            src={logo}
-            className="h-[26px] w-[105px] block lg:hidden xl:block"
-            alt="Logo"
-            loading='lazy'
-          />
-          <OptimizedImage
-            sizes="100px"
-            src={logoMd}
-            className="h-[50px] xl:hidden lg:block hidden"
-            alt="Logo"
-            loading='lazy'
-          />
+          <img src={logo} className="w-[70px]" alt="Logo" loading="lazy" />
         </Link>
 
         {/* Desktop Navigation */}

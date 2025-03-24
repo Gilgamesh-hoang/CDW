@@ -1,13 +1,13 @@
 import React from 'react';
 
-interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface imgProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt?: string;
   sizes?: string;
   widths?: number[];
 }
 
-const OptimizedImage: React.FC<OptimizedImageProps> = ({
+const img: React.FC<imgProps> = ({
   src,
   alt = '',
   sizes = '100vw',
@@ -19,14 +19,18 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const srcWithHost = src.startsWith('http') ? src : `${hostname}${src}`;
 
   const srcSet = widths
-    .map(width => {
-      const wsrvUrl = `https://wsrv.nl/?url=${encodeURIComponent(srcWithHost)}&w=${width}&output=webp`;
+    .map((width) => {
+      const wsrvUrl = `https://wsrv.nl/?url=${encodeURIComponent(
+        srcWithHost
+      )}&w=${width}&output=webp`;
       return `${wsrvUrl} ${width}w`;
     })
     .join(', ');
 
   // Fallback URL
-  const defaultSrc = `https://wsrv.nl/?url=${encodeURIComponent(srcWithHost)}&w=${widths[1]}&output=webp`;
+  const defaultSrc = `https://wsrv.nl/?url=${encodeURIComponent(
+    srcWithHost
+  )}&w=${widths[1]}&output=webp`;
 
   return (
     <img
@@ -40,4 +44,4 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   );
 };
 
-export default OptimizedImage;
+export default img;

@@ -30,7 +30,6 @@ function App() {
           theme="light"
         />
       </Router>
-      
     </div>
   );
 }

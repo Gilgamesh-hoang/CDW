@@ -26,6 +26,8 @@ services:
       - ES_JAVA_OPTS=-Xmx500m -Xms500m
     volumes:
       - shoes_elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - shoes-network
 
   kafka:
     image: 'bitnami/kafka:3.7.0'
@@ -88,6 +90,44 @@ services:
       - shoes_redis_data:/data
     networks:
       - shoes-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cdw-backend
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./src/main/resources/application.properties:/app/src/main/resources/application.properties
+    depends_on:
+      - mysql
+      - elasticsearch
+      - kafka
+      - redis-stack
+    networks:
+      - shoes-network
+
+  frontend:
+    build:
+      context: ../CDW-frontend
+      dockerfile: Dockerfile
+    container_name: cdw-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../CDW-frontend/src:/app/src
+      - ../CDW-frontend/public:/app/public
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    networks:
+      - shoes-network
+    command: npm run production
+    depends_on:
+      - backend
+      - debezium
+      - redis-stack
 
 volumes:
   shoes_mysql_data:

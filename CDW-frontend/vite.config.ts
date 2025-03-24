@@ -4,9 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/",
+  base: '/',
   build: {
-    outDir: "dist",
+    outDir: 'dist',
   },
   resolve: {
     alias: {
@@ -18,15 +18,16 @@ export default defineConfig({
       '@hooks': '/src/hooks',
       '@layouts': '/src/layouts',
       '@models': '/src/models',
+      '@templates': '/src/templates',
     },
   },
   server: {
-      watch: {
-        usePolling: true, 
-      },
-      host: true, 
-      hmr: {
-        clientPort: 5173 
-      }
+    watch: {
+      usePolling: true,
+    },
+    host: true,
+    hmr: {
+      clientPort: 5173,
+    },
   },
 });
