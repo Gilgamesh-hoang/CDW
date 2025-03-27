@@ -72,13 +72,7 @@ public class RedisService implements IRedisService {
 
     @Override
     public void deleteEntriesFromMap(String key, List<String> hashKeys) {
-        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            StringRedisConnection stringRedisConn = (StringRedisConnection) connection;
-            for (String field : hashKeys) {
-                stringRedisConn.hDel(key, field);
-            }
-            return null;
-        });
+        redisTemplate.opsForHash().delete(key, hashKeys.toArray());
     }
 
     @Override

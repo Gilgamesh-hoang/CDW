@@ -10,7 +10,9 @@
       "@hooks/*": ["src/hooks/*"],
       "@configs/*": ["src/configs/*"],
       "@redux/*": ["src/redux/*"],
-      "@layouts/*": ["src/layouts/*"]
+      "@layouts/*": ["src/layouts/*"],
+      "@service/*": ["src/service/*"],
+      "@type/*": ["src/type/*"],
     },
     "target": "ES2020",
     "useDefineForClassFields": true,

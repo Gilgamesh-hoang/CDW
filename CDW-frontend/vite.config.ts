@@ -19,6 +19,8 @@ export default defineConfig({
       '@layouts': '/src/layouts',
       '@models': '/src/models',
       '@templates': '/src/templates',
+      "@service/*": "src/service",
+      "@type/*": "src/type",
     },
   },
   server: {

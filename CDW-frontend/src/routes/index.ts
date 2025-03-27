@@ -9,6 +9,7 @@ import AboutUs from '@/pages/AboutUs/AboutUs';
 import Service from '@/pages/Service/Service';
 import Contact from '@/pages/Contact/Contact';
 import Shop from '@/pages/Shop/Shop';
+import ProductDetail from '@/pages/Product/ProductDetail.tsx';
 
 export interface RouteType {
   path: string;
@@ -64,6 +65,12 @@ export const publicRoutes: RouteType[] = [
   {
     path: ROUTES.FORGOT_PASSWORD,
     element: ForgotPass,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.PRODUCT,
+    element: ProductDetail,
     layout: DefaultLayout,
     fullScreen: true,
   },

@@ -2,6 +2,7 @@ package org.cdwbackend.util;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class RedisKeyUtil {
     public final String HOMEPAGE_PRODUCTS = "homepage";
     public final String ASYM_KEYPAIR = "asymmetric:keypair:users";
 
-    public static String getSearchKey(String keyword, int pageNumber, int pageSize, String string, String direction, List<Long> categoryIds, List<Long> sizeIds) {
+    public static String getSearchKey(String keyword, int pageNumber, int pageSize, String sortBy, String direction, List<Long> categoryIds, List<Long> sizeIds) {
         categoryIds.sort(Long::compareTo);
         sizeIds.sort(Long::compareTo);
 
@@ -23,7 +24,7 @@ public class RedisKeyUtil {
         sizeIdsString = sizeIdsString.replaceAll(" ", "");
 
         return String.format("search:%s:page:%d:size:%d:sort:%s:direction:%s:categoryIds:%s:sizeIds:%s",
-                keyword, pageNumber, pageSize, string, direction, categoryIdsString, sizeIdsString);
+                keyword, pageNumber, pageSize, sortBy, direction, categoryIdsString, sizeIdsString);
     }
 
     public static String getListSizesKey(int pageNumber, int pageSize) {
@@ -47,6 +48,24 @@ public class RedisKeyUtil {
     }
 
     public static String getKeyForProductList(Pageable pageable) {
-        return String.format("product:page:%d:size:%d", pageable.getPageNumber(), pageable.getPageSize());
+        String sort = getSortString(pageable.getSort());
+        return String.format("product:page:%d:size:%d%s", pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
+    public static String getKeyForNewestProducts(Pageable pageable) {
+        String sort = getSortString(pageable.getSort());
+        return String.format("product:newest:page:%d:size:%d%s", pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
+    public static String getKeyForBestSellerProducts(Pageable pageable) {
+        return String.format("product:best-sell:page:%d:size:%d", pageable.getPageNumber(), pageable.getPageSize());
+    }
+
+    private String getSortString(Sort sort) {
+        if (sort.isSorted()) {
+            Sort.Order order = sort.iterator().next();
+            return String.format(":sort:%s:direction:%s", order.getProperty(), order.getDirection().name());
+        }
+        return "";
     }
 }

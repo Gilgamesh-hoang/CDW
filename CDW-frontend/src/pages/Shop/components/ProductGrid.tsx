@@ -1,9 +1,9 @@
 import React from 'react';
-import { ProductCardProps } from '@/components/ProductCard';
 import ProductCard from '@/components/ProductCard';
+import { Product } from '../../../type';
 
 interface ProductGridProps {
-  products: ProductCardProps[];
+  products: Product[];
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
@@ -24,7 +24,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
     <div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          <ProductCard key={product.id} {...product} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 

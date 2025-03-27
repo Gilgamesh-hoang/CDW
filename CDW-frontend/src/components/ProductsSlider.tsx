@@ -1,20 +1,23 @@
 import React, { useRef } from 'react';
-import ProductCard, { ProductCardProps } from './ProductCard';
+import ProductCard from './ProductCard';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { Product } from '@/type';
 
 interface ProductsSliderProps {
   title: string;
   description?: string;
-  products: ProductCardProps[];
+  products: Product[];
   viewAllLink?: string;
+  isNew?: boolean;
 }
 
 const ProductsSlider: React.FC<ProductsSliderProps> = ({
-  title,
-  description,
-  products,
-  viewAllLink,
-}) => {
+                                                         title,
+                                                         description,
+                                                         products,
+                                                         viewAllLink,
+                                                         isNew = false,
+                                                       }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -70,7 +73,7 @@ const ProductsSlider: React.FC<ProductsSliderProps> = ({
         >
           {products.map((product) => (
             <div key={product.id} className="min-w-[250px]">
-              <ProductCard {...product} />
+              <ProductCard isNew={isNew} product={product} />
             </div>
           ))}
         </div>

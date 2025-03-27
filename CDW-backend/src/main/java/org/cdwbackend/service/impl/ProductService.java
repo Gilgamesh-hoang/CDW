@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.cdwbackend.dto.ProductDTO;
 import org.cdwbackend.entity.database.Product;
 import org.cdwbackend.mapper.ProductMapper;
+import org.cdwbackend.repository.database.OrderDetailRepository;
 import org.cdwbackend.repository.database.ProductRepository;
 import org.cdwbackend.repository.database.ProductSizeRepository;
 import org.cdwbackend.service.IProductService;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class ProductService implements IProductService {
     ProductRepository productRepository;
     ProductSizeRepository productSizeRepository;
+    OrderDetailRepository orderDetailRepository;
     ProductMapper productMapper;
     IRedisService redisService;
 
@@ -30,7 +32,7 @@ public class ProductService implements IProductService {
     public List<ProductDTO> findAll(Pageable pageable) {
         String redisKey = RedisKeyUtil.getKeyForProductList(pageable);
         List<ProductDTO> results = redisService.getList(redisKey, ProductDTO.class);
-        if(results!=null) {
+        if (results != null) {
             return results;
         }
 
@@ -49,6 +51,42 @@ public class ProductService implements IProductService {
         List<Product> products = productRepository.findAllByCategoryAndSize(productIds, categoryIds, sizeIds, pageable);
         List<ProductDTO> results = productMapper.toDTOs(products);
         results.forEach(this::setPrice);
+        return results;
+    }
+
+    @Override
+    public List<ProductDTO> getNewestProducts(Pageable pageable) {
+        String redisKey = RedisKeyUtil.getKeyForNewestProducts(pageable);
+        List<ProductDTO> results = redisService.getList(redisKey, ProductDTO.class);
+        if (results != null) {
+            return results;
+        }
+
+        List<Product> products = productRepository.findAll(pageable).getContent();
+        results = productMapper.toDTOs(products);
+        results.forEach(this::setPrice);
+
+        redisService.saveList(redisKey, results);
+        redisService.setTTL(redisKey, 1, TimeUnit.HOURS);
+
+        return results;
+    }
+
+    @Override
+    public List<ProductDTO> getBestSellerProducts(Pageable pageable) {
+        String redisKey = RedisKeyUtil.getKeyForBestSellerProducts(pageable);
+        List<ProductDTO> results = redisService.getList(redisKey, ProductDTO.class);
+        if (results != null) {
+            return results;
+        }
+
+        List<Product> products = orderDetailRepository.findProductsByBestSelling(pageable);
+        results = productMapper.toDTOs(products);
+        results.forEach(this::setPrice);
+
+        redisService.saveList(redisKey, results);
+        redisService.setTTL(redisKey, 1, TimeUnit.HOURS);
+
         return results;
     }
 

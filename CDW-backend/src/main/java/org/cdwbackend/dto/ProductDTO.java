@@ -20,6 +20,7 @@ public class ProductDTO {
     String modelUrl;
     String slug;
     Long categoryId;
+    String categoryName;
     Integer totalViewAndSearch;
     Long sizeId;
     String sizeName;

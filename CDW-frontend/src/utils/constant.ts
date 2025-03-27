@@ -1,13 +1,12 @@
-export const SERVER_URL = 'http://localhost:9000';
+export const SERVER_URL = 'http://localhost:8182';
 export const URL_CLIENT = 'http://localhost:5173';
 export const ROUTES = Object.freeze({
   HOME: '/',
   LOGIN: '/dang-nhap',
   REGISTER: '/dang-ky',
   PROFILE: '/trang-ca-nhan',
-  MISSION: '/nhiem-vu',
   SHOP: '/cua-hang',
-  NEWS: '/tin-tuc',
+  PRODUCT: "/san-pham",
   ABOUT_US: '/ve-chung-toi',
   SERVICE: '/dich-vu',
   INCOME: '/tang-thu-nhap',

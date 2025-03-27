@@ -24,16 +24,16 @@ const listNavItems: NavItemInterface[] = [
     href: ROUTES.ABOUT_US,
     dropDown: false,
   },
-  {
-    label: 'Dịch vụ',
-    href: ROUTES.SERVICE,
-    dropDown: false,
-  },
-  {
-    label: 'Tin tức',
-    href: ROUTES.NEWS,
-    dropDown: false,
-  },
+  // {
+  //   label: 'Dịch vụ',
+  //   href: ROUTES.SERVICE,
+  //   dropDown: false,
+  // },
+  // {
+  //   label: 'Tin tức',
+  //   href: ROUTES.NEWS,
+  //   dropDown: false,
+  // },
   {
     label: 'Liên hệ',
     href: ROUTES.CONTACT,

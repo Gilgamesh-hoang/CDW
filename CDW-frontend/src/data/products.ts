@@ -1,8 +1,27 @@
-import { ProductCardProps } from '@/components/ProductCard';
 
-export const mockProducts: ProductCardProps[] = [
+export const mockProducts = [
   {
-    id: 'nike-air-max-90',
+    id: 'nike-',
+    name: 'Nike Air Max 90',
+    price: 3200000,
+    discountPrice: 2850000,
+    image:
+      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e6da41fa-1be4-4ce5-b89c-22be4f1f02d4/air-max-90-shoes-N7Tbw0.png',
+    category: 'Giày Thể Thao',
+    isNew: true,
+  },
+  {
+    id: 'nike-air',
+    name: 'Nike Air Max 90',
+    price: 3200000,
+    discountPrice: 2850000,
+    image:
+      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e6da41fa-1be4-4ce5-b89c-22be4f1f02d4/air-max-90-shoes-N7Tbw0.png',
+    category: 'Giày Thể Thao',
+    isNew: true,
+  },
+  {
+    id: 'nike-air-',
     name: 'Nike Air Max 90',
     price: 3200000,
     discountPrice: 2850000,
@@ -80,7 +99,7 @@ export const featuredCollections = [
     title: 'Giày Chạy Bộ',
     description: 'Hiệu suất cao & thoải mái suốt chặng đường dài',
     image:
-      'https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_600,c_limit/a85df87f-1803-49db-8d6a-fbaa2900047f/nike-running.jpg',
+      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/e7464b02-c082-4864-a38c-23bde28b5407/NIKE+VOMERO+18+%28GS%29.png',
     link: '/cua-hang?category=chay-bo',
   },
   {
@@ -88,7 +107,7 @@ export const featuredCollections = [
     title: 'Giày Bóng Rổ',
     description: 'Đệm chân tối ưu & bám sân tuyệt đối',
     image:
-      'https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_600,c_limit/eb134686-0b76-4d4e-9e67-c374c0557a0a/nike-basketball.jpg',
+      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/8765254d-e642-4860-b10f-3d0eb097f007/LEBRON+XXII+XMAS+EP.png',
     link: '/cua-hang?category=bong-ro',
   },
   {
@@ -96,7 +115,7 @@ export const featuredCollections = [
     title: 'Giày Lifestyle',
     description: 'Phong cách đường phố & sự thoải mái hàng ngày',
     image:
-      'https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_600,c_limit/8a74df4c-102d-46c8-b235-d58f59da8de3/nike-sportswear.jpg',
+      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/a3ce45dc-21a3-4b34-ad29-cc09ec142136/AIR+MONARCH+IV.png',
     link: '/cua-hang?category=lifestyle',
   },
 ];

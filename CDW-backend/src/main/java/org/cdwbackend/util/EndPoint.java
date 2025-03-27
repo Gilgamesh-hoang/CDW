@@ -10,8 +10,9 @@ public class EndPoint {
                 "/swagger-ui/**",
                 "/api-docs/**",
                 "/api/v1/home",
-                "/api/v1/categories",
-                "/api/v1/sizes",
+                "/api/v1/categories/**",
+                "/api/v1/sizes/**",
+                "/api/v1/products/**",
         };
     }
 
