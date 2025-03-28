@@ -27,7 +27,7 @@ public class CategoryService implements ICategoryService {
     CategoryRepository categoryRepository;
 
     @Override
-    public List<CategoryDTO> findAll(Pageable pageable) {
+    public List<CategoryDTO> getAll(Pageable pageable) {
         String redisKey = RedisKeyUtil.getListCategoriesKey(pageable.getPageNumber(), pageable.getPageSize());
         List<CategoryDTO> categories = redisService.getList(redisKey, CategoryDTO.class);
 
@@ -92,6 +92,21 @@ public class CategoryService implements ICategoryService {
         category.setIsDeleted(true);
         redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 10));
         categoryRepository.save(category);
+    }
+
+    @Override
+    public List<CategoryDTO> getCategoriesAndCountProducts(Pageable pageable) {
+        String redisKey = RedisKeyUtil.getListCategoriesKey(pageable.getPageNumber(), pageable.getPageSize());
+        List<CategoryDTO> categories = redisService.getList(redisKey, CategoryDTO.class);
+
+        if (categories != null) {
+            return categories;
+        }
+
+        categories = categoryRepository.getCategoriesAndCountProducts(pageable);
+        redisService.saveList(redisKey, categories);
+        redisService.setTTL(redisKey, 60, TimeUnit.MINUTES);
+        return categories;
     }
 
 }

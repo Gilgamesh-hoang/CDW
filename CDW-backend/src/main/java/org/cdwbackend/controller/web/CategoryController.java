@@ -27,7 +27,7 @@ public class CategoryController {
             @RequestParam(value = "page", defaultValue = "1") @Range(min = 1) int page,
             @RequestParam(value = "size", defaultValue = "10") @Range(min = 1, max = 50) int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        List<CategoryDTO> categoryList = categoryService.findAll(pageable);
+        List<CategoryDTO> categoryList = categoryService.getCategoriesAndCountProducts(pageable);
         return new ResponseObject<>(HttpStatus.OK, categoryList);
     }
 

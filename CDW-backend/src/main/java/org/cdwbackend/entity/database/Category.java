@@ -9,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +27,9 @@ public class Category {
 
     @Column(unique = true)
     private String code;
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)

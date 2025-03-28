@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchBar from '@/components/SearchBar';
-import { FaFilter, FaThList, FaThLarge } from 'react-icons/fa';
+import { FaFilter } from 'react-icons/fa';
 
 interface ShopHeaderProps {
   onSearch: (query: string) => void;
@@ -8,6 +8,8 @@ interface ShopHeaderProps {
   onSortChange: (option: string) => void;
   onFilterToggle: () => void;
 }
+
+
 
 const ShopHeader: React.FC<ShopHeaderProps> = ({
   onSearch,
@@ -30,8 +32,7 @@ const ShopHeader: React.FC<ShopHeaderProps> = ({
           onChange={(e) => onSortChange(e.target.value)}
           className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-[#291D4C]"
         >
-          <option value="featured">Nổi bật</option>
-          <option value="newest">Mới nhất</option>
+          <option value="newest-desc">Mới nhất</option>
           <option value="price-asc">Giá: Thấp đến cao</option>
           <option value="price-desc">Giá: Cao đến thấp</option>
         </select>
@@ -46,22 +47,12 @@ const ShopHeader: React.FC<ShopHeaderProps> = ({
       </div>
 
       <div className="hidden items-center gap-4 md:flex">
-        <div className="flex gap-2">
-          <button className="grid h-9 w-9 place-items-center rounded-md bg-[#291D4C] text-white transition-colors hover:bg-[#3a2a6b]">
-            <FaThLarge size={14} />
-          </button>
-          <button className="grid h-9 w-9 place-items-center rounded-md border border-gray-300 text-gray-600 transition-colors hover:border-[#291D4C] hover:text-[#291D4C]">
-            <FaThList size={14} />
-          </button>
-        </div>
-
         <select
           value={sortOption}
           onChange={(e) => onSortChange(e.target.value)}
           className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-[#291D4C]"
         >
-          <option value="featured">Nổi bật</option>
-          <option value="newest">Mới nhất</option>
+          <option value="newest-desc">Mới nhất</option>
           <option value="price-asc">Giá: Thấp đến cao</option>
           <option value="price-desc">Giá: Cao đến thấp</option>
         </select>
