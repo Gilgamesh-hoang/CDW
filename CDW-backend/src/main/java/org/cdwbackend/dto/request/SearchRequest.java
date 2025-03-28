@@ -15,5 +15,6 @@ public class SearchRequest {
     int size;
     String sort;
     String direction;
+    String priceRange;
 
 }

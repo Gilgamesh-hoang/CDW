@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 import clsx from 'clsx';
 
@@ -16,6 +16,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
   initialValue = '',
 }) => {
   const [searchQuery, setSearchQuery] = useState(initialValue);
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search).get('query') || '';
+    setSearchQuery(decodeURIComponent(query));
+  }, []);
 
   const handleClear = () => {
     setSearchQuery('');

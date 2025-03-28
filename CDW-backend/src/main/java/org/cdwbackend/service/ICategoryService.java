@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ICategoryService {
-    List<CategoryDTO> findAll(Pageable pageable);
+    List<CategoryDTO> getAll(Pageable pageable);
 
     boolean existsByCode(String code);
 
@@ -17,4 +17,6 @@ public interface ICategoryService {
     CategoryDTO update(UpdateCategoryRequest request);
 
     void delete(Long id);
+
+    List<CategoryDTO> getCategoriesAndCountProducts(Pageable pageable);
 }

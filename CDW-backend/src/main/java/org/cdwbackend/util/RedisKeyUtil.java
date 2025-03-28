@@ -10,10 +10,10 @@ import java.util.List;
 @UtilityClass
 public class RedisKeyUtil {
     public final String JWT_BLACKLIST = "jwt_blacklist";
-    public final String HOMEPAGE_PRODUCTS = "homepage";
     public final String ASYM_KEYPAIR = "asymmetric:keypair:users";
 
-    public static String getSearchKey(String keyword, int pageNumber, int pageSize, String sortBy, String direction, List<Long> categoryIds, List<Long> sizeIds) {
+    public static String getSearchKey(String keyword, List<Long> categoryIds, List<Long> sizeIds, String priceRange, Pageable pageable) {
+        Sort.Order order = pageable.getSort().iterator().next();
         categoryIds.sort(Long::compareTo);
         sizeIds.sort(Long::compareTo);
 
@@ -23,8 +23,8 @@ public class RedisKeyUtil {
         String sizeIdsString = sizeIds.toString();
         sizeIdsString = sizeIdsString.replaceAll(" ", "");
 
-        return String.format("search:%s:page:%d:size:%d:sort:%s:direction:%s:categoryIds:%s:sizeIds:%s",
-                keyword, pageNumber, pageSize, sortBy, direction, categoryIdsString, sizeIdsString);
+        return String.format("search:%s:page:%d:size:%d:sort:%s:direction:%s:categoryIds:%s:sizeIds:%s:priceRange:%s",
+                keyword, pageable.getPageNumber(), pageable.getPageSize(), order.getProperty(), order.getDirection().name(), categoryIdsString, sizeIdsString, priceRange);
     }
 
     public static String getListSizesKey(int pageNumber, int pageSize) {

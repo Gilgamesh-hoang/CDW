@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ROUTES } from '@/utils/constant';
 import ProductsSlider from '@/components/ProductsSlider';
-import { getBestSellerProducts, getNewestProducts } from '../../../service/product.ts';
+import { getBestSellerProducts, getNewestProducts } from '../../../services/product.ts';
 import { Product } from '@/type';
 
 const ProductsSliderSection: React.FC = () => {

@@ -28,7 +28,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
       </button>
       <div
         className={clsx('transition-all duration-300 ease-in-out', {
-          'max-h-96 opacity-100': isExpanded,
+          'opacity-100': isExpanded,
           'max-h-0 overflow-hidden opacity-0': !isExpanded,
         })}
       >

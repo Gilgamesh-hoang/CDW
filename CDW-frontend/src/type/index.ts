@@ -4,6 +4,12 @@ export interface ApiResponse<T = null> {
   data: T;
 }
 
+export interface PageResponse<T = null> {
+  totalPage: number;
+  currentPage: number;
+  data: T;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -22,4 +28,16 @@ export interface Product {
   subTotal?: number;
   productSizeId?: number;
   createAt?: Date;
+}
+
+export interface Size {
+  id: number;
+  name: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  code: string;
+  productCount: number;
 }

@@ -1,13 +1,16 @@
 import React from 'react';
 import ShopSidebar from './ShopSidebar';
-import { FaTimes } from 'react-icons/fa';
 
 interface MobileFiltersProps {
   isOpen: boolean;
   onClose: () => void;
+  handleFilter: (sizesSelected: number[], categoriesSelected: number[], priceRangeSelected: string | null) => void;
 }
 
-const MobileFilters: React.FC<MobileFiltersProps> = ({ isOpen, onClose }) => {
+const MobileFilters: React.FC<MobileFiltersProps> = ({
+                                                       isOpen, onClose,
+                                                       handleFilter,
+                                                     }) => {
   return (
     <div
       className={`fixed inset-0 z-50 transform overflow-auto bg-gray-900 bg-opacity-50 transition-opacity lg:hidden ${
@@ -19,7 +22,11 @@ const MobileFilters: React.FC<MobileFiltersProps> = ({ isOpen, onClose }) => {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <ShopSidebar onClose={onClose} isMobile={true} />
+        <ShopSidebar
+          onClose={onClose}
+          isMobile={true}
+          handleFilter={handleFilter}
+        />
       </div>
     </div>
   );
