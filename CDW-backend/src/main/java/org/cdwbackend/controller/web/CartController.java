@@ -31,9 +31,9 @@ public class CartController {
     }
 
     @PostMapping
-    public ResponseObject<String> addOrUpdateCart(@AuthenticationPrincipal CustomUserSecurity user,
-                                                  @RequestBody @Valid CartRequest request) {
-        if (request.getQuantity() == null|| request.getQuantity() < 1){
+    public ResponseObject<Void> addOrUpdateCart(@AuthenticationPrincipal CustomUserSecurity user,
+                                                @RequestBody @Valid CartRequest request) {
+        if (request.getQuantity() == null || request.getQuantity() < 1) {
             request.setQuantity(1);
         }
         cartService.updateCart(user.getId(), request);
@@ -41,8 +41,8 @@ public class CartController {
     }
 
     @DeleteMapping
-    public ResponseObject<String> deleteCart(@AuthenticationPrincipal CustomUserSecurity user,
-                                             @RequestBody @Valid CartRequest request) {
+    public ResponseObject<Void> deleteCart(@AuthenticationPrincipal CustomUserSecurity user,
+                                           @RequestBody @Valid CartRequest request) {
         cartService.deleteCart(user.getId(), request.getProductId(), request.getSizeId());
         return new ResponseObject<>(HttpStatus.OK, "Delete product from cart successfully");
     }

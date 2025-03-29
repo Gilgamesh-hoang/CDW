@@ -10,6 +10,7 @@ import Service from '@/pages/Service/Service';
 import Contact from '@/pages/Contact/Contact';
 import Shop from '@/pages/Shop/Shop';
 import ProductDetail from '@/pages/Product/ProductDetail.tsx';
+import Cart from '../pages/Cart/Cart.tsx';
 
 export interface RouteType {
   path: string;
@@ -23,6 +24,12 @@ export const publicRoutes: RouteType[] = [
   {
     path: ROUTES.HOME,
     element: Home,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.CART,
+    element: Cart,
     layout: DefaultLayout,
     fullScreen: true,
   },
