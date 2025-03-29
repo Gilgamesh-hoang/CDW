@@ -44,6 +44,7 @@ public class CartService implements ICartService {
         // Retrieve the cart items for the given user
         List<Cart> cartByUser = cartRepository.getCartByUser(userId);
 
+
         // Map each cart item to a ProductDTO
         List<ProductDTO> results = cartByUser.stream().map(cart -> {
             // Convert the product entity to a ProductDTO

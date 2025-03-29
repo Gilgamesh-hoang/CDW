@@ -13,6 +13,7 @@ export const ROUTES = Object.freeze({
   FORGOT_PASSWORD: '/quen-mat-khau',
   NOT_FOUND: '/404',
   CONTACT: '/lien-he',
+  CART: '/gio-hang',
   ZALO_PROFILE: 'https://zalo.me/0824760000',
   FACEBOOK_PROFILE: 'https://www.facebook.com/0824760000',
 });

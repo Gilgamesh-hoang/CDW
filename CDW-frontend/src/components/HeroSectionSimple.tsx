@@ -4,15 +4,17 @@ interface HeroSectionSimpleProps {
   imageUrl: string;
   title: string;
   description?: string;
+  heightStyle?: string;
 }
 
 const HeroSectionSimple: React.FC<HeroSectionSimpleProps> = ({
-  imageUrl,
-  title,
-  description,
-}) => {
+                                                               imageUrl,
+                                                               title,
+                                                               description,
+                                                               heightStyle = 'h-[50vh]',
+                                                             }) => {
   return (
-    <div className="relative h-[50vh] overflow-hidden bg-gradient-to-r from-[#1e1a3a] to-[#291D4C]">
+    <div className={`relative overflow-hidden bg-gradient-to-r from-[#1e1a3a] to-[#291D4C] ` + heightStyle}>
       <div className="absolute inset-0 overflow-hidden">
         <img
           src={imageUrl}
@@ -21,7 +23,8 @@ const HeroSectionSimple: React.FC<HeroSectionSimpleProps> = ({
           loading="eager"
         />
       </div>
-      <div className="container relative mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
+      <div
+        className="container relative mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
         <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
           {title}
         </h1>
