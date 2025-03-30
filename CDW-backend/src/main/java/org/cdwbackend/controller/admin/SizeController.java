@@ -31,6 +31,10 @@ public class SizeController {
         return new ResponseObject<>(HttpStatus.CREATED, sizeService.save(request));
     }
 
+    @GetMapping("/exists")
+    public ResponseObject<Boolean> existsCategory(@RequestParam("name") String name) {
+        return new ResponseObject<>(HttpStatus.OK, sizeService.existsByName(name));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseObject<Void> deleteCategory(@PathVariable @Range(min = 1) Long id) {

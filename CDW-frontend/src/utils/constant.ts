@@ -16,4 +16,5 @@ export const ROUTES = Object.freeze({
   CART: '/gio-hang',
   ADMIN_CATEGORY: '/admin/danh-muc',
   ADMIN_DASHBOARD: '/admin/dashboard',
+  ADMIN_SIZE: '/admin/kich-co',
 });

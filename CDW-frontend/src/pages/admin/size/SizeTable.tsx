@@ -3,17 +3,17 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { FaPencilAlt, FaRegTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Button } from 'antd';
-import { deleteCategory, getCategories } from '@/services/category.ts';
 import { toastError, toastSuccess } from '@/utils/showToast.ts';
-import { CategoryModal } from './CategoryModal.tsx';
-import { Category } from '@/type';
+import { SizeModal } from './SizeModal.tsx';
+import { Size } from '@/type';
+import { deleteSize, getSizesWithPages } from '../../../services/size.ts';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/constant.ts';
 import Swal from 'sweetalert2';
 
-export default function CategoryTable() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [categorySelected, setCategorySelected] = useState<number | null>(null);
+export default function SizeTable() {
+  const [sizes, setSizes] = useState<Size[]>([]);
+  const [sizeSelected, setSizeSelected] = useState<number | null>(null);
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
@@ -25,8 +25,9 @@ export default function CategoryTable() {
   }, []);
 
   useEffect(() => {
-    getCategories(currentPage, 15).then((data) => {
-      setCategories(data);
+    getSizesWithPages(currentPage, 15).then((data) => {
+      setSizes(data.data);
+      setTotalPage(data.totalPage);
     });
   }, [currentPage]);
 
@@ -68,14 +69,14 @@ export default function CategoryTable() {
     }
     setCurrentPage(page);
     navigate({
-      pathname: ROUTES.ADMIN_CATEGORY,
+      pathname: ROUTES.ADMIN_SIZE,
       search: `?page=${page}`,
     });
   };
 
-  const removeCategory = (id: number) => {
+  const removeSize = (id: number) => {
     Swal.fire({
-      title: 'Hành động này sẽ xóa danh mục với ID: ' + id,
+      title: 'Hành động này sẽ xóa kích thước với ID: ' + id,
       showCancelButton: true,
       confirmButtonText: 'Xóa',
       cancelButtonText: `Hủy`,
@@ -83,26 +84,27 @@ export default function CategoryTable() {
       if (!result.isConfirmed) {
         return;
       }
-
-      deleteCategory(id).then(() => {
-        setCategories(categories.filter((category) => category.id !== id));
-        toastSuccess('Xóa danh mục thành công', 1500);
+      deleteSize(id).then(() => {
+        setSizes(sizes.filter((category) => category.id !== id));
+        toastSuccess('Xóa kích thước thành công');
       }).catch((error) => {
         console.error(error);
-        toastError('Xóa danh mục thất bại', 1500);
+        toastError('Xóa kích thước thất bại');
       });
     });
+
+
   };
 
-  const updateItem = (category: Category) => {
-    setCategories((prevCategories) => {
-      const exists = prevCategories.some((item) => item.id === category.id);
+  const updateItem = (size: Size) => {
+    setSizes((prevSizes) => {
+      const exists = prevSizes.some((item) => item.id === size.id);
       if (exists) {
-        return prevCategories.map((item) =>
-          item.id === category.id ? category : item,
+        return prevSizes.map((item) =>
+          item.id === size.id ? size : item,
         );
       } else {
-        return [category, ...prevCategories];
+        return [size, ...prevSizes];
       }
     });
   };
@@ -111,18 +113,18 @@ export default function CategoryTable() {
   return (
     <>
       <div className="space-y-6">
-        <ComponentCard title="Danh sách danh mục">
+        <ComponentCard title="Danh sách kích cỡ">
           <Button
             type="primary"
             className=" h-10"
             style={{ backgroundColor: '#291D4C' }}
             size="large"
             onClick={() => {
-              setCategorySelected(null);
+              setSizeSelected(null);
               setShowModal(true);
             }}
           >
-            Thêm mới danh mục
+            Thêm mới kích cỡ
           </Button>
 
           <div>
@@ -143,13 +145,7 @@ export default function CategoryTable() {
                         isHeader
                         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                       >
-                        Mã danh mục
-                      </TableCell>
-                      <TableCell
-                        isHeader
-                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                      >
-                        Tên danh mục
+                        Tên kích cỡ
                       </TableCell>
                       <TableCell
                         isHeader
@@ -161,32 +157,28 @@ export default function CategoryTable() {
 
                   {/* Table Body */}
                   <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                    {categories.map((category) => (
-                      <TableRow key={category.id}>
+                    {sizes.map((size) => (
+                      <TableRow key={size.id}>
                         <TableCell className="px-5 py-4 sm:px-6 text-start">
                           <div className="flex items-center gap-3">
-                            {category.id}
+                            {size.id}
                           </div>
                         </TableCell>
                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                          {category.code}
-                        </TableCell>
-                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                          {category.name}
+                          {size.name}
                         </TableCell>
                         <TableCell className="text-gray-500 ">
                           <div className="flex gap-4">
                             <button className="p-3 hover:text-red-500"
                                     onClick={() => {
-                                      setCategorySelected(category.id);
+                                      setSizeSelected(size.id);
                                       setShowModal(true);
                                     }}
-                              // onClick={() => setShowModal(prevState => !prevState)}
                             >
                               <FaPencilAlt />
                             </button>
                             <button className="p-3 hover:text-red-500"
-                                    onClick={() => removeCategory(category.id)}
+                                    onClick={() => removeSize(size.id)}
                             >
                               <FaRegTrashAlt />
                             </button>
@@ -206,9 +198,9 @@ export default function CategoryTable() {
         </ComponentCard>
       </div>
 
-      <CategoryModal isOpen={showModal}
+      <SizeModal isOpen={showModal}
                  closeModal={() => setShowModal(false)}
-                 categoryId={categorySelected}
+                 sizeId={sizeSelected}
                  callback={updateItem}
       />
     </>
