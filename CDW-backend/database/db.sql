@@ -16,6 +16,7 @@
 
 
 -- Dumping database structure for shoes_web
+DROP DATABASE IF EXISTS `shoes_web`;
 CREATE DATABASE IF NOT EXISTS `shoes_web` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `shoes_web`;
 
@@ -32,9 +33,11 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `isDeleted` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table shoes_web.addresses: ~0 rows (approximately)
+-- Dumping data for table shoes_web.addresses: ~1 rows (approximately)
+INSERT INTO `addresses` (`id`, `fullName`, `phoneNumber`, `province`, `district`, `commune`, `hamlet`, `createAt`, `updateAt`, `isDeleted`) VALUES
+	(37, '123', '123123123', '123', '123', '123', '123', '2025-03-19 15:59:15', '2025-03-19 15:59:16', 0);
 
 -- Dumping structure for table shoes_web.carts
 CREATE TABLE IF NOT EXISTS `carts` (
@@ -49,9 +52,14 @@ CREATE TABLE IF NOT EXISTS `carts` (
   KEY `Cart_fk1` (`orderDetailsId`),
   CONSTRAINT `Cart_fk0` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `Cart_fk1` FOREIGN KEY (`orderDetailsId`) REFERENCES `order_details` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table shoes_web.carts: ~0 rows (approximately)
+-- Dumping data for table shoes_web.carts: ~4 rows (approximately)
+INSERT INTO `carts` (`id`, `userId`, `orderDetailsId`, `createAt`, `updateAt`, `isDeleted`) VALUES
+	(49, 16, 107, '2025-03-19 16:00:03', '2025-03-19 16:00:03', 0),
+	(50, 16, 108, '2025-03-19 16:00:10', '2025-03-19 16:00:10', 0),
+	(51, 16, 109, '2025-03-19 16:00:14', '2025-03-19 16:00:14', 0),
+	(58, 16, 116, '2025-03-29 16:23:24', '2025-03-29 16:23:24', 0);
 
 -- Dumping structure for table shoes_web.categories
 CREATE TABLE IF NOT EXISTS `categories` (
@@ -63,17 +71,18 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `isDeleted` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `category_pk` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table shoes_web.categories: ~7 rows (approximately)
+-- Dumping data for table shoes_web.categories: ~8 rows (approximately)
 INSERT INTO `categories` (`id`, `name`, `code`, `createAt`, `updateAt`, `isDeleted`) VALUES
-	(1, 'Gi&agrave;y thường ng&agrave;y', 'thuong-ngay', '2024-01-01 13:24:34', '2024-04-19 02:10:36', 0),
+	(1, 'Giày thường ngày', 'thuong-ngay', '2024-01-01 13:24:34', '2024-04-19 02:10:36', 0),
 	(2, 'Giày bóng rổ', 'bong-ro', '2024-01-01 13:24:34', '2024-01-01 13:24:34', 0),
 	(3, 'Giày Bóng đá', 'bong-da', '2024-01-01 13:24:34', '2024-01-01 13:24:34', 0),
 	(4, 'Giày Bóng chày', 'bong-chay', '2024-01-01 13:24:34', '2024-01-01 13:24:34', 0),
 	(5, 'Giày Bóng chuyền', 'bong-chuyen', '2024-01-01 13:24:34', '2024-01-01 13:24:34', 0),
 	(6, 'Giày Golf', 'golf', '2024-01-01 13:24:34', '2024-01-01 13:24:34', 0),
-	(7, 'Giày Chạy bộ', 'chay-bo', '2024-01-01 13:24:34', '2024-04-19 02:19:31', 0);
+	(7, 'Giày Chạy bộ', 'chay-bo', '2024-01-01 13:24:34', '2024-04-19 02:19:31', 0),
+	(18, '123', 'thuong', '2025-03-30 17:18:35', '2025-03-30 17:18:35', 0);
 
 -- Dumping structure for table shoes_web.opinions
 CREATE TABLE IF NOT EXISTS `opinions` (
@@ -113,9 +122,11 @@ CREATE TABLE IF NOT EXISTS `orders` (
   UNIQUE KEY `order_pk` (`slug`),
   KEY `Order_fk0` (`addressId`),
   CONSTRAINT `Order_fk0` FOREIGN KEY (`addressId`) REFERENCES `addresses` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table shoes_web.orders: ~0 rows (approximately)
+-- Dumping data for table shoes_web.orders: ~1 rows (approximately)
+INSERT INTO `orders` (`id`, `status`, `note`, `totalAmount`, `addressId`, `isPaid`, `slug`, `createAt`, `updateAt`, `isDeleted`) VALUES
+	(47, 'CANCELED', '123', 213123123, 37, 0, NULL, '2025-03-19 09:01:43', '2025-03-19 16:13:36', 0);
 
 -- Dumping structure for table shoes_web.order_details
 CREATE TABLE IF NOT EXISTS `order_details` (
@@ -132,9 +143,14 @@ CREATE TABLE IF NOT EXISTS `order_details` (
   KEY `orderDetails_fk1` (`productSizeId`),
   CONSTRAINT `orderDetails_fk0` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`),
   CONSTRAINT `orderDetails_fk1` FOREIGN KEY (`productSizeId`) REFERENCES `product_sizes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table shoes_web.order_details: ~0 rows (approximately)
+-- Dumping data for table shoes_web.order_details: ~4 rows (approximately)
+INSERT INTO `order_details` (`id`, `quantity`, `subTotal`, `orderId`, `productSizeId`, `createAt`, `updateAt`, `isDeleted`) VALUES
+	(107, 2, 2040000, 47, 1, '2025-03-19 16:00:03', '2025-03-19 16:00:03', 0),
+	(108, 2, 2060000, 47, 2, '2025-03-19 16:00:10', '2025-03-19 16:00:10', 0),
+	(109, 2, 2080000, 47, 3, '2025-03-19 16:00:14', '2025-03-19 16:00:14', 0),
+	(116, 3, 3120000, NULL, 3, '2025-03-29 16:23:24', '2025-03-29 16:23:24', 0);
 
 -- Dumping structure for table shoes_web.products
 CREATE TABLE IF NOT EXISTS `products` (
@@ -152,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `totalViewAndSearch` int DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `product_category_id_fk` (`categoryId`),
-  CONSTRAINT `product_category_id_fk` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`)
+  CONSTRAINT `product_category_id_fk` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table shoes_web.products: ~29 rows (approximately)
@@ -314,13 +330,13 @@ CREATE TABLE IF NOT EXISTS `product_sizes` (
   CONSTRAINT `productSize_fk1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table shoes_web.product_sizes: ~128 rows (approximately)
+-- Dumping data for table shoes_web.product_sizes: ~124 rows (approximately)
 INSERT INTO `product_sizes` (`id`, `sizeId`, `productId`, `price`, `createAt`, `updateAt`, `isDeleted`, `available`) VALUES
 	(1, 22, 1, 1020000, '2024-01-02 09:14:19', '2024-01-02 09:14:19', 0, 50),
 	(2, 23, 1, 1030000, '2024-01-02 09:14:19', '2024-01-02 09:14:19', 0, 50),
 	(3, 24, 1, 1040000, '2024-01-02 09:14:19', '2024-01-02 09:14:19', 0, 50),
 	(4, 25, 1, 1050000, '2024-01-02 09:14:19', '2024-01-02 09:14:19', 0, 50),
-	(5, 1, 2, 1160000, '2024-01-02 10:09:17', '2024-01-02 10:09:17', 0, 50),
+	(5, 1, 2, 1160000, '2024-01-02 10:09:17', '2025-03-30 22:04:01', 0, 50),
 	(6, 2, 2, 1170000, '2024-01-02 10:09:17', '2024-01-02 10:09:17', 0, 50),
 	(7, 3, 2, 1180000, '2024-01-02 10:09:17', '2024-01-02 10:09:17', 0, 50),
 	(8, 4, 2, 1190000, '2024-01-02 10:09:17', '2024-01-02 10:09:17', 0, 50),
@@ -336,20 +352,20 @@ INSERT INTO `product_sizes` (`id`, `sizeId`, `productId`, `price`, `createAt`, `
 	(18, 7, 4, 1678000, '2024-01-02 15:14:43', '2024-01-02 15:14:43', 0, 50),
 	(19, 8, 4, 1688000, '2024-01-02 15:14:43', '2024-01-02 15:14:43', 0, 50),
 	(20, 9, 4, 1698000, '2024-01-02 15:14:43', '2024-01-02 15:14:43', 0, 50),
-	(21, 1, 5, 2060000, '2024-01-02 15:20:50', '2024-01-02 15:20:50', 0, 50),
+	(21, 1, 5, 2060000, '2024-01-02 15:20:50', '2025-03-30 22:04:01', 0, 50),
 	(22, 2, 5, 2070000, '2024-01-02 15:20:50', '2024-01-02 15:20:50', 0, 50),
 	(23, 3, 5, 2080000, '2024-01-02 15:20:50', '2024-01-02 15:20:50', 0, 50),
 	(25, 19, 7, 640000, '2024-01-03 00:58:59', '2024-01-03 00:58:59', 0, 50),
 	(26, 20, 7, 645000, '2024-01-03 00:58:59', '2024-01-03 00:58:59', 0, 50),
 	(27, 21, 7, 650000, '2024-01-03 00:58:59', '2024-01-03 00:58:59', 0, 50),
 	(28, 22, 7, 660000, '2024-01-03 00:58:59', '2024-01-03 00:58:59', 0, 50),
-	(29, 1, 8, 910000, '2024-01-03 01:07:05', '2024-01-03 01:07:05', 0, 50),
+	(29, 1, 8, 910000, '2024-01-03 01:07:05', '2025-03-30 22:04:01', 0, 50),
 	(30, 2, 8, 920000, '2024-01-03 01:07:05', '2024-01-03 01:07:05', 0, 50),
 	(31, 3, 8, 930000, '2024-01-03 01:07:05', '2024-01-03 01:07:05', 0, 50),
 	(32, 4, 8, 940000, '2024-01-03 01:07:05', '2024-01-03 01:07:05', 0, 50),
 	(33, 5, 8, 950000, '2024-01-03 01:07:05', '2024-01-03 01:07:05', 0, 50),
 	(34, 6, 8, 960000, '2024-01-03 01:07:05', '2024-01-03 01:07:05', 0, 50),
-	(35, 1, 9, 740000, '2024-01-03 01:14:14', '2024-01-03 01:14:14', 0, 50),
+	(35, 1, 9, 740000, '2024-01-03 01:14:14', '2025-03-30 22:04:01', 0, 50),
 	(36, 2, 9, 750000, '2024-01-03 01:14:14', '2024-01-03 01:14:14', 0, 50),
 	(37, 3, 9, 760000, '2024-01-03 01:14:14', '2024-01-03 01:14:14', 0, 50),
 	(38, 4, 9, 770000, '2024-01-03 01:14:14', '2024-01-03 01:14:14', 0, 50),
@@ -359,19 +375,19 @@ INSERT INTO `product_sizes` (`id`, `sizeId`, `productId`, `price`, `createAt`, `
 	(42, 22, 10, 1620000, '2024-01-03 01:16:52', '2024-01-03 01:16:52', 0, 50),
 	(43, 23, 10, 1630000, '2024-01-03 01:16:52', '2024-01-03 01:16:52', 0, 50),
 	(44, 24, 10, 1640000, '2024-01-03 01:16:52', '2024-01-03 01:16:52', 0, 50),
-	(45, 1, 11, 1360000, '2024-01-03 01:20:11', '2024-01-03 01:20:11', 0, 50),
+	(45, 1, 11, 1360000, '2024-01-03 01:20:11', '2025-03-30 22:04:01', 0, 50),
 	(46, 2, 11, 1370000, '2024-01-03 01:20:11', '2024-01-03 01:20:11', 0, 50),
 	(47, 3, 11, 1380000, '2024-01-03 01:20:11', '2024-01-03 01:20:11', 0, 50),
 	(48, 4, 11, 1390000, '2024-01-03 01:20:11', '2024-01-03 01:20:11', 0, 50),
-	(49, 1, 12, 1560000, '2024-01-03 01:23:10', '2024-01-03 01:23:10', 0, 50),
+	(49, 1, 12, 1560000, '2024-01-03 01:23:10', '2025-03-30 22:04:01', 0, 50),
 	(50, 2, 12, 1570000, '2024-01-03 01:23:10', '2024-01-03 01:23:10', 0, 50),
 	(51, 3, 12, 1580000, '2024-01-03 01:23:10', '2024-01-03 01:23:10', 0, 50),
 	(52, 4, 12, 1590000, '2024-01-03 01:23:10', '2024-01-03 01:23:10', 0, 50),
-	(53, 1, 13, 2160000, '2024-01-03 01:28:34', '2024-01-03 01:28:34', 0, 50),
+	(53, 1, 13, 2160000, '2024-01-03 01:28:34', '2025-03-30 22:04:01', 0, 50),
 	(54, 2, 13, 2170000, '2024-01-03 01:28:34', '2024-01-03 01:28:34', 0, 50),
 	(55, 3, 13, 2180000, '2024-01-03 01:28:34', '2024-01-03 01:28:34', 0, 50),
 	(56, 4, 13, 2190000, '2024-01-03 01:28:34', '2024-01-03 01:28:34', 0, 50),
-	(57, 1, 14, 1700000, '2024-04-21 11:04:49', '2024-04-21 11:04:49', 0, 50),
+	(57, 1, 14, 1700000, '2024-04-21 11:04:49', '2025-03-30 22:04:01', 0, 50),
 	(58, 2, 14, 1720000, '2024-04-21 11:04:49', '2024-04-21 11:04:49', 0, 50),
 	(59, 3, 14, 1730000, '2024-04-21 11:04:49', '2024-04-21 11:04:49', 0, 50),
 	(60, 4, 14, 1740000, '2024-04-21 11:04:49', '2024-04-21 11:04:49', 0, 50),
@@ -464,14 +480,12 @@ CREATE TABLE IF NOT EXISTS `sizes` (
   `createAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updateAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `isDeleted` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `size_pk` (`name`),
-  UNIQUE KEY `size_pk2` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table shoes_web.sizes: ~26 rows (approximately)
 INSERT INTO `sizes` (`id`, `name`, `createAt`, `updateAt`, `isDeleted`) VALUES
-	(1, 'M 7 / W 8.5', '2024-01-01 13:31:05', '2024-01-08 00:22:33', 0),
+	(1, 'M 7 / W 8.5', '2024-01-01 13:31:05', '2025-03-30 22:04:01', 0),
 	(2, 'M 7.5 / W 9', '2024-01-01 13:31:06', '2024-01-01 13:31:06', 0),
 	(3, 'M 8 / W 9.5', '2024-01-01 13:31:06', '2024-01-01 13:31:06', 0),
 	(4, 'M 8.5 / W 10', '2024-01-01 13:31:06', '2024-01-01 13:31:06', 0),
