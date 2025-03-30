@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ShopHero from './components/ShopHero';
-import ProductGrid from './components/ProductGrid';
-import ShopSidebar from './components/ShopSidebar';
-import ShopHeader from './components/ShopHeader';
-import { PageResponse, Product } from '../../type';
+import ShopHero from './components/ShopHero.tsx';
+import ProductGrid from './components/ProductGrid.tsx';
+import ShopSidebar from './components/ShopSidebar.tsx';
+import ShopHeader from './components/ShopHeader.tsx';
+import { PageResponse, Product } from '../../../type';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../utils/constant.ts';
+import { ROUTES } from '../../../utils/constant.ts';
 import MobileFilters from './components/MobileFilters.tsx';
-import { search } from '../../services/search.ts';
+import { search } from '../../../services/search.ts';
 
 const Shop: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');

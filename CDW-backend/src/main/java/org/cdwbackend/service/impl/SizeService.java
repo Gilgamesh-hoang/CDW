@@ -77,7 +77,7 @@ public class SizeService implements ISizeService {
                 .orElseThrow(() -> new ResolutionException("Size with id " + id + " not found"));
 
         size.setIsDeleted(true);
-        redisService.deleteByPattern(RedisKeyUtil.getListSizesKey(0, 0).substring(0, 10));
+        redisService.deleteByPattern(RedisKeyUtil.getListSizesKey(0, 0).substring(0, 10) + "*");
         sizeRepository.save(size);
     }
 }

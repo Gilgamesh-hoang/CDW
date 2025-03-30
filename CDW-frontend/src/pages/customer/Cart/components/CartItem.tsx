@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
-import { Product } from '../../../type';
-import { addOrUpdateCartItem } from '../../../services/cart.ts';
+import { Product } from '../../../../type';
+import { addOrUpdateCartItem } from '../../../../services/cart.ts';
 
 interface CartItemProps {
   item: Product;

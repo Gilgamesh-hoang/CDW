@@ -1,5 +1,5 @@
 import React from 'react';
-import ShopSidebar from './ShopSidebar';
+import ShopSidebar from './ShopSidebar.tsx';
 
 interface MobileFiltersProps {
   isOpen: boolean;

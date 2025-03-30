@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import FilterGroup from '@/components/FilterGroup';
 import { FaTimes } from 'react-icons/fa';
-import { Category, Size } from '../../../type';
-import { getSizes } from '../../../services/size.ts';
-import { getCategories } from '../../../services/category.ts';
+import { Category, Size } from '../../../../type';
+import { getSizes } from '../../../../services/size.ts';
+import { getCategories } from '../../../../services/category.ts';
 
 interface ShopSidebarProps {
   onClose?: () => void;
@@ -105,7 +105,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = forwardRef(({
               >
                 {category.name}
               </label>
-              <span className="text-xs text-gray-500">{category.productCount}</span>
+              <span className="text-xs text-gray-500">{category.productCount ?? 0}</span>
             </div>
           ))}
         </div>

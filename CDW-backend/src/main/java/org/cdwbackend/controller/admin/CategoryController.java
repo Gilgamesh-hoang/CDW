@@ -27,6 +27,11 @@ import java.util.List;
 public class CategoryController {
     ICategoryService categoryService;
 
+    @GetMapping("/exists/{code}")
+    public ResponseObject<Boolean> existsCategory(@PathVariable("code") String code) {
+        return new ResponseObject<>(HttpStatus.OK, categoryService.existsByCode(code));
+    }
+
     @PostMapping
     public ResponseObject<CategoryDTO> createCategory(@RequestBody @Valid CreateCategoryRequest request) {
         return new ResponseObject<>(HttpStatus.CREATED, categoryService.save(request));

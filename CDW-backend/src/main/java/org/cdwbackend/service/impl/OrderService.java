@@ -109,7 +109,7 @@ public class OrderService implements IOrderService {
         // Map the updated order entity to an OrderDTO and return it
 
         String redisKey = RedisKeyUtil.getOrdersKey(0, 0);
-        redisService.deleteByPattern(redisKey.substring(0, 10));
+        redisService.deleteByPattern(redisKey.substring(0, 10) + "*");
 
         OrderDTO orderDTO = orderMapper.toDTO(order);
         // overwrite the cache

@@ -14,6 +14,7 @@ import org.cdwbackend.service.IRedisService;
 import org.cdwbackend.util.RedisKeyUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -58,12 +59,16 @@ public class CategoryService implements ICategoryService {
                 .isDeleted(false)
                 .build();
         categoryRepository.save(category);
+
+        redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 13) + "*");
+
         return categoryMapper.toDTO(category);
     }
 
     @Override
     public CategoryDTO update(UpdateCategoryRequest request) {
-        if (!categoryRepository.existsById(request.getId())) {
+        Category category = categoryRepository.findById(request.getId()).orElse(null);
+        if (category == null) {
             throw new ResourceNotFoundException("Category not found");
         }
 
@@ -71,27 +76,26 @@ public class CategoryService implements ICategoryService {
             throw new IllegalArgumentException("Category code is already exist");
         }
 
-        Category category = Category.builder()
-                .id(request.getId())
-                .name(request.getName())
-                .code(request.getCode())
-                .build();
+
+        category.setName(request.getName());
+        category.setCode(request.getCode());
 
         categoryRepository.save(category);
-        redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 10));
+        redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 13) + "*");
         return categoryMapper.toDTO(category);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
             throw new ResourceNotFoundException("Category not found");
         }
 
-        category.setIsDeleted(true);
-        redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 10));
-        categoryRepository.save(category);
+//        category.setIsDeleted(true);
+        categoryRepository.deleteById(id);
+        redisService.deleteByPattern(RedisKeyUtil.getListCategoriesKey(0, 0).substring(0, 13) + "*");
     }
 
     @Override
@@ -107,6 +111,15 @@ public class CategoryService implements ICategoryService {
         redisService.saveList(redisKey, categories);
         redisService.setTTL(redisKey, 60, TimeUnit.MINUTES);
         return categories;
+    }
+
+    @Override
+    public CategoryDTO getCategory(Long id) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        if (category != null) {
+            return categoryMapper.toDTO(category);
+        }
+        throw new ResourceNotFoundException("Category not found");
     }
 
 }

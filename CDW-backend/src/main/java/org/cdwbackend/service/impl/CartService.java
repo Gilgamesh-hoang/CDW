@@ -102,7 +102,7 @@ public class CartService implements ICartService {
             // If the cart item exists, update it
             updateExistingCart(cartItemByUser, request, productSize);
         }
-        redisService.deleteByPattern(RedisKeyUtil.getCartKey(userId));
+        redisService.deleteByPattern(RedisKeyUtil.getCartKey(userId) + "*");
     }
 
     @Override
@@ -130,7 +130,7 @@ public class CartService implements ICartService {
         // Delete the cart item
         cartRepository.delete(cartItemByUser);
         orderDetailRepo.delete(cartItemByUser.getOrderDetail());
-        redisService.deleteByPattern(RedisKeyUtil.getCartKey(userId));
+        redisService.deleteByPattern(RedisKeyUtil.getCartKey(userId) + "*");
     }
 
     private void createNewCart(Long userId, CartRequest request, ProductSize productSize) {

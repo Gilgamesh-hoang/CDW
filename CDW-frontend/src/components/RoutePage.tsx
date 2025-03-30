@@ -8,7 +8,7 @@ const RoutePage = (route: RouteType, index: number) => {
   const ChildrenNode = route.children ?? [];
   return (
     <Route
-      key={index}
+      key={route.path + index}
       path={route.path}
       element={
         <Layout>
@@ -17,7 +17,7 @@ const RoutePage = (route: RouteType, index: number) => {
       }
     >
       {ChildrenNode.map((routeObject, index: number) =>
-        RoutePage(routeObject, index)
+        RoutePage(routeObject, index),
       )}
     </Route>
   );

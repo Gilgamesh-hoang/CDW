@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-import HeroSectionSimple from '../../components/HeroSectionSimple.tsx';
+import HeroSectionSimple from '../../../components/HeroSectionSimple.tsx';
 import { MdOutlinePayment } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
-import { ROUTES } from '../../utils/constant.ts';
+import { ROUTES } from '../../../utils/constant.ts';
 import CartItem from './components/CartItem.tsx';
-import { deleteCartItem, getCart } from '../../services/cart.ts';
-import { Product } from '../../type';
+import { deleteCartItem, getCart } from '../../../services/cart.ts';
+import { Product } from '../../../type';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
