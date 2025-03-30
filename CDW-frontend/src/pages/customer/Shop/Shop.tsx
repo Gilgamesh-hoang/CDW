@@ -20,7 +20,7 @@ const Shop: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const sidebarRef = useRef<{ clearFilter: () => void }>(null);
   const [filterMobileOpen, setFilterMobileOpen] = useState(false);
-  const navigate = useNavigate(); // Thay useHistory bằng useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search).get('query') || '';

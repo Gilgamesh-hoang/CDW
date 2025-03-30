@@ -4,6 +4,7 @@ import logo from '@/assets/logo.png';
 import { ROUTES } from '../../utils/constant.ts';
 import { BiCategory } from 'react-icons/bi';
 import { RiDashboard2Line } from 'react-icons/ri';
+import { AiOutlineFontSize } from 'react-icons/ai';
 
 type NavItem = {
   name: string;
@@ -22,6 +23,11 @@ const navItems: NavItem[] = [
     icon: <BiCategory className="size-6" />,
     name: 'Thể loại',
     path: ROUTES.ADMIN_CATEGORY,
+  },
+  {
+    icon: <AiOutlineFontSize className="size-6" />,
+    name: 'Kích cỡ',
+    path: ROUTES.ADMIN_SIZE,
   },
 ];
 

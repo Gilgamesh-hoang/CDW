@@ -69,6 +69,8 @@ export const CategoryModal: FC<CategoryModalProps> = ({ isOpen, closeModal, cate
         toastSuccess('Cập nhật danh mục thành công', 1500);
       }).catch((err) => {
         console.error(err);
+        form.resetFields();
+        closeModal();
         toastError('Cập nhật danh mục thất bại', 1500);
       });
     } else {
@@ -80,6 +82,8 @@ export const CategoryModal: FC<CategoryModalProps> = ({ isOpen, closeModal, cate
         closeModal();
         toastSuccess('Thêm mới danh mục thành công', 1500);
       }).catch((err) => {
+        form.resetFields();
+        closeModal();
         console.error(err);
         toastError('Thêm mới danh mục thất bại', 1500);
       });
