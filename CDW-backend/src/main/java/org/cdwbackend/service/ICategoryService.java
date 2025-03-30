@@ -19,4 +19,6 @@ public interface ICategoryService {
     void delete(Long id);
 
     List<CategoryDTO> getCategoriesAndCountProducts(Pageable pageable);
+
+    CategoryDTO getCategory(Long id);
 }

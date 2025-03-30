@@ -14,6 +14,6 @@ export const ROUTES = Object.freeze({
   NOT_FOUND: '/404',
   CONTACT: '/lien-he',
   CART: '/gio-hang',
-  ZALO_PROFILE: 'https://zalo.me/0824760000',
-  FACEBOOK_PROFILE: 'https://www.facebook.com/0824760000',
+  ADMIN_CATEGORY: '/admin/danh-muc',
+  ADMIN_DASHBOARD: '/admin/dashboard',
 });

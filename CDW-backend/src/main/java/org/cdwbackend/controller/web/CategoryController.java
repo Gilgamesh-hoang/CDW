@@ -10,6 +10,7 @@ import org.cdwbackend.service.ICategoryService;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +27,16 @@ public class CategoryController {
     public ResponseObject<List<CategoryDTO>> getCategories(
             @RequestParam(value = "page", defaultValue = "1") @Range(min = 1) int page,
             @RequestParam(value = "size", defaultValue = "10") @Range(min = 1, max = 50) int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Sort sort = Sort.by(Sort.Order.desc("createAt"));
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
         List<CategoryDTO> categoryList = categoryService.getCategoriesAndCountProducts(pageable);
         return new ResponseObject<>(HttpStatus.OK, categoryList);
     }
 
-    @GetMapping("/exists/{code}")
-    public ResponseObject<Boolean> existsCategory(@PathVariable("code") String code) {
-        return new ResponseObject<>(HttpStatus.OK, categoryService.existsByCode(code));
+    @GetMapping("/{id}")
+    public ResponseObject<CategoryDTO> getCategory(@PathVariable("id") @Range(min = 1) Long id) {
+        return new ResponseObject<>(HttpStatus.OK, categoryService.getCategory(id));
     }
+
+
 }

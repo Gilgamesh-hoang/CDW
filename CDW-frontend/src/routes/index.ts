@@ -1,16 +1,19 @@
 import Login from '@/pages/Login/Login';
 import DefaultLayout from '../layouts/DefaultLayout';
-import UserInfo from '../pages/UserInfo/UserInfo';
+import UserInfo from '../pages/customer/UserInfo/UserInfo';
 import Register from '@/pages/Register/Register';
 import { ROUTES } from '@/utils/constant';
-import ForgotPass from '@/pages/ForgotPass/ForgotPass';
-import Home from '@/pages/Home/Home';
-import AboutUs from '@/pages/AboutUs/AboutUs';
-import Service from '@/pages/Service/Service';
-import Contact from '@/pages/Contact/Contact';
-import Shop from '@/pages/Shop/Shop';
-import ProductDetail from '@/pages/Product/ProductDetail.tsx';
-import Cart from '../pages/Cart/Cart.tsx';
+import Cart from '../pages/customer/Cart/Cart.tsx';
+import CategoryTable from '../pages/admin/category/CategoryTable.tsx';
+import AdminLayout from '../layouts/admin/AdminLayout.tsx';
+import { Dashboard } from '../pages/admin/dashboard';
+import Home from '../pages/customer/Home/Home.tsx';
+import Shop from '../pages/customer/Shop/Shop.tsx';
+import AboutUs from '../pages/customer/AboutUs/AboutUs.tsx';
+import Service from '../pages/customer/Service/Service.tsx';
+import Contact from '../pages/customer/Contact/Contact.tsx';
+import ForgotPass from '../pages/customer/ForgotPass/ForgotPass.tsx';
+import ProductDetail from '../pages/customer/Product/ProductDetail.tsx';
 
 export interface RouteType {
   path: string;
@@ -88,6 +91,21 @@ export const privateRoutes: RouteType[] = [
     path: ROUTES.PROFILE,
     element: UserInfo,
     layout: DefaultLayout,
+    fullScreen: true,
+  },
+];
+
+export const adminRoutes: RouteType[] = [
+  {
+    path: ROUTES.ADMIN_DASHBOARD,
+    element: Dashboard,
+    layout: AdminLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.ADMIN_CATEGORY,
+    element: CategoryTable,
+    layout: AdminLayout,
     fullScreen: true,
   },
 ];

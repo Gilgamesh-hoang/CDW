@@ -1,9 +1,9 @@
 import './App.css';
-import { publicRoutes, RouteType } from './routes';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { adminRoutes, publicRoutes, RouteType } from './routes';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import RoutePage from './components/RoutePage';
-import Error404 from './pages/Error/404/Error404';
+import Error404 from './pages/customer/Error/404/Error404';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
@@ -13,7 +13,10 @@ function App() {
         <ScrollToTop />
         <Routes>
           {publicRoutes.map((route: RouteType, index: number) =>
-            RoutePage(route, index)
+            RoutePage(route, index),
+          )}
+          {adminRoutes.map((route: RouteType, index: number) =>
+            RoutePage(route, index),
           )}
           <Route path="*" element={<Error404 />}></Route>
         </Routes>

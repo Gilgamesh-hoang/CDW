@@ -1,15 +1,14 @@
 import React from 'react';
 import {
-  FaMapMarkerAlt,
-  FaPhoneAlt,
-  FaEnvelope,
   FaClock,
+  FaEnvelope,
   FaFacebookF,
   FaInstagram,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
   FaTwitter,
   FaYoutube,
 } from 'react-icons/fa';
-import { ROUTES } from '@/utils/constant';
 import InfoCard from '@/components/InfoCard';
 
 const contactDetails = [
@@ -38,7 +37,7 @@ const contactDetails = [
 const socialMedia = [
   {
     icon: <FaFacebookF size={18} />,
-    link: ROUTES.FACEBOOK_PROFILE,
+    link: "https://www.instagram.com/nike/",
   },
   {
     icon: <FaInstagram size={18} />,
