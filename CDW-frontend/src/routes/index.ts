@@ -15,6 +15,8 @@ import Contact from '../pages/customer/Contact/Contact.tsx';
 import ForgotPass from '../pages/customer/ForgotPass/ForgotPass.tsx';
 import ProductDetail from '../pages/customer/Product/ProductDetail.tsx';
 import SizeTable from '../pages/admin/size/SizeTable.tsx';
+import OrderTable from '../pages/admin/order/OrderTable.tsx';
+import { OrderDetail } from '../pages/admin/order/OrderDetail.tsx';
 
 export interface RouteType {
   path: string;
@@ -112,6 +114,18 @@ export const adminRoutes: RouteType[] = [
   {
     path: ROUTES.ADMIN_SIZE,
     element: SizeTable,
+    layout: AdminLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.ADMIN_ORDER,
+    element: OrderTable,
+    layout: AdminLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.ADMIN_ORDER_DETAIL,
+    element: OrderDetail,
     layout: AdminLayout,
     fullScreen: true,
   },

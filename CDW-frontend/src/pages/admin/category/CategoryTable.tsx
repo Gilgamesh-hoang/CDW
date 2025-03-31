@@ -7,9 +7,9 @@ import { deleteCategory, getCategories } from '@/services/category.ts';
 import { toastError, toastSuccess } from '@/utils/showToast.ts';
 import { CategoryModal } from './CategoryModal.tsx';
 import { Category } from '@/type';
-import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/constant.ts';
 import Swal from 'sweetalert2';
+import { Pagination } from '../../../components/Pagination.tsx';
 
 export default function CategoryTable() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -17,7 +17,6 @@ export default function CategoryTable() {
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page') || 1;
@@ -29,49 +28,6 @@ export default function CategoryTable() {
       setCategories(data);
     });
   }, [currentPage]);
-
-  const renderPagination = () => {
-    const pages = Array.from({ length: totalPage }, (_, i) => i + 1);
-
-    const selectedStyle = 'relative z-10 inline-flex items-center bg-[#291D4C] px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#291D4C]';
-    const unSelectedStyle = 'relative cursor-pointer inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0';
-    return (
-      <nav
-        className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-        aria-label="Pagination"
-      >
-        {pages.map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            aria-current={currentPage === page ? 'page' : undefined}
-            className={currentPage === page ? selectedStyle : unSelectedStyle}
-          >
-            {page}
-          </button>
-        ))}
-      </nav>
-    );
-  };
-
-  const handlePageChange = (page: number) => {
-    if (page < 1) {
-      return;
-    }
-
-    if (page > totalPage) {
-      return;
-    }
-
-    if (page === currentPage) {
-      return;
-    }
-    setCurrentPage(page);
-    navigate({
-      pathname: ROUTES.ADMIN_CATEGORY,
-      search: `?page=${page}`,
-    });
-  };
 
   const removeCategory = (id: number) => {
     Swal.fire({
@@ -200,7 +156,7 @@ export default function CategoryTable() {
               </div>
             </div>
             <div className="mt-12 flex justify-center">
-              {renderPagination()}
+              <Pagination pathname={ROUTES.ADMIN_CATEGORY} totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
             </div>
           </div>
         </ComponentCard>

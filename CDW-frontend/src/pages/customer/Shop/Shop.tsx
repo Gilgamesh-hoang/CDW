@@ -25,6 +25,10 @@ const Shop: React.FC = () => {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search).get('query') || '';
     setSearchQuery(decodeURIComponent(query));
+
+    const pageParam = new URLSearchParams(window.location.search).get('page') || 1;
+    setPage(Number(pageParam));
+
     handleFilter([], [], null);
   }, []);
 
