@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.cdwbackend.dto.OrderDTO;
 import org.cdwbackend.dto.request.UpdateStatusOrderRequest;
+import org.cdwbackend.dto.response.PageResponse;
 import org.cdwbackend.dto.response.ResponseObject;
 import org.cdwbackend.service.IOrderService;
 import org.hibernate.validator.constraints.Range;
@@ -35,7 +36,7 @@ public class OrderController {
 
 
     @GetMapping
-    public ResponseObject<List<OrderDTO>> getOrders(
+    public ResponseObject<PageResponse<List<OrderDTO>>> getOrders(
             @RequestParam(value = "page", defaultValue = "1") @Range(min = 1) int page,
             @RequestParam(value = "size", defaultValue = "10") @Range(min = 1, max = 50) int size) {
         Sort sort = Sort.by("createAt").descending();

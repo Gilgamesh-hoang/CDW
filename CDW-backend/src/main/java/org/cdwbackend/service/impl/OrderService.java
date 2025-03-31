@@ -1,35 +1,43 @@
 package org.cdwbackend.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.cdwbackend.constant.SystemConstant;
 import org.cdwbackend.dto.OrderDTO;
 import org.cdwbackend.dto.ProductDTO;
 import org.cdwbackend.dto.request.UpdateStatusOrderRequest;
-import org.cdwbackend.entity.database.Order;
-import org.cdwbackend.entity.database.OrderDetail;
-import org.cdwbackend.entity.database.Product;
-import org.cdwbackend.entity.database.ProductSize;
+import org.cdwbackend.dto.response.PageResponse;
+import org.cdwbackend.entity.database.*;
 import org.cdwbackend.exception.ResourceNotFoundException;
 import org.cdwbackend.mapper.OrderMapper;
+import org.cdwbackend.mapper.ProductMapper;
 import org.cdwbackend.repository.database.OrderRepository;
 import org.cdwbackend.service.IOrderService;
 import org.cdwbackend.service.IRedisService;
 import org.cdwbackend.util.RedisKeyUtil;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService implements IOrderService {
     OrderRepository orderRepository;
     OrderMapper orderMapper;
     IRedisService redisService;
-
+    ObjectMapper objectMapper;
+    ProductMapper productMapper;
     @Override
     // Find an order by its ID and return its details along with the list of products in the order
     public OrderDTO findById(Long id) {
@@ -46,18 +54,23 @@ public class OrderService implements IOrderService {
 
         // Map each order detail to a ProductDTO and collect them into a list
         List<ProductDTO> listProduct = orderDetail.stream().map(detail -> {
-            Product product = detail.getProductSize().getProduct();
+            // Convert the product entity to a ProductDTO
+            ProductDTO productDTO = productMapper.toDTO(detail.getProductSize().getProduct());
             ProductSize productSize = detail.getProductSize();
+            Size sizeModel = productSize.getSize();
 
-            // Build and return a ProductDTO for each order detail
-            return ProductDTO.builder()
-                    .id(product.getId())
-                    .name(product.getName())
-                    .thumbnail(product.getThumbnail())
-                    .subTotal(detail.getSubTotal())
-                    .sizeName(productSize.getSize().getName())
-                    .quantity(detail.getQuantity())
-                    .build();
+            // Set the product details in the ProductDTO
+            productDTO.setQuantity(detail.getQuantity());
+            productDTO.setSizeName(sizeModel.getName());
+            productDTO.setSizeId(sizeModel.getId());
+            productDTO.setPrice(productSize.getPrice());
+            productDTO.setProductSizeId(productSize.getId());
+            productDTO.setAvailable(productSize.getAvailable());
+            productDTO.setSubTotal(detail.getSubTotal());
+            productDTO.setShortDescription(null); // Set short description to null
+            productDTO.setContent(null); // Set content to null
+
+            return productDTO; // Return the populated ProductDTO
         }).toList();
 
         // Map the order entity to an OrderDTO
@@ -73,21 +86,33 @@ public class OrderService implements IOrderService {
 
     // Find all orders with pagination and return them as a list of OrderDTOs
     @Override
-    public List<OrderDTO> findAll(Pageable pageable) {
+    public PageResponse<List<OrderDTO>> findAll(Pageable pageable) {
         String redisKey = RedisKeyUtil.getOrdersKey(pageable.getPageNumber(), pageable.getPageSize());
-        List<OrderDTO> results = redisService.getList(redisKey, OrderDTO.class);
+        try {
+            // Check if the search results are already cached in Redis
+            String jsonValue = redisService.getValue(redisKey, String.class);
+            if (jsonValue != null) {
+                return objectMapper.readValue(jsonValue, new TypeReference<PageResponse<List<OrderDTO>>>() {
+                });
+            }
 
-        if (results != null) {
+
+            Page<Order> orders = orderRepository.findAll(Example.of(Order.builder().isDeleted(false).build()), pageable);
+
+            PageResponse<List<OrderDTO>> results = PageResponse.<List<OrderDTO>>builder()
+                    .currentPage(orders.getNumber())
+                    .totalPage(orders.getTotalPages())
+                    .data(orderMapper.toDTOs(orders.getContent()))
+                    .build();
+
+            redisService.saveValue(redisKey, objectMapper.writeValueAsString(results));
+            redisService.setTTL(redisKey, 30, TimeUnit.MINUTES);
+
             return results;
+        } catch (JsonProcessingException e) {
+            log.error("Error processing JSON", e);
         }
-        // Retrieve the paginated list of orders from the repository
-        List<Order> orders = orderRepository.findAll(pageable).toList();
-        // Map the list of orders to a list of OrderDTOs and return it
-        results = orderMapper.toDTOs(orders);
-        redisService.saveList(redisKey, results);
-        redisService.setTTL(redisKey, 1, TimeUnit.HOURS);
-
-        return results;
+        return PageResponse.<List<OrderDTO>>builder().data(new ArrayList<>()).build();
     }
 
     // Update the status of an order and return the updated OrderDTO
@@ -108,14 +133,9 @@ public class OrderService implements IOrderService {
         orderRepository.save(order);
         // Map the updated order entity to an OrderDTO and return it
 
-        String redisKey = RedisKeyUtil.getOrdersKey(0, 0);
-        redisService.deleteByPattern(redisKey.substring(0, 10) + "*");
+        redisService.deleteByPattern("order:*");
 
-        OrderDTO orderDTO = orderMapper.toDTO(order);
-        // overwrite the cache
-        redisService.saveValue(RedisKeyUtil.getOrderKey(order.getId()), orderDTO);
-
-        return orderDTO;
+        return orderMapper.toDTO(order);
     }
 
     // Validate if the status transition is allowed

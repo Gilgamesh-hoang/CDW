@@ -5,6 +5,7 @@ import { ROUTES } from '../../utils/constant.ts';
 import { BiCategory } from 'react-icons/bi';
 import { RiDashboard2Line } from 'react-icons/ri';
 import { AiOutlineFontSize } from 'react-icons/ai';
+import { IoBagCheckOutline } from 'react-icons/io5';
 
 type NavItem = {
   name: string;
@@ -29,13 +30,18 @@ const navItems: NavItem[] = [
     name: 'Kích cỡ',
     path: ROUTES.ADMIN_SIZE,
   },
+  {
+    icon: <IoBagCheckOutline className="size-6" />,
+    name: 'Đơn hàng',
+    path: ROUTES.ADMIN_ORDER,
+  },
 ];
 
 const AdminSidebar: React.FC = () => {
   const location = useLocation();
 
   const isActive = useCallback(
-    (path: string) => location.pathname === path,
+    (path: string) => location.pathname.includes(path),
     [location.pathname],
   );
 

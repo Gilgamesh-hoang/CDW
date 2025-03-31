@@ -17,4 +17,6 @@ export const ROUTES = Object.freeze({
   ADMIN_CATEGORY: '/admin/danh-muc',
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_SIZE: '/admin/kich-co',
+  ADMIN_ORDER: '/admin/don-hang',
+  ADMIN_ORDER_DETAIL: '/admin/don-hang/:id',
 });

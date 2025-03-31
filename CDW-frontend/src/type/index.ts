@@ -41,3 +41,27 @@ export interface Category {
   code: string;
   productCount?: number;
 }
+
+export interface Address {
+  id: number;
+  fullName: string;
+  phoneNumber: string;
+  province: string;
+  district: string;
+  commune: string;
+  hamlet: string;
+  createAt: Date;
+}
+
+
+export interface Order {
+  id: number;
+  status: string;
+  note: string;
+  totalAmount: number;
+  address: Address;
+  isPaid: boolean;
+  slug: string;
+  createAt: Date;
+  listProduct: Product[];
+}
