@@ -1,18 +1,18 @@
-import { ApiResponse } from '@/type';
-import { Order, PageResponse } from '../type';
-import { axiosToken } from '../axios.ts';
+import { ApiResponse, Order, PageResponse } from '../models';
+
+import { httpGet, httpPut } from '../axios.ts';
 
 export const getOrders = async (page = 1, size = 10) => {
-  return await axiosToken<ApiResponse<PageResponse<Order[]>>>('admin/orders', { params: { page, size } })
-    .then(response => response.data.data);
+  return await httpGet<ApiResponse<PageResponse<Order[]>>>('admin/orders', { params: { page, size } })
+    .then(response => response.data);
 };
 
 export const getOrder = async (orderId: number) => {
-  return await axiosToken<ApiResponse<Order>>('admin/orders/' + orderId)
-    .then(response => response.data.data);
+  return await httpGet<ApiResponse<Order>>('admin/orders/' + orderId)
+    .then(response => response.data);
 };
 
 export const updateOrderStatus = async (id: number, status: string) => {
-  return await axiosToken.put<ApiResponse<void>>('admin/orders', {id, status });
+  return await httpPut<ApiResponse<void>>('admin/orders', {id, status });
 };
 

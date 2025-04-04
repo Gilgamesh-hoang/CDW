@@ -1,5 +1,5 @@
-import AdminHeader from './AdminHeader.tsx';
-import AdminSidebar from './AdminSidebar.tsx';
+import AdminHeader from '../components/admin/AdminHeader.tsx';
+import AdminSidebar from '../components/admin/AdminSidebar.tsx';
 import React from 'react';
 
 const AdminLayout= ({ children }: { children: React.ReactNode }) => {

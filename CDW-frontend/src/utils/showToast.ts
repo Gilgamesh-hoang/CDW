@@ -8,7 +8,7 @@ export const toastSuccess = (message: string, timeout = 1000) => {
     theme: 'light',
     transition: Bounce,
   });
-}
+};
 
 export const toastError = (message: string, timeout = 1000) => {
   toast.error(message, {
@@ -18,4 +18,4 @@ export const toastError = (message: string, timeout = 1000) => {
     theme: 'light',
     transition: Bounce,
   });
-}
+};

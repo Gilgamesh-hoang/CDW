@@ -2,9 +2,9 @@ import { FC, useEffect, useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import useDebounce from '@/hooks/useDebounce.ts';
 import { toastError, toastSuccess } from '@/utils/showToast.ts';
-import { Size } from '@/type';
 import { Modal } from '@/components/modal';
 import { createSize, existsSize, getSizeById, updateSize } from '@/services/size.ts';
+import { Size } from '../../../models';
 
 interface SizeModalProps {
   isOpen: boolean;

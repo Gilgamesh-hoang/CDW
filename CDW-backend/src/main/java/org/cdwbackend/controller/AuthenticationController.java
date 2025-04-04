@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cdwbackend.constant.SystemConstant;
 import org.cdwbackend.dto.request.AuthenticationRequest;
+import org.cdwbackend.dto.response.AuthResponse;
 import org.cdwbackend.dto.response.JwtResponse;
 import org.cdwbackend.dto.response.ResponseObject;
 import org.cdwbackend.service.IAuthenticationService;
@@ -29,19 +30,20 @@ public class AuthenticationController {
     IAuthenticationService authenticationService;
 
 
-    private ResponseObject<JwtResponse> createResponse(HttpServletResponse response, JwtResponse jwtObj, String message) {
+    private void setCookie(HttpServletResponse response, String refreshToken) {
         // Set refresh token in HTTP-Only cookie
-        Cookie refreshTokenCookie = CookieUtil.createCookie(SystemConstant.REFRESH_TOKEN, jwtObj.getRefreshToken(),
+        Cookie refreshTokenCookie = CookieUtil.createCookie(SystemConstant.REFRESH_TOKEN, refreshToken,
                 "localhost", 604800, true, false);
         response.addCookie(refreshTokenCookie);
-        return new ResponseObject<>(HttpStatus.OK, message, jwtObj);
     }
 
 
     @PostMapping("/login")
-    public ResponseObject<JwtResponse> authenticate(@RequestBody @Valid AuthenticationRequest request, HttpServletResponse response) {
-        JwtResponse jwtObj = authenticationService.login(request);
-        return createResponse(response, jwtObj, "Login successfully");
+    public ResponseObject<AuthResponse> authenticate(@RequestBody @Valid AuthenticationRequest request, HttpServletResponse response) {
+        AuthResponse resp = authenticationService.login(request);
+        setCookie(response, resp.getRefreshToken());
+        return new ResponseObject<>(HttpStatus.OK,"Login successfully", resp);
+
     }
 
     @PostMapping("/refresh-token")
@@ -49,7 +51,8 @@ public class AuthenticationController {
             @CookieValue(SystemConstant.REFRESH_TOKEN) @NotBlank String refreshToken,
             HttpServletResponse response) {
         JwtResponse jwtObj = authenticationService.refreshToken(refreshToken);
-        return createResponse(response, jwtObj, "Refresh token successfully");
+        setCookie(response, jwtObj.getRefreshToken());
+        return new ResponseObject<>(HttpStatus.OK, "Refresh token successfully", jwtObj);
     }
 
     @PostMapping("/logout")

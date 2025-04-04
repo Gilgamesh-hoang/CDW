@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import FilterGroup from '@/components/FilterGroup';
 import { FaTimes } from 'react-icons/fa';
-import { Category, Size } from '../../../../type';
+import { Category, Size } from '../../../../models';
 import { getSizes } from '../../../../services/size.ts';
 import { getCategories } from '../../../../services/category.ts';
 

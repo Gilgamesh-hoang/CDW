@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ROUTES } from '@/utils/constant';
 import ProductsSlider from '@/components/ProductsSlider';
 import { getBestSellerProducts, getNewestProducts } from '../../../../services/product.ts';
-import { Product } from '@/type';
+import { Product } from '../../../../models';
 
 const ProductsSliderSection: React.FC = () => {
   const [newestProducts, setNewestProducts] = useState<Product[]>([]);

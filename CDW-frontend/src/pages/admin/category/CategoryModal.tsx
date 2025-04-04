@@ -3,8 +3,8 @@ import { Button, Form, Input } from 'antd';
 import useDebounce from '@/hooks/useDebounce.ts';
 import { createCategory, existsCategory, getCategoryById, updateCategory } from '@/services/category.ts';
 import { toastError, toastSuccess } from '@/utils/showToast.ts';
-import { Category } from '@/type';
 import { Modal } from '@/components/modal';
+import { Category } from '../../../models';
 
 interface CategoryModalProps {
   isOpen: boolean;

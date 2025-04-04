@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/utils/constant';
-import { Product } from '../type';
+import { Product } from '../models';
 
 interface ProductCardProps {
   product: Product;

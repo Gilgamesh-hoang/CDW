@@ -3,7 +3,7 @@ import ShopHero from './components/ShopHero.tsx';
 import ProductGrid from './components/ProductGrid.tsx';
 import ShopSidebar from './components/ShopSidebar.tsx';
 import ShopHeader from './components/ShopHeader.tsx';
-import { PageResponse, Product } from '../../../type';
+import { PageResponse, Product } from '../../../models';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/constant.ts';
 import MobileFilters from './components/MobileFilters.tsx';

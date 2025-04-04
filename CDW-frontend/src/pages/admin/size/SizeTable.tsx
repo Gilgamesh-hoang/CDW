@@ -5,12 +5,11 @@ import { useEffect, useState } from 'react';
 import { Button } from 'antd';
 import { toastError, toastSuccess } from '@/utils/showToast.ts';
 import { SizeModal } from './SizeModal.tsx';
-import { Size } from '@/type';
 import { deleteSize, getSizesWithPages } from '../../../services/size.ts';
-import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/constant.ts';
 import Swal from 'sweetalert2';
 import { Pagination } from '../../../components/Pagination.tsx';
+import { Size } from '../../../models';
 
 export default function SizeTable() {
   const [sizes, setSizes] = useState<Size[]>([]);
@@ -18,7 +17,6 @@ export default function SizeTable() {
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const pageParam = new URLSearchParams(window.location.search).get('page') || 1;

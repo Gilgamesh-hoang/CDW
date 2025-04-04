@@ -6,10 +6,10 @@ import { Button } from 'antd';
 import { deleteCategory, getCategories } from '@/services/category.ts';
 import { toastError, toastSuccess } from '@/utils/showToast.ts';
 import { CategoryModal } from './CategoryModal.tsx';
-import { Category } from '@/type';
 import { ROUTES } from '../../../utils/constant.ts';
 import Swal from 'sweetalert2';
 import { Pagination } from '../../../components/Pagination.tsx';
+import { Category } from '../../../models';
 
 export default function CategoryTable() {
   const [categories, setCategories] = useState<Category[]>([]);

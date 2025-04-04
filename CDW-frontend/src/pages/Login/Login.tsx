@@ -1,50 +1,50 @@
-import React, { useEffect } from 'react';
-import { Form, Input, Button, message } from 'antd';
+import React from 'react';
+import { Button, Form, Input } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/utils/constant';
 import { useSelector } from 'react-redux';
 import { authStateSelector } from '@/redux/selector';
 import { useAppDispatch } from '@/redux/hook';
-import { login, resetAuthState } from '@/features/auth/authSlice';
+import { login } from '@/features/auth/authSlice';
+import { toastError } from '../../utils/showToast.ts';
+import { UserRole } from '../../models/enums.ts';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
-  const { isError, isSuccess, isLoading, message: authMessage } = useSelector(authStateSelector);
 
-  useEffect(() => {
-    // Handle authentication status changes
-    if (isError) {
-      message.error(authMessage || 'Login failed');
-    }
+  const { isLoading } = useSelector(authStateSelector);
 
-    if (isSuccess) {
-      message.success('Login successful');
-      navigate(ROUTES.HOME);
-    }
-
-    return () => {
-      dispatch(resetAuthState());
-    };
-  }, [isError, isSuccess, authMessage, dispatch, navigate]);
 
   const onFinish = async (values: any) => {
     try {
-      const result = await dispatch(login(values)).unwrap();
-      if (result && result.accessToken) {
-        localStorage.setItem('accessToken', result.accessToken);
+      const res = await dispatch(login(values));
+      if (res.payload.status !== 200) {
+        toastError('Đăng nhập thất bại');
+        return;
       }
+
+      if (res.payload.data.role === UserRole.ADMIN) {
+        navigate(ROUTES.ADMIN_DASHBOARD);
+        return;
+      } else {
+        navigate(ROUTES.HOME);
+        return;
+      }
+
     } catch (error) {
-      console.error('Login error:', error);
+      toastError('Đăng nhập thất bại');
     }
   };
 
   return (
     <div className="md:h-[70vh] mt-20">
       <div className="max-w-md mx-auto p-6 border-0">
+        <div className="text-center mb-10">
+          <p className="text-5xl font-medium">Đăng nhập</p>
+        </div>
         <Form
           form={form}
           layout="vertical"
@@ -52,8 +52,11 @@ const Login: React.FC = () => {
           autoComplete="off"
         >
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập' }]}
+            name="email"
+            rules={[{ required: true, message: 'Vui lòng nhập email' }, {
+              type: 'email',
+              message: 'Email không hợp lệ',
+            }]}
           >
             <Input placeholder="Tên đăng nhập" size="large" />
           </Form.Item>
@@ -88,8 +91,9 @@ const Login: React.FC = () => {
               style={{ backgroundColor: '#291D4C' }}
               size="large"
               loading={isLoading}
+              disabled={isLoading}
             >
-              Đăng Nhập
+              {isLoading ? 'Đang xử lý...' : 'Đăng Nhập'}
             </Button>
           </Form.Item>
         </Form>

@@ -1,6 +1,5 @@
-import { axiosNoToken } from '@/axios.ts';
-import { ApiResponse } from '@/type';
-import { PageResponse, Product } from '../type';
+import { httpPost } from '../axios.ts';
+import { ApiResponse, PageResponse, Product } from '../models';
 
 export type SearchParams = {
   keyword?: string;
@@ -14,7 +13,7 @@ export type SearchParams = {
 };
 
 export const search = async (params: SearchParams) => {
-  return await axiosNoToken.post<ApiResponse<PageResponse<Product[]>>>('search', params)
-    .then(response => response.data.data);
+  return await httpPost<ApiResponse<PageResponse<Product[]>>>('search', params)
+    .then(response => response.data);
 
-}
+};

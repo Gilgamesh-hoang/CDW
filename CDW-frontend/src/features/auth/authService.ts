@@ -1,70 +1,101 @@
-import AbstractResponse from '@/models/responses/AbstractResponseModel';
-import { axiosNoToken } from '../../axios';
-import { User } from '@/models';
-import { AxiosError } from 'axios';
-import { ErrorResponse } from 'react-router-dom';
-const routePath = '/auth';
+import { ApiResponse, AuthResponse, User } from '../../models';
+import { ACCESS_TOKEN_LOCALSTORAGE } from '../../utils/constant.ts';
+import { httpPost } from '../../axios.ts';
+
+const routePath = 'auth';
+
 export interface LoginParams {
-  username: string;
+  email: string;
   password: string;
 }
+
 export interface RegisterParams {
   fullname: string;
   password: string;
-  retypePassword : string;
+  retypePassword: string;
   username: string;
   email: string;
   phoneNumber: string;
 }
-export type AuthPayload = AbstractResponse<User> & { accessToken: string }
+
 const AuthService = {
-  async login({ username, password }: LoginParams) {
-    return new Promise<AuthPayload>((resolve, reject) => {
+  async login({ email, password }: LoginParams) {
+    return new Promise<ApiResponse<User>>((resolve, reject) => {
       (async () => {
         try {
-          const resp = await axiosNoToken.post(routePath + '/login', {
-            username,
+          const resp: ApiResponse<AuthResponse> = await httpPost(routePath + '/login', {
+            email,
             password,
           });
-          if (resp.data && resp.data.accessToken) {
-            localStorage.setItem('accessToken', resp.data.accessToken);
+
+          const data: AuthResponse = resp.data;
+
+          if (data && data.accessToken) {
+            localStorage.setItem(ACCESS_TOKEN_LOCALSTORAGE, data.accessToken);
           }
-          resolve(resp.data);
+
+          const result: ApiResponse<User> = {
+            message: resp.message,
+            data: {
+              ...data.user,
+            },
+            status: resp.status,
+          };
+
+          resolve(result);
         } catch (error) {
-          const axiosError = error as AxiosError<ErrorResponse>;
-          reject(axiosError.response?.data || error);
+          const axiosError = error as ApiResponse<void>;
+          reject(axiosError.message || error);
         }
       })();
     });
   },
 
-  async register({
-    fullname,
-    password,
-    username,
-    phoneNumber,
-    email,
-    retypePassword
-  }: RegisterParams) {
-    return new Promise<AuthPayload>((resolve, reject) => {
-      (async ()=>{
+  async logout() {
+    return new Promise<ApiResponse<void>>((resolve, reject) => {
+      (async () => {
         try {
-          const resp = await axiosNoToken.post(routePath + '/register', {
-            fullname,
-            email,
-            phoneNumber,
-            password,
-            username,
-            retypePassword
-          });
-          resolve(resp.data);
+          const res: ApiResponse<void> = await httpPost(routePath + '/logout');
+
+          // Xóa token và thông tin người dùng khỏi localStorage
+          localStorage.removeItem(ACCESS_TOKEN_LOCALSTORAGE);
+
+          resolve(res);
         } catch (error) {
-          const axiosError = error as AxiosError<ErrorResponse>;
-          reject(axiosError.response?.data || error);
+          const axiosError = error as ApiResponse<void>;
+          reject(axiosError.message || error);
         }
       })();
     });
   },
+
+  // async register({
+  //   fullname,
+  //   password,
+  //   username,
+  //   phoneNumber,
+  //   email,
+  //   retypePassword
+  // }: RegisterParams) {
+  //   return new Promise<AuthPayload>((resolve, reject) => {
+  //     (async ()=>{
+  //       try {
+  //         const resp = await axiosNoToken.post(routePath + '/register', {
+  //           fullname,
+  //           email,
+  //           phoneNumber,
+  //           password,
+  //           username,
+  //           retypePassword
+  //         });
+  //         resolve(resp.data);
+  //       } catch (error) {
+  //         const axiosError = error as AxiosError<ErrorResponse>;
+  //         reject(axiosError.response?.data || error);
+  //       }
+  //     })();
+  //   });
+  // },
 };
 
 export default AuthService;
