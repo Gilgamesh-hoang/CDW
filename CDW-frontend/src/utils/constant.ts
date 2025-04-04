@@ -1,5 +1,7 @@
 export const SERVER_URL = 'http://localhost:8182';
 export const URL_CLIENT = 'http://localhost:5173';
+export const ACCESS_TOKEN_LOCALSTORAGE = 'access_token';
+
 export const ROUTES = Object.freeze({
   HOME: '/',
   LOGIN: '/dang-nhap',

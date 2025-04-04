@@ -7,11 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.cdwbackend.dto.CustomUserSecurity;
 import org.cdwbackend.dto.KeyPair;
 import org.cdwbackend.dto.request.AuthenticationRequest;
+import org.cdwbackend.dto.response.AuthResponse;
 import org.cdwbackend.dto.response.JwtResponse;
-import org.cdwbackend.service.IAuthenticationService;
-import org.cdwbackend.service.IKeyService;
-import org.cdwbackend.service.IRedisService;
-import org.cdwbackend.service.ITokenService;
+import org.cdwbackend.service.*;
 import org.cdwbackend.util.JwtHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -35,6 +33,7 @@ public class AuthenticationService implements IAuthenticationService {
     UserDetailServiceImpl userDetailsService;
     IKeyService keyService;
     IRedisService redisService;
+    IUserService userService;
 
     // Method to handle common logic for generating JWT response
     // Generates a JWT response containing access and refresh tokens
@@ -46,16 +45,23 @@ public class AuthenticationService implements IAuthenticationService {
         // Wait for both tokens to be generated
         CompletableFuture.allOf(accessToken, refreshToken).join();
         // Return the JWT response with the generated tokens and public key
-        return new JwtResponse(accessToken.get(), keyPair.getPublicKey(), refreshToken.get());
+        return new JwtResponse(accessToken.get(), refreshToken.get());
     }
 
     // Creates a JWT response for a given email and user ID
-    private JwtResponse createResponse(String email, Long userId) {
+    private AuthResponse createResponse(String email, Long userId) {
         // Retrieve the key pair associated with the user
         KeyPair keyPair = keyService.getKeyPairByUser(userId);
         try {
             // Generate and return the JWT response
-            return generateJwtResponse(email, keyPair);
+            JwtResponse jwt = generateJwtResponse(email, keyPair);
+
+            return AuthResponse.builder()
+                    .accessToken(jwt.getToken())
+                    .refreshToken(jwt.getRefreshToken())
+                    .user(userService.getUserById(userId))
+                    .build();
+
         } catch (InterruptedException | ExecutionException e) {
             // Handle exceptions by interrupting the thread and throwing a BadCredentialsException
             Thread.currentThread().interrupt();
@@ -65,7 +71,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     // Authenticates a user and returns a JWT response
     @Override
-    public JwtResponse login(AuthenticationRequest request) {
+    public AuthResponse login(AuthenticationRequest request) {
         // Load user details by email
         CustomUserSecurity user = (CustomUserSecurity) userDetailsService.loadUserByUsername(request.getEmail());
         // Authenticate the user with the provided email and password
@@ -113,8 +119,6 @@ public class AuthenticationService implements IAuthenticationService {
         try {
             // Generate a new JWT response with access and refresh tokens
             JwtResponse jwtResponse = generateJwtResponse(user.getEmail(), keyPair);
-            // Set the public key to null in the response
-            jwtResponse.setPublicKey(null);
             // Blacklist the old refresh token
             tokenService.blacklistTokens(null, token);
 

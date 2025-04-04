@@ -5,7 +5,7 @@ import Register from '@/pages/Register/Register';
 import { ROUTES } from '@/utils/constant';
 import Cart from '../pages/customer/Cart/Cart.tsx';
 import CategoryTable from '../pages/admin/category/CategoryTable.tsx';
-import AdminLayout from '../layouts/admin/AdminLayout.tsx';
+import AdminLayout from '../layouts/AdminLayout.tsx';
 import { Dashboard } from '../pages/admin/dashboard';
 import Home from '../pages/customer/Home/Home.tsx';
 import Shop from '../pages/customer/Shop/Shop.tsx';
@@ -16,7 +16,7 @@ import ForgotPass from '../pages/customer/ForgotPass/ForgotPass.tsx';
 import ProductDetail from '../pages/customer/Product/ProductDetail.tsx';
 import SizeTable from '../pages/admin/size/SizeTable.tsx';
 import OrderTable from '../pages/admin/order/OrderTable.tsx';
-import { OrderDetail } from '../pages/admin/order/OrderDetail.tsx';
+import OrderDetail from '../pages/admin/order/OrderDetail.tsx';
 
 export interface RouteType {
   path: string;

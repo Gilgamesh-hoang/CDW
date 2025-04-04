@@ -1,5 +1,5 @@
-import ErrorResponse from "./ErrorResponse";
+import { ApiResponse } from '../index.ts';
 
 export default interface ThunkError {
-    rejectValue: ErrorResponse;
+    rejectValue: ApiResponse<void>;
   }

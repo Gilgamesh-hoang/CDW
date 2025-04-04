@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../../../utils/constant.ts';
 import CartItem from './components/CartItem.tsx';
 import { deleteCartItem, getCart } from '../../../services/cart.ts';
-import { Product } from '../../../type';
+import { Product } from '../../../models';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]);

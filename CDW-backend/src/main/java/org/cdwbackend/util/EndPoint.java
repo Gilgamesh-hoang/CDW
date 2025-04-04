@@ -23,4 +23,10 @@ public class EndPoint {
                 "/api/v1/search"
         };
     }
+
+    public final String[] authenticatedEndpoints() {
+        return new String[]{
+                "/api/v1/cart/**",
+        };
+    }
 }

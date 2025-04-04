@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Select, Tag } from 'antd';
 import { format } from 'date-fns';
 import { FaTruck, FaUser } from 'react-icons/fa';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/table';
-import { Order } from '@/type';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getOrder } from '@/services/order.ts';
 import { toastSuccess } from '@/utils/showToast.ts';
 import { updateOrderStatus } from '../../../services/order.ts';
+import { Order } from '../../../models';
 
 const { Option } = Select;
-
-export const OrderDetail: React.FC = () => {
+export default function OrderDetail() {
   const [order, setOrder] = useState<Order | null>(null);
   const [statusSelected, setStatusSelected] = useState<string | null>(null);
   const [disableChangeStatus, setDisableChangeStatus] = useState<boolean>(
@@ -33,7 +32,7 @@ export const OrderDetail: React.FC = () => {
       return;
     }
 
-    getOrder(id).then((res) => {
+    getOrder(Number(id)).then((res) => {
       setOrder(res);
     });
   }, [id]);
@@ -43,7 +42,7 @@ export const OrderDetail: React.FC = () => {
       return;
     }
 
-    if(statusSelected === order?.status) {
+    if (statusSelected === order?.status) {
       return;
     }
 
@@ -62,7 +61,7 @@ export const OrderDetail: React.FC = () => {
   };
 
   if (!order) {
-    return navigate(-1);
+    return null;
   }
 
   return (
@@ -228,7 +227,7 @@ export const OrderDetail: React.FC = () => {
               <Option value="CANCELED">Đã hủy</Option>
             </Select>
           </div>
-          <Button style={{backgroundColor: '#ecf3ff'}}
+          <Button style={{ backgroundColor: '#ecf3ff' }}
                   size={'large'}
                   disabled={disableChangeStatus}
                   onClick={handleChangeStatus}

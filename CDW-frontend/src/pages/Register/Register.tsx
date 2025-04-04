@@ -1,47 +1,52 @@
-import React, { useEffect } from 'react';
-import { Form, Input, Button, message } from 'antd';
+import React from 'react';
+import { Button, Form, Input } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ROUTES } from '@/utils/constant';
-import { useSelector } from 'react-redux';
-import { register, resetAuthState } from '@/features/auth/authSlice';
-import { authStateSelector } from '@/redux/selector';
+// import { register, resetAuthState } from '@/features/auth/authSlice';
 import { RegisterParams } from '@/features/auth/authService';
-import { useAppDispatch } from '@/redux/hook';
 
 const Register: React.FC = () => {
   const [form] = Form.useForm();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { isError, isSuccess, isLoading, message: authMessage } = useSelector(authStateSelector);
+  // const dispatch = useAppDispatch();
+  // const navigate = useNavigate();
+  // const { isError, isSuccess, isLoading, message: authMessage } = useSelector(authStateSelector);
+  const isLoading = false; // temp
 
-  const onFinish = (values: { email: string; phoneNumber: string; fullname: string; username: string; password: string; confirmPassword: string }) => {
-    const registerData : RegisterParams = {
+  const onFinish = (values: {
+    email: string;
+    phoneNumber: string;
+    fullname: string;
+    username: string;
+    password: string;
+    confirmPassword: string
+  }) => {
+    const registerData: RegisterParams = {
       email: values.email,
       phoneNumber: values.phoneNumber,
       fullname: values.fullname,
       username: values.username,
       password: values.password,
-      retypePassword: values.confirmPassword
+      retypePassword: values.confirmPassword,
     };
-    
-    dispatch(register(registerData));
+
+    // dispatch(register(registerData));
   };
 
-  useEffect(() => {
-    if (isError) {
-      message.error(authMessage);
-      dispatch(resetAuthState());
-    }
-    
-    if (isSuccess) {
-      message.success(authMessage || 'Đăng ký thành công!');
-      dispatch(resetAuthState());
-      setTimeout(() => {
-        navigate(ROUTES.LOGIN);
-      }, 1000);
-    }
-  }, [isError, isSuccess, authMessage, dispatch, navigate]);
+  // useEffect(() => {
+  //   if (isError) {
+  //     message.error(authMessage);
+  //     dispatch(resetAuthState());
+  //   }
+  //
+  //   if (isSuccess) {
+  //     message.success(authMessage || 'Đăng ký thành công!');
+  //     dispatch(resetAuthState());
+  //     setTimeout(() => {
+  //       navigate(ROUTES.LOGIN);
+  //     }, 1000);
+  //   }
+  // }, [isError, isSuccess, authMessage, dispatch, navigate]);
 
   const phoneRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
 
@@ -69,8 +74,8 @@ const Register: React.FC = () => {
               { required: true, message: 'Vui lòng nhập số điện thoại' },
               {
                 pattern: phoneRegex,
-                message: 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ'
-              }
+                message: 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ',
+              },
             ]}
           >
             <Input placeholder="Số điện thoại" size="large" />
@@ -114,7 +119,7 @@ const Register: React.FC = () => {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error('Mật khẩu xác nhận không khớp')
+                    new Error('Mật khẩu xác nhận không khớp'),
                   );
                 },
               }),

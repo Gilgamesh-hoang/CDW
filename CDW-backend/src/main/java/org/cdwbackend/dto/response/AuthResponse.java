@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.cdwbackend.dto.UserDTO;
 
 import java.io.Serializable;
 
@@ -12,8 +13,9 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtResponse implements Serializable {
-    private String token;
+public class AuthResponse implements Serializable {
+    private String accessToken;
     @JsonIgnore
-    private String refreshToken;
+    private transient String refreshToken;
+    private UserDTO user;
 }

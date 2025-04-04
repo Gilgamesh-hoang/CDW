@@ -9,7 +9,6 @@ import org.cdwbackend.util.EndPoint;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,10 +43,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.authorizeHttpRequests(config ->
-                config.requestMatchers(HttpMethod.GET, endPoint.publicGetEndpoints()).permitAll()
-                        .requestMatchers(HttpMethod.POST, endPoint.publicPostEndpoints()).permitAll()
-                        .anyRequest().authenticated());
+        httpSecurity.authorizeHttpRequests(registry -> {
+            // Requests to "/admin/**" and "/api/v1/admin/**" require the user to have the "ADMIN" authority.
+            registry.requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN");
+            registry.requestMatchers(endPoint.authenticatedEndpoints()).authenticated();
+            // All other requests are permitted for all users.
+            registry.requestMatchers("/**").permitAll();
+        });
+
+//        httpSecurity.authorizeHttpRequests(config ->
+//                config.requestMatchers(HttpMethod.GET, endPoint.publicGetEndpoints()).permitAll()
+//                        .requestMatchers(HttpMethod.POST, endPoint.publicPostEndpoints()).permitAll()
+//                        .anyRequest().authenticated());
 
         httpSecurity.exceptionHandling(exp -> exp.authenticationEntryPoint(jwtAuthenticationEntryPoint));
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
