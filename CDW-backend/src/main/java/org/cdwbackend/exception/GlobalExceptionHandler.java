@@ -75,16 +75,6 @@ public class GlobalExceptionHandler {
 //        return new ResponseObject<>(HttpStatus.BAD_REQUEST, error);
 //    }
 //
-    @ExceptionHandler(ExpiredJwtException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseObject<ErrorResponse> handleExpiredJwtException(ExpiredJwtException ex, WebRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
-                .error("JWT Token Expired")
-                .path(getPath(request))
-                .message(ex.getMessage())
-                .build();
-        return new ResponseObject<>(HttpStatus.BAD_REQUEST, error);
-    }
 
     @ExceptionHandler(RedisConnectionFailureException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

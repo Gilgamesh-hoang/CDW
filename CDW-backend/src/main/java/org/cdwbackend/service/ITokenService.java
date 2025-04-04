@@ -8,4 +8,6 @@ public interface ITokenService {
 
     void blacklistTokens(String accessToken, String refreshToken);
 
+    void blacklistTokens(long userId, String accessToken, String refreshToken);
+
 }

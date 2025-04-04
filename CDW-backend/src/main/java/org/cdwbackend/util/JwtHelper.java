@@ -74,7 +74,7 @@ public class JwtHelper {
             }
             return email;
         } catch (Exception e) {
-            throw new ResourceNotFoundException("Failed to parse payload", e);
+            throw new IllegalArgumentException("Failed to parse payload", e);
         }
     }
 

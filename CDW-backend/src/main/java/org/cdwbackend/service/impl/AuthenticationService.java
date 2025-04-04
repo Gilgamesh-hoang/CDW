@@ -120,7 +120,7 @@ public class AuthenticationService implements IAuthenticationService {
             // Generate a new JWT response with access and refresh tokens
             JwtResponse jwtResponse = generateJwtResponse(user.getEmail(), keyPair);
             // Blacklist the old refresh token
-            tokenService.blacklistTokens(null, token);
+            tokenService.blacklistTokens(user.getId(), null, token);
 
             // Return the new JWT response
             return jwtResponse;
