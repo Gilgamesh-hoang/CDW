@@ -1,6 +1,7 @@
 import { Route } from 'react-router-dom';
-import { RouteType } from '../routes';
-import DefaultLayout from '../layouts/DefaultLayout';
+import { RouteType } from '../../routes';
+import DefaultLayout from '../../layouts/DefaultLayout.tsx';
+import ProtectedRoute from './ProtectedRoute.tsx';
 
 const RoutePage = (route: RouteType, index: number) => {
   const Layout = route.layout || DefaultLayout;
@@ -11,9 +12,11 @@ const RoutePage = (route: RouteType, index: number) => {
       key={route.path + index}
       path={route.path}
       element={
-        <Layout>
-          <Page />
-        </Layout>
+        <ProtectedRoute route={route}>
+          <Layout>
+            <Page />
+          </Layout>
+        </ProtectedRoute>
       }
     >
       {ChildrenNode.map((routeObject, index: number) =>

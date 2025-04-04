@@ -27,6 +27,8 @@ public class EndPoint {
     public final String[] authenticatedEndpoints() {
         return new String[]{
                 "/api/v1/cart/**",
+                "/api/v1/users/me",
+                "/api/v1/auth/logout",
         };
     }
 }

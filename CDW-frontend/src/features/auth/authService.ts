@@ -57,7 +57,7 @@ const AuthService = {
         try {
           const res: ApiResponse<void> = await httpPost(routePath + '/logout');
 
-          // Xóa token và thông tin người dùng khỏi localStorage
+          // Xóa token khỏi localStorage
           localStorage.removeItem(ACCESS_TOKEN_LOCALSTORAGE);
 
           resolve(res);

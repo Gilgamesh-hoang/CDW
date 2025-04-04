@@ -1,6 +1,7 @@
 package org.cdwbackend.service.impl;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -104,21 +105,17 @@ public class JwtService {
     }
 
     // Validates a JWT token using the provided public key
-    public boolean validateToken(String token, String publicKey) {
-        try {
-            // Get public key from base64 string
-            PublicKey key = getPublicKeyFromBase64String(publicKey);
-            // Extract email from token
-            final String emailEx = jwtHelper.getEmailFromToken(token, key);
-            // Load user details by email
-            userDetailService.loadUserByUsername(emailEx);
-            // Extract JID from token
-            String jid = jwtHelper.getJidToken(token, key);
-            // Check if token is not expired and not in blacklist
-            return !isTokenExpired(token, key) && !isExistsInBlacklist(jid);
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean validateToken(String token, String publicKey) throws ExpiredJwtException {
+        // Get public key from base64 string
+        PublicKey key = getPublicKeyFromBase64String(publicKey);
+        // Extract email from token
+        final String emailEx = jwtHelper.getEmailFromToken(token, key);
+        // Load user details by email
+        userDetailService.loadUserByUsername(emailEx);
+        // Extract JID from token
+        String jid = jwtHelper.getJidToken(token, key);
+        // Check if token is not expired and not in blacklist
+        return !isTokenExpired(token, key) && !isExistsInBlacklist(jid);
     }
 
     private boolean isTokenExpired(String token, PublicKey key) {

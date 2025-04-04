@@ -36,7 +36,7 @@ public class AsyncTokenService {
 
         // Create a map to store the access token ID and its expiration date
         HashMap<String, Object> map = new HashMap<>();
-        map.put(accessId, expiredDate);
+        map.put(accessId, expiredDate.getTime());
 
         // Add the access token ID and expiration date to the JWT blacklist in Redis
         redisService.addEntriesToMap(RedisKeyUtil.JWT_BLACKLIST, map);
@@ -60,7 +60,7 @@ public class AsyncTokenService {
 
         // Create a map to store the refresh token ID and its extended expiration date
         HashMap<String, Object> map = new HashMap<>();
-        map.put(refreshId, new Date(expiredDate.getTime() + days.toMillis()));
+        map.put(refreshId, expiredDate.getTime() + days.toMillis());
 
         // Add the refresh token ID and extended expiration date to the JWT blacklist in Redis
         redisService.addEntriesToMap(RedisKeyUtil.JWT_BLACKLIST, map);

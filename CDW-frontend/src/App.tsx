@@ -2,7 +2,7 @@ import './App.css';
 import { adminRoutes, privateRoutes, publicRoutes, RouteType } from './routes';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import RoutePage from './components/RoutePage';
+import RoutePage from './components/route/RoutePage.tsx';
 import Error404 from './pages/customer/Error/404/Error404';
 import ScrollToTop from './components/ScrollToTop';
 import { useEffect } from 'react';

@@ -1,6 +1,5 @@
 import Login from '@/pages/Login/Login';
 import DefaultLayout from '../layouts/DefaultLayout';
-import UserInfo from '../pages/customer/UserInfo/UserInfo';
 import Register from '@/pages/Register/Register';
 import { ROUTES } from '@/utils/constant';
 import Cart from '../pages/customer/Cart/Cart.tsx';
@@ -30,12 +29,6 @@ export const publicRoutes: RouteType[] = [
   {
     path: ROUTES.HOME,
     element: Home,
-    layout: DefaultLayout,
-    fullScreen: true,
-  },
-  {
-    path: ROUTES.CART,
-    element: Cart,
     layout: DefaultLayout,
     fullScreen: true,
   },
@@ -91,8 +84,8 @@ export const publicRoutes: RouteType[] = [
 
 export const privateRoutes: RouteType[] = [
   {
-    path: ROUTES.PROFILE,
-    element: UserInfo,
+    path: ROUTES.CART,
+    element: Cart,
     layout: DefaultLayout,
     fullScreen: true,
   },

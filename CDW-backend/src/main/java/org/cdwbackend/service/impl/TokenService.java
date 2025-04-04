@@ -32,14 +32,16 @@ public class TokenService implements ITokenService {
     @Override
     public void removeExpiredTokens() {
         List<String> tokenExpired = new ArrayList<>();
-        redisService.getMap(RedisKeyUtil.JWT_BLACKLIST, UUID.class, Date.class).forEach((key, value) -> {
+        redisService.getMap(RedisKeyUtil.JWT_BLACKLIST, UUID.class, Long.class).forEach((key, value) -> {
+
+            Date expiredDate = new Date(value);
             // check token expired
-            if (value.before(new Date())) {
+            if (expiredDate.before(new Date())) {
                 tokenExpired.add(key.toString());
             }
         });
 
-        if(!tokenExpired.isEmpty())
+        if (!tokenExpired.isEmpty())
             redisService.deleteEntriesFromMap(RedisKeyUtil.JWT_BLACKLIST, tokenExpired);
     }
 
@@ -49,8 +51,14 @@ public class TokenService implements ITokenService {
     public void blacklistTokens(String accessToken, String refreshToken) {
         // Retrieve the current user from the security context
         CustomUserSecurity currentUser = UserSecurityHelper.getCurrentUser();
+        this.blacklistTokens(currentUser.getId(), accessToken, refreshToken);
+    }
+
+    @Override
+    // Blacklists the provided access and refresh tokens for the current user
+    public void blacklistTokens(long userId, String accessToken, String refreshToken) {
         // Retrieve the key pair associated with the current user
-        KeyPair keyPair = keyService.getKeyPairByUser(currentUser.getId());
+        KeyPair keyPair = keyService.getKeyPairByUser(userId);
 
         // Validate the provided refresh token using the user's public key
         if (!jwtService.validateToken(refreshToken, keyPair.getPublicKey())) {

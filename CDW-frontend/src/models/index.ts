@@ -55,6 +55,9 @@ export interface Address {
   createAt: Date;
 }
 
+export interface JwtResponse {
+  token: string;
+}
 
 export interface Order {
   id: number;
