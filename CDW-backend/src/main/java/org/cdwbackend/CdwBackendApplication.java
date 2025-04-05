@@ -1,8 +1,5 @@
 package org.cdwbackend;
 
-import org.cdwbackend.repository.database.ProductRepository;
-import org.cdwbackend.repository.elastic.ProductElasticRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,9 +16,12 @@ public class CdwBackendApplication {
         SpringApplication.run(CdwBackendApplication.class, args);
     }
 
+
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
+
+
 //            List<Product> all = productRepository.findAll();
 //            System.out.println("Product count: " + all.size());
 //            List<ProductDocument> docs = new ArrayList<>();
