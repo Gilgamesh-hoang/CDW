@@ -60,6 +60,9 @@ public class RedisKeyUtil {
     public static String getKeyForBestSellerProducts(Pageable pageable) {
         return String.format("product:best-sell:page:%d:size:%d", pageable.getPageNumber(), pageable.getPageSize());
     }
+    public static String getProductKey(Long productId) {
+        return String.format("product:%d", productId);
+    }
 
     private String getSortString(Sort sort) {
         if (sort.isSorted()) {

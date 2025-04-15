@@ -1,4 +1,9 @@
-import { adminRoutes, privateRoutes, publicRoutes, RouteType } from '../../routes';
+import {
+  adminRoutes,
+  privateRoutes,
+  publicRoutes,
+  RouteType,
+} from '../../routes';
 import { useSelector } from 'react-redux';
 import { authStateSelector } from '../../redux/selector.ts';
 import { User } from '../../models';
@@ -42,11 +47,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ route, children }) => {
     // Nếu không có quyền, chuyển hướng dựa trên trạng thái đăng nhập
     if (!me) {
       toastError('Bạn cần đăng nhập để truy cập trang này!', 1500);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME.url);
       return;
     } else {
       toastError('Bạn không có quyền truy cập trang này!', 1500);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME.url);
       return;
     }
   }

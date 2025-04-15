@@ -14,23 +14,23 @@ import { logout } from '../../features/auth/authSlice.ts';
 
 const listNavItems: NavItemInterface[] = [
   {
-    label: 'Trang chủ',
-    href: ROUTES.HOME,
+    label: ROUTES.HOME.name,
+    href: ROUTES.HOME.url,
     dropDown: false,
   },
   {
-    label: 'Cửa hàng',
-    href: ROUTES.SHOP,
+    label: ROUTES.SHOP.name,
+    href: ROUTES.SHOP.url,
     dropDown: false,
   },
   {
-    label: 'Về chúng tôi',
-    href: ROUTES.ABOUT_US,
+    label: ROUTES.ABOUT_US.name,
+    href: ROUTES.ABOUT_US.url,
     dropDown: false,
   },
   {
-    label: 'Liên hệ',
-    href: ROUTES.CONTACT,
+    label: ROUTES.CONTACT.name,
+    href: ROUTES.CONTACT.url,
     dropDown: false,
   },
 ];
@@ -46,13 +46,13 @@ const Header: React.FC = () => {
     dispatch(logout());
 
     // Chuyển hướng về trang đăng nhập
-    navigate(ROUTES.LOGIN);
+    navigate(ROUTES.LOGIN.url);
   };
 
   return (
     <header className="h-[72px] grid place-items-center bg-white text-[#584f78] border-b-[1px] border-b-[#584f78]">
       <div className="lg:container h-full w-full px-5 lg:px-0 flex justify-between items-center">
-        <Link to={ROUTES.HOME}>
+        <Link to={ROUTES.HOME.url}>
           <img src={logo} className="w-[70px]" alt="Logo" loading="lazy" />
         </Link>
 
@@ -91,23 +91,31 @@ const Header: React.FC = () => {
             onMouseEnter={() => setIsDropdownOpen(true)}
             onMouseLeave={() => setIsDropdownOpen(false)}
           >
-            <FaRegUserCircle size={22} className="cursor-pointer hover:text-orange-500" />
+            <FaRegUserCircle
+              size={22}
+              className="cursor-pointer hover:text-orange-500"
+            />
             {isDropdownOpen && (
               <div className="absolute -right-20 w-40 bg-white rounded-md shadow-lg z-10">
                 <ul className="py-2">
                   {me ? (
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={handleLogout}
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={handleLogout}
                     >
                       Đăng xuất
                     </li>
                   ) : (
                     <>
-                      <NavLink to={ROUTES.LOGIN}>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Đăng nhập</li>
+                      <NavLink to={ROUTES.LOGIN.url}>
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          {ROUTES.LOGIN.name}
+                        </li>
                       </NavLink>
-                      <NavLink to={ROUTES.REGISTER}>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Đăng ký</li>
+                      <NavLink to={ROUTES.REGISTER.url}>
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          {ROUTES.REGISTER.name}
+                        </li>
                       </NavLink>
                     </>
                   )}
@@ -115,8 +123,10 @@ const Header: React.FC = () => {
               </div>
             )}
           </div>
-          <NavLink to={ROUTES.CART}
-                   className="cursor-pointer hover:text-orange-500">
+          <NavLink
+            to={ROUTES.CART.url}
+            className="cursor-pointer hover:text-orange-500"
+          >
             <IoIosCart size={22} />
           </NavLink>
         </div>

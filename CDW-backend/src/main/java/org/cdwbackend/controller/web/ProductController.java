@@ -1,10 +1,12 @@
 package org.cdwbackend.controller.web;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.cdwbackend.dto.ProductDTO;
+import org.cdwbackend.dto.ProductDetailDTO;
 import org.cdwbackend.dto.response.ResponseObject;
 import org.cdwbackend.service.IProductService;
 import org.hibernate.validator.constraints.Range;
@@ -12,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +25,11 @@ import java.util.List;
 public class ProductController {
     IProductService productService;
 
+
+    @GetMapping("/{id}")
+    public ResponseObject<ProductDetailDTO> getProductById(@PathVariable("id") @NotNull @Range(min = 1) Long id) {
+        return new ResponseObject<>(HttpStatus.OK,productService.findById(id));
+    }
     @GetMapping("/newest")
     public ResponseObject<List<ProductDTO>> getNewestProducts(
             @RequestParam(value = "page", defaultValue = "1") @Range(min = 1) int page,

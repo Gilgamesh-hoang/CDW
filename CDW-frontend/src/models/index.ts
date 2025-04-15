@@ -35,6 +35,7 @@ export interface Product {
 export interface Size {
   id: number;
   name: string;
+  price: number;
 }
 
 export interface Category {
@@ -83,4 +84,34 @@ export interface User {
 export interface AuthResponse {
   accessToken: string;
   user: User;
+}
+
+export interface ProductDetails {
+  id: number;
+  name: string;
+  content: string;
+  shortDescription: string;
+  thumbnail: string;
+  price: number | null;
+  modelUrl: string;
+  slug: string | null;
+  categoryId: number;
+  categoryName: string;
+  totalViewAndSearch: number;
+  quantity: number | null;
+  available: boolean | null;
+  subTotal: number | null;
+  createAt: string;
+  images: string[];
+  sizes: Size[];
+}
+
+export interface Review {
+  id: number;
+  userName: string;
+  avatar?: string;
+  rating: number;
+  date: string;
+  content: string;
+  helpful: number;
 }

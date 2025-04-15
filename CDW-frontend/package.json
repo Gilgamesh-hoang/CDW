@@ -21,6 +21,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.7.2",
     "jwt-decode": "^4.0.0",
     "normalize.css": "^8.0.1",
     "react": "^19.0.0",

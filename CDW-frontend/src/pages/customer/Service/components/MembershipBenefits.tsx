@@ -62,7 +62,7 @@ const MembershipBenefits: React.FC = () => {
 
         <div className="mt-12 text-center">
           <Link
-            to={ROUTES.REGISTER}
+            to={ROUTES.REGISTER.url}
             className="rounded-full bg-white px-8 py-3 font-medium text-[#291D4C] transition-colors hover:bg-gray-100"
           >
             Đăng Ký Thành Viên Ngay

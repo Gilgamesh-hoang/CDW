@@ -79,7 +79,7 @@ const ContactFAQ: React.FC = () => {
               Bạn không tìm thấy câu trả lời cho thắc mắc của mình?
             </p>
             <Link
-              to={ROUTES.SERVICE}
+              to={ROUTES.SERVICE.url}
               className="font-medium text-[#291D4C] underline transition-colors hover:text-[#3a2a6b]"
             >
               Xem thêm các câu hỏi thường gặp khác

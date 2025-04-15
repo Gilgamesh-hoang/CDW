@@ -15,7 +15,9 @@ const Shop: React.FC = () => {
   const [sizesSelected, setSizesSelected] = useState<number[]>([]);
   const [totalPage, setTotalPage] = useState(1);
   const [categoriesSelected, setCategoriesSelected] = useState<number[]>([]);
-  const [priceRangeSelected, setPriceRangeSelected] = useState<string | null>(null);
+  const [priceRangeSelected, setPriceRangeSelected] = useState<string | null>(
+    null
+  );
   const [sortOption, setSortOption] = useState('newest-desc');
   const [products, setProducts] = useState<Product[]>([]);
   const sidebarRef = useRef<{ clearFilter: () => void }>(null);
@@ -23,10 +25,12 @@ const Shop: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const query = new URLSearchParams(window.location.search).get('query') || '';
+    const query =
+      new URLSearchParams(window.location.search).get('query') || '';
     setSearchQuery(decodeURIComponent(query));
 
-    const pageParam = new URLSearchParams(window.location.search).get('page') || 1;
+    const pageParam =
+      new URLSearchParams(window.location.search).get('page') || 1;
     setPage(Number(pageParam));
 
     handleFilter([], [], null);
@@ -46,23 +50,32 @@ const Shop: React.FC = () => {
     }
   };
 
-  const handleFilter = (sizesSelected: number[], categoriesSelected: number[], priceRangeSelected: string | null) => {
+  const handleFilter = (
+    sizesSelected: number[],
+    categoriesSelected: number[],
+    priceRangeSelected: string | null
+  ) => {
     setSizesSelected(sizesSelected);
     setCategoriesSelected(categoriesSelected);
     setPriceRangeSelected(priceRangeSelected);
 
     const sorts = sortOption.split('-');
     search({
-      keyword: searchQuery, page: page, size: 12, sort: sorts[0], direction: sorts[1],
-      sizeIds: sizesSelected, categoryIds: categoriesSelected, priceRange: priceRangeSelected,
-    })
-      .then((response: PageResponse<Product[]>) => {
-        setProducts(response.data);
-        setTotalPage(response.totalPage);
+      keyword: searchQuery,
+      page: page,
+      size: 12,
+      sort: sorts[0],
+      direction: sorts[1],
+      sizeIds: sizesSelected,
+      categoryIds: categoriesSelected,
+      priceRange: priceRangeSelected,
+    }).then((response: PageResponse<Product[]>) => {
+      setProducts(response.data);
+      setTotalPage(response.totalPage);
 
-        // scroll to top
-        window.scrollTo({ top: 400, behavior: 'smooth' });
-      });
+      // scroll to top
+      window.scrollTo({ top: 400, behavior: 'smooth' });
+    });
   };
 
   const handleSearch = (query: string) => {
@@ -70,7 +83,7 @@ const Shop: React.FC = () => {
 
     if (!query) {
       // Nếu query rỗng thì xóa query parameter khỏi URL
-      navigate(ROUTES.SHOP);
+      navigate(ROUTES.SHOP.url);
       return;
     }
 
@@ -79,7 +92,7 @@ const Shop: React.FC = () => {
 
     // Cập nhật URL với query parameter
     navigate({
-      pathname: ROUTES.SHOP,
+      pathname: ROUTES.SHOP.url,
       search: `?query=${encodedQuery}`,
     });
   };
@@ -87,7 +100,6 @@ const Shop: React.FC = () => {
   const handleSortChange = (option: string) => {
     setSortOption(option);
   };
-
 
   return (
     <div className="bg-white">
@@ -104,15 +116,17 @@ const Shop: React.FC = () => {
         <div className="mt-6 flex gap-8">
           {/* Sidebar filters - Ẩn trên mobile */}
           <div className="hidden w-1/4 lg:block">
-            <ShopSidebar
-              handleFilter={handleFilter}
-              ref={sidebarRef}
-            />
+            <ShopSidebar handleFilter={handleFilter} ref={sidebarRef} />
           </div>
 
           {/* Danh sách sản phẩm */}
           <div className="w-full lg:w-3/4">
-            <ProductGrid products={products} totalPage={totalPage} currentPage={page} setPage={setPage} />
+            <ProductGrid
+              products={products}
+              totalPage={totalPage}
+              currentPage={page}
+              setPage={setPage}
+            />
           </div>
         </div>
       </div>
