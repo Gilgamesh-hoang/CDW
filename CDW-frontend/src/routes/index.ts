@@ -12,10 +12,10 @@ import AboutUs from '../pages/customer/AboutUs/AboutUs.tsx';
 import Service from '../pages/customer/Service/Service.tsx';
 import Contact from '../pages/customer/Contact/Contact.tsx';
 import ForgotPass from '../pages/customer/ForgotPass/ForgotPass.tsx';
-import ProductDetail from '../pages/customer/Product/ProductDetail.tsx';
 import SizeTable from '../pages/admin/size/SizeTable.tsx';
 import OrderTable from '../pages/admin/order/OrderTable.tsx';
 import OrderDetail from '../pages/admin/order/OrderDetail.tsx';
+import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail.tsx';
 
 export interface RouteType {
   path: string;
@@ -27,55 +27,55 @@ export interface RouteType {
 
 export const publicRoutes: RouteType[] = [
   {
-    path: ROUTES.HOME,
+    path: ROUTES.HOME.url,
     element: Home,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.SHOP,
+    path: ROUTES.SHOP.url,
     element: Shop,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.ABOUT_US,
+    path: ROUTES.ABOUT_US.url,
     element: AboutUs,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.SERVICE,
+    path: ROUTES.SERVICE.url,
     element: Service,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.CONTACT,
+    path: ROUTES.CONTACT.url,
     element: Contact,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.REGISTER,
+    path: ROUTES.REGISTER.url,
     element: Register,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.LOGIN,
+    path: ROUTES.LOGIN.url,
     element: Login,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.FORGOT_PASSWORD,
+    path: ROUTES.FORGOT_PASSWORD.url,
     element: ForgotPass,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.PRODUCT,
+    path: ROUTES.PRODUCT_DETAIL.url,
     element: ProductDetail,
     layout: DefaultLayout,
     fullScreen: true,
@@ -84,7 +84,7 @@ export const publicRoutes: RouteType[] = [
 
 export const privateRoutes: RouteType[] = [
   {
-    path: ROUTES.CART,
+    path: ROUTES.CART.url,
     element: Cart,
     layout: DefaultLayout,
     fullScreen: true,
@@ -93,31 +93,31 @@ export const privateRoutes: RouteType[] = [
 
 export const adminRoutes: RouteType[] = [
   {
-    path: ROUTES.ADMIN_DASHBOARD,
+    path: ROUTES.ADMIN_DASHBOARD.url,
     element: Dashboard,
     layout: AdminLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.ADMIN_CATEGORY,
+    path: ROUTES.ADMIN_CATEGORY.url,
     element: CategoryTable,
     layout: AdminLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.ADMIN_SIZE,
+    path: ROUTES.ADMIN_SIZE.url,
     element: SizeTable,
     layout: AdminLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.ADMIN_ORDER,
+    path: ROUTES.ADMIN_ORDER.url,
     element: OrderTable,
     layout: AdminLayout,
     fullScreen: true,
   },
   {
-    path: ROUTES.ADMIN_ORDER_DETAIL,
+    path: ROUTES.ADMIN_ORDER_DETAIL.url,
     element: OrderDetail,
     layout: AdminLayout,
     fullScreen: true,

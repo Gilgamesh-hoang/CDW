@@ -23,13 +23,13 @@ const HeroSection: React.FC = () => {
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
           <Link
-            to={ROUTES.SHOP}
+            to={ROUTES.SHOP.url}
             className="rounded-full bg-white px-8 py-3 font-medium text-[#291D4C] transition-colors hover:bg-gray-100"
           >
             Mua ngay
           </Link>
           <Link
-            to={ROUTES.ABOUT_US}
+            to={ROUTES.ABOUT_US.url}
             className="rounded-full border border-white bg-transparent px-8 py-3 font-medium text-white transition-colors hover:bg-white/10"
           >
             Tìm hiểu thêm

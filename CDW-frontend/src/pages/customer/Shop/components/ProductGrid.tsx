@@ -11,8 +11,12 @@ interface ProductGridProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const ProductGrid: React.FC<ProductGridProps> = ({ products, totalPage, currentPage, setPage }) => {
-
+const ProductGrid: React.FC<ProductGridProps> = ({
+  products,
+  totalPage,
+  currentPage,
+  setPage,
+}) => {
   if (products.length === 0) {
     return (
       <div className="my-16 text-center">
@@ -35,8 +39,12 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, totalPage, currentP
       </div>
 
       <div className="mt-12 flex justify-center">
-        <Pagination pathname={ROUTES.SHOP} totalPage={totalPage} currentPage={currentPage} setCurrentPage={setPage}/>
-
+        <Pagination
+          pathname={ROUTES.SHOP.url}
+          totalPage={totalPage}
+          currentPage={currentPage}
+          setCurrentPage={setPage}
+        />
       </div>
     </div>
   );

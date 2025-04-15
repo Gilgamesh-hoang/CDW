@@ -5,37 +5,25 @@ import { ToastContainer } from 'react-toastify';
 import RoutePage from './components/route/RoutePage.tsx';
 import Error404 from './pages/customer/Error/404/Error404';
 import ScrollToTop from './components/ScrollToTop';
-import { useEffect } from 'react';
-import { fetchCurrentUser } from './features/auth/authSlice.ts';
-import { useAppDispatch } from './redux/hook.ts';
-import { ACCESS_TOKEN_LOCALSTORAGE } from './utils/constant.ts';
+import LoadProfile from './components/LoadProfile.tsx';
 
 function App() {
-  const dispatch = useAppDispatch();
-
-  // Dispatch fetchCurrentUser khi component mount (tức là trang reload)
-  useEffect(() => {
-    if (localStorage.getItem(ACCESS_TOKEN_LOCALSTORAGE) !== null) {
-      dispatch(fetchCurrentUser());
-    }
-  }, [dispatch]);
-
-
   return (
     <div>
       <Router>
+        <LoadProfile />
         <ScrollToTop />
         <Routes>
           {publicRoutes.map((route: RouteType, index: number) =>
-            RoutePage(route, index),
+            RoutePage(route, index)
           )}
 
           {privateRoutes.map((route: RouteType, index: number) =>
-            RoutePage(route, index),
+            RoutePage(route, index)
           )}
 
           {adminRoutes.map((route: RouteType, index: number) =>
-            RoutePage(route, index),
+            RoutePage(route, index)
           )}
           <Route path="*" element={<Error404 />}></Route>
         </Routes>

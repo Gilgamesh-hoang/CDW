@@ -17,7 +17,6 @@ const Login: React.FC = () => {
 
   const { isLoading } = useSelector(authStateSelector);
 
-
   const onFinish = async (values: any) => {
     try {
       const res = await dispatch(login(values));
@@ -27,13 +26,12 @@ const Login: React.FC = () => {
       }
 
       if (res.payload.data.role === UserRole.ADMIN) {
-        navigate(ROUTES.ADMIN_DASHBOARD);
+        navigate(ROUTES.ADMIN_DASHBOARD.url);
         return;
       } else {
-        navigate(ROUTES.HOME);
+        navigate(ROUTES.HOME.url);
         return;
       }
-
     } catch (error) {
       toastError('Đăng nhập thất bại');
     }
@@ -53,12 +51,15 @@ const Login: React.FC = () => {
         >
           <Form.Item
             name="email"
-            rules={[{ required: true, message: 'Vui lòng nhập email' }, {
-              type: 'email',
-              message: 'Email không hợp lệ',
-            }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập email' },
+              {
+                type: 'email',
+                message: 'Email không hợp lệ',
+              },
+            ]}
           >
-            <Input placeholder="Tên đăng nhập" size="large" />
+            <Input placeholder="Email" size="large" />
           </Form.Item>
 
           <Form.Item
@@ -76,7 +77,7 @@ const Login: React.FC = () => {
 
           <div className="flex justify-end mb-4">
             <Link
-              to={ROUTES.FORGOT_PASSWORD}
+              to={ROUTES.FORGOT_PASSWORD.url}
               className="text-sm text-[#291D4C]"
             >
               Quên mật khẩu
@@ -102,7 +103,7 @@ const Login: React.FC = () => {
           <p className="text-sm text-gray-500">
             Bạn chưa có tài khoản?
             <Link
-              to={ROUTES.REGISTER}
+              to={ROUTES.REGISTER.url}
               className="text-[#291D4C] font-medium ml-1"
             >
               Đăng kí ngay!
