@@ -8,8 +8,11 @@ import { useSelector } from 'react-redux';
 import { authStateSelector } from '../../redux/selector.ts';
 import { User } from '../../models';
 import { toastError } from '../../utils/showToast.ts';
-import { ROUTES } from '../../utils/constant.ts';
-import { useNavigate } from 'react-router-dom';
+import { ACCESS_TOKEN_LOCALSTORAGE, ROUTES } from '../../utils/constant.ts';
+import { Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useAppDispatch } from '../../redux/hook.ts';
+import { fetchCurrentUser } from '../../features/auth/authSlice.ts';
 
 interface ProtectedRouteProps {
   route: RouteType;
@@ -40,20 +43,38 @@ const hasAccess = (route: RouteType, user: User | null): boolean => {
 };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ route, children }) => {
-  const { me } = useSelector(authStateSelector);
-  const navigate = useNavigate();
+  const { me, isLoading } = useSelector(authStateSelector);
+  const dispatch = useAppDispatch();
+  const [isChecking, setIsChecking] = useState(true);
+
+
+  useEffect(() => {
+    const token = localStorage.getItem(ACCESS_TOKEN_LOCALSTORAGE);
+
+    if (token && !me && !isLoading) {
+      dispatch(fetchCurrentUser()).finally(() => {
+        setIsChecking(false); // Hoàn tất kiểm tra
+      });
+    } else {
+      setIsChecking(false); // Không cần fetch, chuyển sang kiểm tra quyền
+    }
+  }, [dispatch, me, isLoading, route.path]);
+
+
+  if (isChecking ||isLoading) {
+    return;
+
+  }
 
   if (!hasAccess(route, me)) {
     // Nếu không có quyền, chuyển hướng dựa trên trạng thái đăng nhập
     if (!me) {
       toastError('Bạn cần đăng nhập để truy cập trang này!', 1500);
-      navigate(ROUTES.HOME.url);
-      return;
     } else {
       toastError('Bạn không có quyền truy cập trang này!', 1500);
-      navigate(ROUTES.HOME.url);
-      return;
+
     }
+    return <Navigate to={ROUTES.HOME} replace />;
   }
 
   return <>{children}</>;

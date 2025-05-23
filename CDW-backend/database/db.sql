@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table shoes_web.addresses: ~1 rows (approximately)
+-- Dumping data for table shoes_web.addresses: ~0 rows (approximately)
 INSERT INTO `addresses` (`id`, `fullName`, `phoneNumber`, `province`, `district`, `commune`, `hamlet`, `createAt`, `updateAt`, `isDeleted`) VALUES
 	(37, '123', '123123123', '123', '123', '123', '123', '2025-03-19 15:59:15', '2025-03-19 15:59:16', 0);
 
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `opinions` (
   CONSTRAINT `opinion_user_id_fk` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table shoes_web.opinions: ~1 rows (approximately)
+-- Dumping data for table shoes_web.opinions: ~0 rows (approximately)
 INSERT INTO `opinions` (`id`, `title`, `content`, `rating`, `productId`, `userId`, `createAt`, `updateAt`, `isDeleted`) VALUES
 	(60, 'bai viet 2', 'sản phẩm đẹp lắm', 4, 4, 14, '2024-06-04 09:20:19', '2024-06-04 09:20:19', 0);
 
@@ -124,9 +124,9 @@ CREATE TABLE IF NOT EXISTS `orders` (
   CONSTRAINT `Order_fk0` FOREIGN KEY (`addressId`) REFERENCES `addresses` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table shoes_web.orders: ~1 rows (approximately)
+-- Dumping data for table shoes_web.orders: ~0 rows (approximately)
 INSERT INTO `orders` (`id`, `status`, `note`, `totalAmount`, `addressId`, `isPaid`, `slug`, `createAt`, `updateAt`, `isDeleted`) VALUES
-	(47, 'CANCELED', '123', 213123123, 37, 0, NULL, '2025-03-19 09:01:43', '2025-03-19 16:13:36', 0);
+	(47, 'DELIVERED', '123', 6180000, 37, 0, NULL, '2025-03-19 09:01:43', '2025-03-31 21:09:02', 0);
 
 -- Dumping structure for table shoes_web.order_details
 CREATE TABLE IF NOT EXISTS `order_details` (
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   CONSTRAINT `product_category_id_fk` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table shoes_web.products: ~29 rows (approximately)
+-- Dumping data for table shoes_web.products: ~0 rows (approximately)
 INSERT INTO `products` (`id`, `name`, `content`, `thumbnail`, `shortDescription`, `modelUrl`, `slug`, `categoryId`, `createAt`, `updateAt`, `isDeleted`, `totalViewAndSearch`) VALUES
 	(1, 'Nike Air Max 90 v1', '&lt;p&gt;Bạn muốn thoải m&aacute;i suốt ng&agrave;y, mỗi ng&agrave;y đ&uacute;ng kh&ocirc;ng? Ch&uacute;ng t&ocirc;i c&oacute; sản phẩm cho bạn. Phi&ecirc;n bản AJ1 Low mang lại vẻ đẹp của phi&ecirc;n bản gốc d&agrave;nh cho b&oacute;ng rổ, nhưng nhẹ hơn v&agrave; c&oacute; h&igrave;nh d&aacute;ng mảnh mai hơn. Ngo&agrave;i ra, ch&uacute;ng ph&ugrave; hợp với mọi trang phục chỉ cần r&agrave;ng buộc d&acirc;y gi&agrave;y v&agrave; đi.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Lợi &iacute;ch&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;C&ocirc;ng nghệ Nike Air hấp thụ va chạm để mang lại sự &ecirc;m &aacute;i mỗi bước đi.&lt;/li&gt;&lt;li&gt;Chất liệu da thật v&agrave; da tổng hợp kết hợp với vật liệu dệt nhẹ nh&agrave;ng mang lại độ bền cao v&agrave; sự vừa vặn tốt.&lt;/li&gt;&lt;li&gt;Đế cao su cung cấp độ b&aacute;m đầy đủ.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Th&ocirc;ng tin sản phẩm&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Logo Jumpman tr&ecirc;n lưỡi gi&agrave;y&lt;/li&gt;&lt;li&gt;Logo Swoosh được may chắc&lt;ul&gt;&lt;li&gt;Hiển thị: Đen/Đen/Trắng&lt;/li&gt;&lt;li&gt;Kiểu d&aacute;ng: DV0990-001&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;', 'http://res.cloudinary.com/da5wewzih/image/upload/v1704212059/zdyy9vcookwn8pe9cgh6.png', 'Lấy cảm hứng từ phi&ecirc;n bản gốc ra mắt năm 1985, Air Jordan 1 Low mang đến vẻ ngo&agrave;i cổ điển, gọn g&agrave;ng, quen thuộc nhưng lu&ocirc;n mới mẻ.', NULL, NULL, 1, '2024-01-02 09:14:19', '2024-06-24 09:28:52', 0, 26),
 	(2, 'Nike Tech Hera', '&lt;p&gt;Bắt nguồn từ đầu những năm 2000, Tech Hera sẵn sàng đáp ứng mọi mong muốn về giày sneaker chunky của bạn. Đế giữa được nâng lên gợn sóng và bảng màu trung tính lâu đời sẽ nâng tầm diện mạo của bạn trong khi vẫn giúp bạn cảm thấy thoải mái. Thiết kế bền bỉ của nó giữ được vẻ đẹp khi mặc hàng ngày &mdash; điều này thật hoàn hảo, bởi vì bạn chắc chắn sẽ muốn đeo những thứ này hàng ngày.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Lợi ích&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt;Phần trên kết hợp lưới thoáng khí với da thật và da tổng hợp để tạo kích thước và độ bền.&lt;/li&gt;&lt;li&gt;Thiết kế Chunky có nền tảng tinh tế giúp bạn tăng thêm một chút chiều cao. &lt;/li&gt;&lt;li&gt;Đế ngoài bằng cao su có chiều dài đầy đủ mang lại lực kéo bền bỉ.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt ;strong&gt;Chi tiết sản phẩm&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Cổ áo có đệm&lt;/li&gt;&lt;li&gt;Tay kéo ở gót chân&lt;/li&gt;&lt;li&gt;Logo Swoosh thêu&lt;ul&gt; &lt;li&gt;Hiển thị: Cánh buồm/Nâu quặng nhạt/Sữa dừa/Cam lửa trại&lt;/li&gt;&lt;li&gt;Phong cách: FQ8107-133&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;', 'http://res.cloudinary.com/da5wewzih/image/upload/v1704215356/nw9wcfdali4xqcvysmlm.png', 'Bắt nguồn từ đầu những năm 2000, Tech Hera sẵn sàng đáp ứng mọi mong muốn về giày sneaker chunky của bạn.', NULL, NULL, 1, '2024-01-02 10:09:16', '2024-01-02 10:09:16', 0, 3),
@@ -483,7 +483,7 @@ CREATE TABLE IF NOT EXISTS `sizes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table shoes_web.sizes: ~26 rows (approximately)
+-- Dumping data for table shoes_web.sizes: ~27 rows (approximately)
 INSERT INTO `sizes` (`id`, `name`, `createAt`, `updateAt`, `isDeleted`) VALUES
 	(1, 'M 7 / W 8.5', '2024-01-01 13:31:05', '2025-03-30 22:04:01', 0),
 	(2, 'M 7.5 / W 9', '2024-01-01 13:31:06', '2024-01-01 13:31:06', 0),
@@ -533,14 +533,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   CONSTRAINT `users_roles_id_fk` FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table shoes_web.users: ~6 rows (approximately)
+-- Dumping data for table shoes_web.users: ~0 rows (approximately)
 INSERT INTO `users` (`id`, `userName`, `email`, `password`, `fullName`, `birthDay`, `association`, `lastLogged`, `roleId`, `createAt`, `updateAt`, `isDeleted`) VALUES
 	(6, 'hoanghuydev', 'tranvohoanghuy12ab@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Tran Vo Hoang Huy', NULL, 'none', '2024-07-11 08:15:30', 1, '2023-12-27 01:23:38', '2024-07-11 12:39:39', 0),
 	(8, '111635119529567317993', '21130386@st.hcmuaf.edu.vn', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Trần Võ Hoàng Huy', NULL, 'google', '2024-05-25 08:24:47', 1, '2023-12-27 21:21:13', '2024-05-25 08:24:47', 0),
 	(14, 'a', 'vophihoang252003@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Vo Hoang', '2024-08-17', 'none', '2024-11-19 14:00:50', 1, '2024-03-13 01:14:47', '2024-11-19 14:00:50', 0),
 	(16, 'b', 'vophihoang@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Vo Hoang', NULL, 'none', '2024-04-07 05:15:04', 1, '2024-03-13 01:14:47', '2024-04-07 05:15:05', 0),
 	(17, 'zxc', '21130363@st.hcmuaf.edu.vn', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Phi Nhan', NULL, 'none', '2024-04-19 01:42:01', 1, '2024-04-19 01:42:01', '2024-04-19 02:24:13', 1),
-	(20, 'hoang', 'hoanghoangking01@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Phi Nhan', NULL, 'none', '2024-10-28 13:20:51', 1, '2024-07-11 08:13:12', '2024-10-28 13:20:51', 0);
+	(20, 'hoang', 'hoanghoangking01@gmail.com', '$2a$12$vBm/Pg2z4hSOywJ4JSQIne2/2ja1P9lN.aGpN3eIumzAwtfiAb2vu', 'Phi Nhan', NULL, 'none', '2024-10-28 13:20:51', 2, '2024-07-11 08:13:12', '2024-10-28 13:20:51', 0);
 
 -- Dumping structure for table shoes_web.user_addresses
 CREATE TABLE IF NOT EXISTS `user_addresses` (
@@ -594,7 +594,7 @@ CREATE TABLE IF NOT EXISTS `vouchers` (
   UNIQUE KEY `DiscountCodes_pk_2` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table shoes_web.vouchers: ~7 rows (approximately)
+-- Dumping data for table shoes_web.vouchers: ~0 rows (approximately)
 INSERT INTO `vouchers` (`id`, `name`, `code`, `discount`, `startDate`, `endDate`, `usageLimit`, `shortDescription`, `content`, `isDeleted`, `createAt`, `updateAt`) VALUES
 	(1, 'Giảm giá cho giày jordan', 'GIAMGIAJORDAN', 10, '2024-10-28 03:18:25', '2024-12-31 16:59:59', 100, 'abc', 'content', 0, '2024-10-28 03:18:25', '2024-10-28 03:18:25'),
 	(2, 'Giảm giá cho giày bóng chuyền', 'TRIANNGAYBONGCHUYEN', 10, '2024-10-28 03:18:25', '2024-12-31 16:59:59', 0, 'Để chào mừng tinh thần thể thao và ủng hộ các tín đồ bóng chuyền, chúng tôi hân hạnh giới thiệu mã giảm giá đặc biệt. Khi nhập mã TRIANNGAYBONGCHUYEN tại bước thanh toán, bạn sẽ được giảm ngay 10% cho tất cả các sản phẩm giày bóng chuyền.', '', 0, '2024-10-28 03:18:25', '2024-10-28 03:18:25'),
@@ -619,7 +619,7 @@ CREATE TABLE IF NOT EXISTS `voucher_conditions` (
   CONSTRAINT `voucher_coditions_vouchers_id_fk` FOREIGN KEY (`voucherId`) REFERENCES `vouchers` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table shoes_web.voucher_conditions: ~6 rows (approximately)
+-- Dumping data for table shoes_web.voucher_conditions: ~0 rows (approximately)
 INSERT INTO `voucher_conditions` (`id`, `voucherId`, `tableName`, `columnName`, `conditionValue`, `isDeleted`, `createAt`, `updateAt`) VALUES
 	(1, 2, 'user', 'fullName', 'Huy', 0, '2024-10-28 03:15:45', '2024-10-28 03:15:45'),
 	(2, 2, 'category', 'id', '5', 0, '2024-10-28 03:15:45', '2024-10-28 03:15:45'),
