@@ -1,5 +1,11 @@
 import ComponentCard from '@/components/ComponentCard.tsx';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from '@/components/table';
 import { FaPencilAlt, FaRegTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Button } from 'antd';
@@ -19,7 +25,8 @@ export default function CategoryTable() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const pageParam = new URLSearchParams(window.location.search).get('page') || 1;
+    const pageParam =
+      new URLSearchParams(window.location.search).get('page') || 1;
     setCurrentPage(Number(pageParam));
   }, []);
 
@@ -40,13 +47,15 @@ export default function CategoryTable() {
         return;
       }
 
-      deleteCategory(id).then(() => {
-        setCategories(categories.filter((category) => category.id !== id));
-        toastSuccess('Xóa danh mục thành công', 1500);
-      }).catch((error) => {
-        console.error(error);
-        toastError('Xóa danh mục thất bại', 1500);
-      });
+      deleteCategory(id)
+        .then(() => {
+          setCategories(categories.filter((category) => category.id !== id));
+          toastSuccess('Xóa danh mục thành công', 1500);
+        })
+        .catch((error) => {
+          console.error(error);
+          toastError('Xóa danh mục thất bại', 1500);
+        });
     });
   };
 
@@ -55,14 +64,13 @@ export default function CategoryTable() {
       const exists = prevCategories.some((item) => item.id === category.id);
       if (exists) {
         return prevCategories.map((item) =>
-          item.id === category.id ? category : item,
+          item.id === category.id ? category : item
         );
       } else {
         return [category, ...prevCategories];
       }
     });
   };
-
 
   return (
     <>
@@ -82,8 +90,7 @@ export default function CategoryTable() {
           </Button>
 
           <div>
-            <div
-              className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
               <div className="max-w-full overflow-x-auto">
                 <Table>
                   {/* Table Header */}
@@ -107,11 +114,7 @@ export default function CategoryTable() {
                       >
                         Tên danh mục
                       </TableCell>
-                      <TableCell
-                        isHeader
-                      >
-                        {''}
-                      </TableCell>
+                      <TableCell isHeader>{''}</TableCell>
                     </TableRow>
                   </TableHeader>
 
@@ -132,17 +135,19 @@ export default function CategoryTable() {
                         </TableCell>
                         <TableCell className="text-gray-500 ">
                           <div className="flex gap-4">
-                            <button className="p-3 hover:text-red-500"
-                                    onClick={() => {
-                                      setCategorySelected(category.id);
-                                      setShowModal(true);
-                                    }}
+                            <button
+                              className="p-3 hover:text-red-500"
+                              onClick={() => {
+                                setCategorySelected(category.id);
+                                setShowModal(true);
+                              }}
                               // onClick={() => setShowModal(prevState => !prevState)}
                             >
                               <FaPencilAlt />
                             </button>
-                            <button className="p-3 hover:text-red-500"
-                                    onClick={() => removeCategory(category.id)}
+                            <button
+                              className="p-3 hover:text-red-500"
+                              onClick={() => removeCategory(category.id)}
                             >
                               <FaRegTrashAlt />
                             </button>
@@ -152,20 +157,25 @@ export default function CategoryTable() {
                     ))}
                   </TableBody>
                 </Table>
-
               </div>
             </div>
             <div className="mt-12 flex justify-center">
-              <Pagination pathname={ROUTES.ADMIN_CATEGORY} totalPage={totalPage} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
+              <Pagination
+                pathname={ROUTES.ADMIN_CATEGORY.url}
+                totalPage={totalPage}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
             </div>
           </div>
         </ComponentCard>
       </div>
 
-      <CategoryModal isOpen={showModal}
-                 closeModal={() => setShowModal(false)}
-                 categoryId={categorySelected}
-                 callback={updateItem}
+      <CategoryModal
+        isOpen={showModal}
+        closeModal={() => setShowModal(false)}
+        categoryId={categorySelected}
+        callback={updateItem}
       />
     </>
   );

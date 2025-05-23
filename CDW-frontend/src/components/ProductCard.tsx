@@ -8,7 +8,10 @@ interface ProductCardProps {
   isNew?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({product,isNew = false }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  isNew = false,
+}) => {
   return (
     <div className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl">
       {isNew && (
@@ -16,7 +19,7 @@ const ProductCard: React.FC<ProductCardProps> = ({product,isNew = false }) => {
           Mới
         </div>
       )}
-      <Link to={`${ROUTES.PRODUCT}/${product.id}`}>
+      <Link to={`${ROUTES.PRODUCT.url}/${product.id}`}>
         <div className="overflow-hidden">
           <img
             src={product.thumbnail}
@@ -31,9 +34,9 @@ const ProductCard: React.FC<ProductCardProps> = ({product,isNew = false }) => {
             {product.name}
           </h3>
           <div className="mt-2 flex items-center gap-2">
-              <span className="text-lg font-bold text-[#291D4C]">
-                {product.price.toLocaleString('vi-VN')}₫
-              </span>
+            <span className="text-lg font-bold text-[#291D4C]">
+              {product.price.toLocaleString('vi-VN')}₫
+            </span>
           </div>
         </div>
       </Link>

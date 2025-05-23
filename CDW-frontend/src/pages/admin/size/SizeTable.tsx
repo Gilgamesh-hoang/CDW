@@ -1,5 +1,11 @@
 import ComponentCard from '@/components/ComponentCard.tsx';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from '@/components/table';
 import { FaPencilAlt, FaRegTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Button } from 'antd';
@@ -19,7 +25,8 @@ export default function SizeTable() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const pageParam = new URLSearchParams(window.location.search).get('page') || 1;
+    const pageParam =
+      new URLSearchParams(window.location.search).get('page') || 1;
     setCurrentPage(Number(pageParam));
   }, []);
 
@@ -40,31 +47,28 @@ export default function SizeTable() {
       if (!result.isConfirmed) {
         return;
       }
-      deleteSize(id).then(() => {
-        setSizes(sizes.filter((category) => category.id !== id));
-        toastSuccess('Xóa kích thước thành công');
-      }).catch((error) => {
-        console.error(error);
-        toastError('Xóa kích thước thất bại');
-      });
+      deleteSize(id)
+        .then(() => {
+          setSizes(sizes.filter((category) => category.id !== id));
+          toastSuccess('Xóa kích thước thành công');
+        })
+        .catch((error) => {
+          console.error(error);
+          toastError('Xóa kích thước thất bại');
+        });
     });
-
-
   };
 
   const updateItem = (size: Size) => {
     setSizes((prevSizes) => {
       const exists = prevSizes.some((item) => item.id === size.id);
       if (exists) {
-        return prevSizes.map((item) =>
-          item.id === size.id ? size : item,
-        );
+        return prevSizes.map((item) => (item.id === size.id ? size : item));
       } else {
         return [size, ...prevSizes];
       }
     });
   };
-
 
   return (
     <>
@@ -84,8 +88,7 @@ export default function SizeTable() {
           </Button>
 
           <div>
-            <div
-              className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
               <div className="max-w-full overflow-x-auto">
                 <Table>
                   {/* Table Header */}
@@ -103,11 +106,7 @@ export default function SizeTable() {
                       >
                         Tên kích cỡ
                       </TableCell>
-                      <TableCell
-                        isHeader
-                      >
-                        {''}
-                      </TableCell>
+                      <TableCell isHeader>{''}</TableCell>
                     </TableRow>
                   </TableHeader>
 
@@ -125,16 +124,18 @@ export default function SizeTable() {
                         </TableCell>
                         <TableCell className="text-gray-500 ">
                           <div className="flex gap-4">
-                            <button className="p-3 hover:text-red-500"
-                                    onClick={() => {
-                                      setSizeSelected(size.id);
-                                      setShowModal(true);
-                                    }}
+                            <button
+                              className="p-3 hover:text-red-500"
+                              onClick={() => {
+                                setSizeSelected(size.id);
+                                setShowModal(true);
+                              }}
                             >
                               <FaPencilAlt />
                             </button>
-                            <button className="p-3 hover:text-red-500"
-                                    onClick={() => removeSize(size.id)}
+                            <button
+                              className="p-3 hover:text-red-500"
+                              onClick={() => removeSize(size.id)}
                             >
                               <FaRegTrashAlt />
                             </button>
@@ -144,23 +145,26 @@ export default function SizeTable() {
                     ))}
                   </TableBody>
                 </Table>
-
               </div>
             </div>
             <div className="mt-12 flex justify-center">
               {/*{renderPagination()}*/}
-              <Pagination pathname={ROUTES.ADMIN_SIZE} totalPage={totalPage} currentPage={currentPage}
-                          setCurrentPage={setCurrentPage} />
-
+              <Pagination
+                pathname={ROUTES.ADMIN_SIZE.url}
+                totalPage={totalPage}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
             </div>
           </div>
         </ComponentCard>
       </div>
 
-      <SizeModal isOpen={showModal}
-                 closeModal={() => setShowModal(false)}
-                 sizeId={sizeSelected}
-                 callback={updateItem}
+      <SizeModal
+        isOpen={showModal}
+        closeModal={() => setShowModal(false)}
+        sizeId={sizeSelected}
+        callback={updateItem}
       />
     </>
   );

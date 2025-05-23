@@ -17,11 +17,14 @@ const Cart = () => {
     });
   }, []);
 
-// Hàm xóa sản phẩm
+  // Hàm xóa sản phẩm
   const removeItem = (productId: number, sizeId: number) => {
-    setCartItems(cartItems.filter(item => !(item.id === productId && item.sizeId === sizeId)));
+    setCartItems(
+      cartItems.filter(
+        (item) => !(item.id === productId && item.sizeId === sizeId)
+      )
+    );
     deleteCartItem(productId, sizeId);
-
   };
   return (
     <div className="w-full">
@@ -37,8 +40,12 @@ const Cart = () => {
           <p className="text-center text-gray-500">Giỏ hàng trống.</p>
         ) : (
           <div className="space-y-4">
-            {cartItems.map(item => (
-              <CartItem item={item} key={`${item.id}-${item.sizeId}`} removeItem={removeItem} />
+            {cartItems.map((item) => (
+              <CartItem
+                item={item}
+                key={`${item.id}-${item.sizeId}`}
+                removeItem={removeItem}
+              />
             ))}
           </div>
         )}
@@ -47,19 +54,19 @@ const Cart = () => {
         <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-md">
           <NavLink
             className="flex items-center text-gray-600 hover:text-gray-800 cursor-pointer"
-            to={ROUTES.SHOP}
+            to={ROUTES.SHOP.url}
           >
             <FaArrowLeft className="mr-2" />
             Tiếp tục mua hàng
           </NavLink>
-          {cartItems.length > 0 &&
+          {cartItems.length > 0 && (
             <div className="flex">
               <button className="flex items-center text-gray-600 hover:text-red-500 cursor-pointer">
                 <MdOutlinePayment className="mr-2" />
                 Thanh toán
               </button>
             </div>
-          }
+          )}
         </div>
       </div>
     </div>

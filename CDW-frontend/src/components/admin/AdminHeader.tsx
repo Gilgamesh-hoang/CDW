@@ -18,25 +18,18 @@ const AdminHeader: React.FC = () => {
     dispatch(logout());
 
     // Chuyển hướng về trang đăng nhập
-    navigate(ROUTES.LOGIN);
+    navigate(ROUTES.LOGIN.url);
   };
 
   // const toggleApplicationMenu = () => {
   //   setApplicationMenuOpen(!isApplicationMenuOpen);
   // };
   return (
-    <header
-      className="flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
+    <header className="flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
       <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
-        <div
-          className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
-
+        <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
           <Link to="/" className="">
-            <img
-              className="hidden"
-              src="/src/assets/logo.png"
-              alt="Logo"
-            />
+            <img className="hidden" src="/src/assets/logo.png" alt="Logo" />
           </Link>
 
           {/*<button*/}
@@ -58,7 +51,6 @@ const AdminHeader: React.FC = () => {
           {/*    />*/}
           {/*  </svg>*/}
           {/*</button>*/}
-
         </div>
         {/*<div*/}
         {/*  className={`${*/}
@@ -66,7 +58,9 @@ const AdminHeader: React.FC = () => {
         {/*  } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}*/}
         {/*>*/}
         <div
-          className={'flex items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none'}
+          className={
+            'flex items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none'
+          }
         >
           <div
             className="relative"
@@ -74,17 +68,17 @@ const AdminHeader: React.FC = () => {
             onMouseLeave={() => setIsDropdownOpen(false)}
           >
             <Avatar size="large">
-              <span className="text-red-600 text-lg">
-                AD
-              </span>
+              <span className="text-red-600 text-lg">AD</span>
             </Avatar>
 
             {isDropdownOpen && (
               <div className="absolute -right-5 w-40 bg-white rounded-md shadow-lg z-10">
                 <ul className="py-2">
-                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={handleLogout}
-                  >Đăng xuất
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    Đăng xuất
                   </li>
                 </ul>
               </div>

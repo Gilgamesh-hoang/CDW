@@ -82,7 +82,7 @@ const ForgotPass: React.FC = () => {
 
         <div className="text-center mt-4">
           <Link
-            to={ROUTES.LOGIN}
+            to={ROUTES.LOGIN.url}
             className="text-[#291D4C] flex items-center justify-center gap-1 text-sm"
           >
             <span>← Quay lại đăng nhập</span>

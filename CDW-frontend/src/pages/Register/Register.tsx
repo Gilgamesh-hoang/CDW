@@ -19,7 +19,7 @@ const Register: React.FC = () => {
     fullname: string;
     username: string;
     password: string;
-    confirmPassword: string
+    confirmPassword: string;
   }) => {
     const registerData: RegisterParams = {
       email: values.email,
@@ -48,7 +48,8 @@ const Register: React.FC = () => {
   //   }
   // }, [isError, isSuccess, authMessage, dispatch, navigate]);
 
-  const phoneRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
+  const phoneRegex =
+    /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
 
   return (
     <div className="md:h-[70vh] my-20">
@@ -74,7 +75,8 @@ const Register: React.FC = () => {
               { required: true, message: 'Vui lòng nhập số điện thoại' },
               {
                 pattern: phoneRegex,
-                message: 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ',
+                message:
+                  'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ',
               },
             ]}
           >
@@ -119,7 +121,7 @@ const Register: React.FC = () => {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error('Mật khẩu xác nhận không khớp'),
+                    new Error('Mật khẩu xác nhận không khớp')
                   );
                 },
               }),
@@ -151,7 +153,7 @@ const Register: React.FC = () => {
 
         <div className="text-center mt-4">
           <Link
-            to={ROUTES.LOGIN}
+            to={ROUTES.LOGIN.url}
             className="text-[#291D4C] flex items-center justify-center gap-1 text-sm"
           >
             <span>← Quay lại đăng nhập</span>

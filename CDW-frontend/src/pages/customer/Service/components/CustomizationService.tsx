@@ -24,7 +24,7 @@ const CustomizationService: React.FC = () => {
               còn phản ánh đúng phong cách và cá tính của bạn.
             </p>
             <Link
-              to={ROUTES.CONTACT}
+              to={ROUTES.CONTACT.url}
               className="inline-block rounded-full bg-[#291D4C] px-8 py-3 font-medium text-white transition-colors hover:bg-[#3a2a6b]"
             >
               Đặt Lịch Tư Vấn
