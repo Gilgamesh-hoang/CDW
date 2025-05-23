@@ -9,16 +9,21 @@ import { useEffect } from 'react';
 import { fetchCurrentUser } from './features/auth/authSlice.ts';
 import { useAppDispatch } from './redux/hook.ts';
 import { ACCESS_TOKEN_LOCALSTORAGE } from './utils/constant.ts';
+import { useSelector } from 'react-redux';
+import { authStateSelector } from './redux/selector.ts';
 
 function App() {
   const dispatch = useAppDispatch();
+  const { isLoading, me } = useSelector(authStateSelector);
 
   // Dispatch fetchCurrentUser khi component mount (tức là trang reload)
   useEffect(() => {
-    if (localStorage.getItem(ACCESS_TOKEN_LOCALSTORAGE) !== null) {
+    const token = localStorage.getItem(ACCESS_TOKEN_LOCALSTORAGE);
+    if (token && !me && !isLoading) {
+      console.log("Fetching current user in App");
       dispatch(fetchCurrentUser());
     }
-  }, [dispatch]);
+  }, [dispatch, me, isLoading]);
 
 
   return (
