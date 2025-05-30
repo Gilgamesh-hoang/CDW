@@ -1,6 +1,8 @@
 import { ApiResponse, AuthResponse, User } from '../../models';
 import { ACCESS_TOKEN_LOCALSTORAGE } from '../../utils/constant.ts';
 import { httpPost } from '../../axios.ts';
+import { AxiosError } from 'axios';
+import { ErrorResponse } from 'react-router-dom';
 
 const routePath = 'auth';
 
@@ -10,12 +12,11 @@ export interface LoginParams {
 }
 
 export interface RegisterParams {
-  fullname: string;
+  fullName: string;
   password: string;
   retypePassword: string;
-  username: string;
+  userName: string;
   email: string;
-  phoneNumber: string;
 }
 
 const AuthService = {
@@ -23,10 +24,13 @@ const AuthService = {
     return new Promise<ApiResponse<User>>((resolve, reject) => {
       (async () => {
         try {
-          const resp: ApiResponse<AuthResponse> = await httpPost(routePath + '/login', {
-            email,
-            password,
-          });
+          const resp: ApiResponse<AuthResponse> = await httpPost(
+            routePath + '/login',
+            {
+              email,
+              password,
+            }
+          );
 
           const data: AuthResponse = resp.data;
 
@@ -69,33 +73,34 @@ const AuthService = {
     });
   },
 
-  // async register({
-  //   fullname,
-  //   password,
-  //   username,
-  //   phoneNumber,
-  //   email,
-  //   retypePassword
-  // }: RegisterParams) {
-  //   return new Promise<AuthPayload>((resolve, reject) => {
-  //     (async ()=>{
-  //       try {
-  //         const resp = await axiosNoToken.post(routePath + '/register', {
-  //           fullname,
-  //           email,
-  //           phoneNumber,
-  //           password,
-  //           username,
-  //           retypePassword
-  //         });
-  //         resolve(resp.data);
-  //       } catch (error) {
-  //         const axiosError = error as AxiosError<ErrorResponse>;
-  //         reject(axiosError.response?.data || error);
-  //       }
-  //     })();
-  //   });
-  // },
+  async register({
+    fullName,
+    password,
+    userName,
+    email,
+    retypePassword,
+  }: RegisterParams) {
+    return new Promise<ApiResponse<User>>((resolve, reject) => {
+      (async () => {
+        try {
+          const resp = await httpPost<ApiResponse<User>>(
+            routePath + '/register',
+            {
+              fullName,
+              email,
+              password,
+              userName,
+              retypePassword,
+            }
+          );
+          resolve(resp);
+        } catch (error) {
+          const axiosError = error as AxiosError<ErrorResponse>;
+          reject(axiosError.response?.data || error);
+        }
+      })();
+    });
+  },
 };
 
 export default AuthService;

@@ -26,6 +26,9 @@ import java.nio.file.AccessDeniedException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    private IllegalArgumentException ex;
+    private WebRequest request;
+
     private String getPath(WebRequest request) {
         return request.getDescription(false).replace("uri=", "");
     }
@@ -75,6 +78,7 @@ public class GlobalExceptionHandler {
 //        return new ResponseObject<>(HttpStatus.BAD_REQUEST, error);
 //    }
 //
+
 
     @ExceptionHandler(RedisConnectionFailureException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

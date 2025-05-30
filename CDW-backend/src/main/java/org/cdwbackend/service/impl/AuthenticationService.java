@@ -4,11 +4,20 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Constants;
+import org.cdwbackend.constant.SystemConstant;
 import org.cdwbackend.dto.CustomUserSecurity;
 import org.cdwbackend.dto.KeyPair;
+import org.cdwbackend.dto.UserDTO;
 import org.cdwbackend.dto.request.AuthenticationRequest;
+import org.cdwbackend.dto.request.RegisterRequest;
 import org.cdwbackend.dto.response.AuthResponse;
 import org.cdwbackend.dto.response.JwtResponse;
+import org.cdwbackend.entity.database.Role;
+import org.cdwbackend.entity.database.User;
+import org.cdwbackend.mapper.UserMapper;
+import org.cdwbackend.repository.database.RoleRepository;
+import org.cdwbackend.repository.database.UserRepository;
 import org.cdwbackend.service.*;
 import org.cdwbackend.util.JwtHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +25,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -34,6 +44,10 @@ public class AuthenticationService implements IAuthenticationService {
     IKeyService keyService;
     IRedisService redisService;
     IUserService userService;
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
+    UserMapper userMapper;
+    RoleRepository roleRepository;
 
     // Method to handle common logic for generating JWT response
     // Generates a JWT response containing access and refresh tokens
@@ -131,4 +145,30 @@ public class AuthenticationService implements IAuthenticationService {
         }
     }
 
+    @Override
+    public UserDTO register(RegisterRequest registerRequest) {
+        // Check if the email is already registered
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
+            throw new RuntimeException("Email already registered");
+        }
+        Role userRole = roleRepository.findByCode(SystemConstant.USER_ROLE);
+        // Encrypt the password using BCrypt encoder
+        String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        
+        // Create a new user entity
+        User user = User.builder()
+                .userName(registerRequest.getUserName())
+                .email(registerRequest.getEmail())
+                .password(encryptedPassword)
+                .fullName(registerRequest.getFullName())
+                .isDeleted(false)
+                .role(userRole)
+                .build();
+        
+        // Save the user to the repository
+        User savedUser = userRepository.save(user);
+        
+        // Convert to DTO and return
+        return userMapper.toDTO(savedUser);
+    }
 }
