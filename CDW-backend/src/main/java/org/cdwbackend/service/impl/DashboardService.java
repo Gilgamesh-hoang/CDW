@@ -1,0 +1,117 @@
+package org.cdwbackend.service.impl;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.cdwbackend.dto.OrderDTO;
+import org.cdwbackend.dto.ProductDTO;
+import org.cdwbackend.dto.response.DashboardResponse;
+import org.cdwbackend.dto.response.SalesData;
+import org.cdwbackend.entity.database.Order;
+import org.cdwbackend.entity.database.Product;
+import org.cdwbackend.mapper.OrderMapper;
+import org.cdwbackend.mapper.ProductMapper;
+import org.cdwbackend.mapper.SalesDataMapper;
+import org.cdwbackend.repository.database.CategoryRepository;
+import org.cdwbackend.repository.database.OrderRepository;
+import org.cdwbackend.repository.database.ProductRepository;
+import org.cdwbackend.repository.database.UserRepository;
+import org.cdwbackend.service.IDashboardService;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class DashboardService implements IDashboardService {
+    UserRepository userRepository;
+    ProductRepository productRepository;
+    OrderRepository orderRepository;
+    CategoryRepository categoryRepository;
+    ProductMapper productMapper;
+    OrderMapper orderMapper;
+    SalesDataMapper salesDataMapper;
+
+    @Override
+    public DashboardResponse getDashboard(LocalDate startDate, LocalDate endDate) {
+        // Create response object
+        DashboardResponse response = new DashboardResponse();
+        
+        // Convert LocalDate to Date for repository queries
+        Date startDateAsDate = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDateAsDate = Date.from(endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        
+        // Set basic statistics using Lombok's generated setters
+        response.setTotalUsers((int) userRepository.count());
+        response.setTotalProducts((int) productRepository.count());
+        response.setTotalOrders((int) orderRepository.count());
+        response.setTotalRevenue(orderRepository.getTotalRevenue(startDateAsDate, endDateAsDate));
+        response.setTotalCategories((int) categoryRepository.count());
+        
+        // Get sales data for chart
+        response.setSalesData(getSalesData(startDateAsDate, endDateAsDate));
+        
+        // Get top selling products
+        response.setTopProducts(getTopSellingProducts(startDateAsDate, endDateAsDate));
+        
+        // Get recent orders
+        response.setRecentOrders(getRecentOrders());
+        
+        return response;
+    }
+    
+    /**
+     * Get sales data for the chart
+     */
+    private List<SalesData> getSalesData(Date startDate, Date endDate) {
+        List<SalesData[]> rawSalesData = orderRepository.getSalesDataByDateRange(startDate, endDate);
+        List<SalesData> salesDataList = new ArrayList<>();
+        
+        for (Object[] row : rawSalesData) {
+            String date = (String) row[0];
+            int revenue = ((Number) row[1]).intValue();
+            int orders = ((Number) row[2]).intValue();
+            
+            // Use mapper to create SalesData object
+            SalesData salesData = salesDataMapper.toSalesData(date, revenue, orders);
+            salesDataList.add(salesData);
+        }
+        
+        return salesDataList;
+    }
+    
+    /**
+     * Get top selling products
+     */
+    private List<ProductDTO> getTopSellingProducts(Date startDate, Date endDate) {
+        try {
+            // Get top selling products directly as Product entities
+            List<Product> topProducts = productRepository.findTopSellingProducts(startDate, endDate);
+            
+            // Use ProductMapper to convert entities to DTOs
+            return productMapper.toDTOs(topProducts);
+            
+        } catch (Exception e) {
+            // Use slf4j logger
+            log.error("Error getting top selling products", e);
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Get recent orders
+     */
+    private List<OrderDTO> getRecentOrders() {
+        List<Order> recentOrders = orderRepository.findRecentOrders();
+        
+        // Use OrderMapper to convert entities to DTOs
+        return orderMapper.toDTOs(recentOrders);
+    }
+}
