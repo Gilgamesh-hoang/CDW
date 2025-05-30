@@ -18,6 +18,8 @@ import org.cdwbackend.repository.database.OrderRepository;
 import org.cdwbackend.repository.database.ProductRepository;
 import org.cdwbackend.repository.database.UserRepository;
 import org.cdwbackend.service.IDashboardService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,6 +40,7 @@ public class DashboardService implements IDashboardService {
     ProductMapper productMapper;
     OrderMapper orderMapper;
     SalesDataMapper salesDataMapper;
+    private final ProductService productService;
 
     @Override
     public DashboardResponse getDashboard(LocalDate startDate, LocalDate endDate) {
@@ -59,7 +62,8 @@ public class DashboardService implements IDashboardService {
         response.setSalesData(getSalesData(startDateAsDate, endDateAsDate));
         
         // Get top selling products
-        response.setTopProducts(getTopSellingProducts(startDateAsDate, endDateAsDate));
+        Pageable pageable = PageRequest.of(0, 5);
+        response.setTopProducts(productService.getBestSellerProducts(pageable));
         
         // Get recent orders
         response.setRecentOrders(getRecentOrders());
@@ -85,24 +89,6 @@ public class DashboardService implements IDashboardService {
         }
         
         return salesDataList;
-    }
-    
-    /**
-     * Get top selling products
-     */
-    private List<ProductDTO> getTopSellingProducts(Date startDate, Date endDate) {
-        try {
-            // Get top selling products directly as Product entities
-            List<Product> topProducts = productRepository.findTopSellingProducts(startDate, endDate);
-            
-            // Use ProductMapper to convert entities to DTOs
-            return productMapper.toDTOs(topProducts);
-            
-        } catch (Exception e) {
-            // Use slf4j logger
-            log.error("Error getting top selling products", e);
-            return new ArrayList<>();
-        }
     }
     
     /**

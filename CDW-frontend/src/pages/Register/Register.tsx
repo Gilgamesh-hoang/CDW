@@ -1,55 +1,50 @@
 import React from 'react';
 import { Button, Form, Input } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/utils/constant';
-// import { register, resetAuthState } from '@/features/auth/authSlice';
 import { RegisterParams } from '@/features/auth/authService';
+import AuthService from '@/features/auth/authService';
+import { toastSuccess, toastError } from '@/utils/showToast';
 
 const Register: React.FC = () => {
   const [form] = Form.useForm();
-  // const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
-  // const { isError, isSuccess, isLoading, message: authMessage } = useSelector(authStateSelector);
-  const isLoading = false; // temp
+  const [isLoading, setIsLoading] = React.useState(false);
+  const navigate = useNavigate();
 
-  const onFinish = (values: {
+  const onFinish = async (values: {
     email: string;
-    phoneNumber: string;
-    fullname: string;
-    username: string;
+    fullName: string;
+    userName: string;
     password: string;
     confirmPassword: string;
   }) => {
     const registerData: RegisterParams = {
       email: values.email,
-      phoneNumber: values.phoneNumber,
-      fullname: values.fullname,
-      username: values.username,
+      fullName: values.fullName,
+      userName: values.userName,
       password: values.password,
       retypePassword: values.confirmPassword,
     };
 
-    // dispatch(register(registerData));
+    setIsLoading(true);
+    try {
+      const response = await AuthService.register(registerData);
+      toastSuccess('Đăng ký thành công! Vui lòng đăng nhập.', 2000);
+      navigate(ROUTES.LOGIN.url);
+    } catch (error: any) {
+      toastError(error.message || 'Đăng ký thất bại. Vui lòng thử lại.', 2000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // useEffect(() => {
-  //   if (isError) {
-  //     message.error(authMessage);
-  //     dispatch(resetAuthState());
-  //   }
-  //
-  //   if (isSuccess) {
-  //     message.success(authMessage || 'Đăng ký thành công!');
-  //     dispatch(resetAuthState());
-  //     setTimeout(() => {
-  //       navigate(ROUTES.LOGIN);
-  //     }, 1000);
-  //   }
-  // }, [isError, isSuccess, authMessage, dispatch, navigate]);
+  // Username validation regex: letters, numbers, dots, underscores, and hyphens, 3-50 chars
+  const usernameRegex = /^[a-zA-Z0-9._-]{3,50}$/;
 
-  const phoneRegex =
-    /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
+  // Password validation regex: at least one digit, lowercase, uppercase, special char, no whitespace, min 8 chars
+  const passwordRegex =
+    /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\S+$).{8,}$/;
 
   return (
     <div className="md:h-[70vh] my-20">
@@ -63,43 +58,53 @@ const Register: React.FC = () => {
           <Form.Item
             name="email"
             rules={[
-              { required: true, message: 'Vui lòng nhập email', type: 'email' },
+              { required: true, message: 'Vui lòng nhập email' },
+              { type: 'email', message: 'Email không hợp lệ' },
             ]}
           >
             <Input placeholder="Email" size="large" />
           </Form.Item>
 
           <Form.Item
-            name="phoneNumber"
+            name="fullName"
             rules={[
-              { required: true, message: 'Vui lòng nhập số điện thoại' },
-              {
-                pattern: phoneRegex,
-                message:
-                  'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ',
-              },
+              { required: true, message: 'Vui lòng nhập họ và tên' },
+              { max: 100, message: 'Họ và tên không được vượt quá 100 ký tự' },
             ]}
-          >
-            <Input placeholder="Số điện thoại" size="large" />
-          </Form.Item>
-
-          <Form.Item
-            name="fullname"
-            rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
           >
             <Input placeholder="Họ và tên" size="large" />
           </Form.Item>
 
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập' }]}
+            name="userName"
+            rules={[
+              { required: true, message: 'Vui lòng nhập tên đăng nhập' },
+              {
+                min: 3,
+                max: 50,
+                message: 'Tên đăng nhập phải từ 3 đến 50 ký tự',
+              },
+              {
+                pattern: usernameRegex,
+                message:
+                  'Tên đăng nhập chỉ được chứa chữ cái, số, dấu chấm, gạch dưới và gạch ngang',
+              },
+            ]}
           >
             <Input placeholder="Tên đăng nhập" size="large" />
           </Form.Item>
 
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập mật khẩu' },
+              { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự' },
+              {
+                pattern: passwordRegex,
+                message:
+                  'Mật khẩu phải chứa ít nhất một chữ số, một chữ thường, một chữ hoa, một ký tự đặc biệt và không có khoảng trắng',
+              },
+            ]}
           >
             <Input.Password
               placeholder="Mật khẩu"

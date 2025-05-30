@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.cdwbackend.constant.SystemConstant;
+import org.cdwbackend.dto.UserDTO;
 import org.cdwbackend.dto.request.AuthenticationRequest;
+import org.cdwbackend.dto.request.RegisterRequest;
 import org.cdwbackend.dto.response.AuthResponse;
 import org.cdwbackend.dto.response.JwtResponse;
 import org.cdwbackend.dto.response.ResponseObject;
@@ -37,6 +39,15 @@ public class AuthenticationController {
         response.addCookie(refreshTokenCookie);
     }
 
+    @PostMapping("/register")
+    public ResponseObject<UserDTO> register(@RequestBody @Valid RegisterRequest request) {
+        log.info("Register request: {}", request);
+        if (!request.getPassword().equals(request.getRetypePassword())) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+        UserDTO user = authenticationService.register(request);
+        return new ResponseObject<>(HttpStatus.OK, "Register successfully", user);
+    }
 
     @PostMapping("/login")
     public ResponseObject<AuthResponse> authenticate(@RequestBody @Valid AuthenticationRequest request, HttpServletResponse response) {

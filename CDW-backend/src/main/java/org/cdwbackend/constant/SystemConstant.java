@@ -4,8 +4,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class SystemConstant {
-    public final String ADMIN_ROLE = "admin";
-    public final String USER_ROLE = "user";
+    public final String ADMIN_ROLE = "ADMIN";
+    public final String USER_ROLE = "CUSTOMER";
     public final String ORDER_PROCESSING = "PROCESSING";
     public final String ORDER_TRANSPORTING = "TRANSPORTING";
     public final String ORDER_DELIVERED = "DELIVERED";
