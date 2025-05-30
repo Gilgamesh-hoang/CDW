@@ -30,6 +30,22 @@ export interface Product {
   subTotal?: number;
   productSizeId?: number;
   createAt?: Date;
+  sales?: number;
+}
+
+export interface DashboardResponse {
+  totalUsers: number;
+  totalProducts: number;
+  totalOrders: number;
+  totalRevenue: number;
+  totalCategories: number;
+  salesData: {
+    date: string;
+    revenue: number;
+    orders: number;
+  }[];
+  topProducts: Product[];
+  recentOrders: Order[];
 }
 
 export interface Size {
