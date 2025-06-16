@@ -89,6 +89,12 @@ export const privateRoutes: RouteType[] = [
     layout: DefaultLayout,
     fullScreen: true,
   },
+  {
+    path: ROUTES.CHECKOUT.url,
+    element: Checkout,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
 ];
 
 export const adminRoutes: RouteType[] = [

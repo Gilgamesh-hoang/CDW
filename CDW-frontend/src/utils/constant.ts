@@ -62,6 +62,10 @@ export const ROUTES = Object.freeze({
     url: '/gio-hang',
     name: 'Giỏ hàng',
   },
+  CHECKOUT: {
+    url: '/thanh-toan',
+    name: 'Thanh toán',
+  },
   ADMIN_CATEGORY: {
     url: '/admin/danh-muc',
     name: 'Danh mục',
