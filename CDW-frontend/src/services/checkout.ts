@@ -5,32 +5,43 @@ import { toast } from 'react-toastify';
 export interface ShippingAddress {
   fullName: string;
   phoneNumber: string;
-  provinceId: number;
-  provinceName: string;
-  districtId: number;
-  districtName: string;
-  wardCode: string;
-  wardName: string;
-  address: string;
+  province: string;
+  district: string;
+  commune: string;
+  hamlet: string;
+}
+
+export interface OrderItem {
+  productId: number;
+  sizeId: number;
+  quantity: number;
 }
 
 export interface CheckoutData {
   shippingAddress: ShippingAddress;
   paymentMethod: string;
+  orderItems: OrderItem[];
   note?: string;
+}
+
+export interface OrderResponse {
+  id: number;
+  status: string;
+  totalAmount: number;
+  createAt: string;
 }
 
 export const submitOrder = async (
   checkoutData: CheckoutData
 ): Promise<{ success: boolean; orderId?: number }> => {
   try {
-    const response = await httpPost<ApiResponse<{ orderId: number }>>(
+    const response = await httpPost<ApiResponse<OrderResponse>>(
       'orders',
       checkoutData
     );
     if (response.status === 200 || response.status === 201) {
       toast.success('Đặt hàng thành công!');
-      return { success: true, orderId: response.data.orderId };
+      return { success: true, orderId: response.data.id };
     } else {
       toast.error(response.message || 'Đặt hàng thất bại');
       return { success: false };

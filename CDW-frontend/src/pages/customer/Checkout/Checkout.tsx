@@ -5,6 +5,7 @@ import { getCart } from '@/services/cart';
 import { Product } from '@/models';
 import {
   CheckoutData,
+  OrderItem,
   ShippingAddress,
   submitOrder,
 } from '@/services/checkout';
@@ -55,16 +56,22 @@ const Checkout: React.FC = () => {
     const requiredAddressFields: (keyof ShippingAddress)[] = [
       'fullName',
       'phoneNumber',
-      'provinceId',
-      'provinceName',
-      'districtId',
-      'districtName',
-      'wardCode',
-      'wardName',
-      'address',
+      'province',
+      'district',
+      'commune',
+      'hamlet',
     ];
 
     return requiredAddressFields.every((field) => Boolean(address[field]));
+  };
+
+  // Convert cart items to order items
+  const prepareOrderItems = (): OrderItem[] => {
+    return cartItems.map((item) => ({
+      productId: item.id,
+      sizeId: item.sizeId || 0,
+      quantity: item.quantity || 1,
+    }));
   };
 
   // Handle checkout submission
@@ -76,9 +83,12 @@ const Checkout: React.FC = () => {
     setLoading((prev) => ({ ...prev, submit: true }));
 
     try {
+      const orderItems = prepareOrderItems();
+
       const checkoutData: CheckoutData = {
         shippingAddress: address as ShippingAddress,
         paymentMethod: paymentMethod,
+        orderItems: orderItems,
         note: note || undefined,
       };
 
@@ -208,9 +218,8 @@ const Checkout: React.FC = () => {
                       <strong>Số điện thoại:</strong> {address.phoneNumber}
                     </p>
                     <p>
-                      <strong>Địa chỉ:</strong> {address.address},{' '}
-                      {address.wardName}, {address.districtName},{' '}
-                      {address.provinceName}
+                      <strong>Địa chỉ:</strong> {address.hamlet},{' '}
+                      {address.commune}, {address.district}, {address.province}
                     </p>
                   </div>
 

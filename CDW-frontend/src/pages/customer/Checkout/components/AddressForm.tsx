@@ -26,6 +26,12 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
     districts: false,
     wards: false,
   });
+  const [selectedProvinceId, setSelectedProvinceId] = useState<number | null>(
+    null
+  );
+  const [selectedDistrictId, setSelectedDistrictId] = useState<number | null>(
+    null
+  );
 
   // Fetch provinces on component mount
   useEffect(() => {
@@ -40,10 +46,10 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
 
   // Fetch districts when province changes
   useEffect(() => {
-    if (value.provinceId) {
+    if (selectedProvinceId) {
       const fetchDistricts = async () => {
         setLoading((prev) => ({ ...prev, districts: true }));
-        const data = await getDistricts(value.provinceId!);
+        const data = await getDistricts(selectedProvinceId);
         setDistricts(data);
         setLoading((prev) => ({ ...prev, districts: false }));
       };
@@ -51,14 +57,14 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
     } else {
       setDistricts([]);
     }
-  }, [value.provinceId]);
+  }, [selectedProvinceId]);
 
   // Fetch wards when district changes
   useEffect(() => {
-    if (value.districtId) {
+    if (selectedDistrictId) {
       const fetchWards = async () => {
         setLoading((prev) => ({ ...prev, wards: true }));
-        const data = await getWards(value.districtId!);
+        const data = await getWards(selectedDistrictId);
         setWards(data);
         setLoading((prev) => ({ ...prev, wards: false }));
       };
@@ -66,28 +72,32 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
     } else {
       setWards([]);
     }
-  }, [value.districtId]);
+  }, [selectedDistrictId]);
 
   // Handle form field changes
   const handleChange = (field: string, val: any) => {
     const newData: Partial<ShippingAddress> = { ...value, [field]: val };
 
-    // Reset dependent fields
-    if (field === 'provinceId') {
-      const selectedProvince = provinces.find((p) => p.ProvinceID === val);
-      newData.provinceName = selectedProvince?.ProvinceName || '';
-      newData.districtId = undefined;
-      newData.districtName = '';
-      newData.wardCode = '';
-      newData.wardName = '';
-    } else if (field === 'districtId') {
-      const selectedDistrict = districts.find((d) => d.DistrictID === val);
-      newData.districtName = selectedDistrict?.DistrictName || '';
-      newData.wardCode = '';
-      newData.wardName = '';
-    } else if (field === 'wardCode') {
-      const selectedWard = wards.find((w) => w.WardCode === val);
-      newData.wardName = selectedWard?.WardName || '';
+    // Handle province/district selection
+    if (field === 'province') {
+      // Clear dependent fields
+      newData.district = '';
+      newData.commune = '';
+
+      // Update selectedProvinceId
+      const selectedProvince = provinces.find((p) => p.ProvinceName === val);
+      if (selectedProvince) {
+        setSelectedProvinceId(selectedProvince.ProvinceID);
+      }
+    } else if (field === 'district') {
+      // Clear dependent field
+      newData.commune = '';
+
+      // Update selectedDistrictId
+      const selectedDistrict = districts.find((d) => d.DistrictName === val);
+      if (selectedDistrict) {
+        setSelectedDistrictId(selectedDistrict.DistrictID);
+      }
     }
 
     onChange(newData);
@@ -129,13 +139,13 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
         <Form.Item
           label="Tỉnh/Thành phố"
           required
-          validateStatus={value.provinceId ? 'success' : 'error'}
-          help={!value.provinceId && 'Vui lòng chọn Tỉnh/Thành phố'}
+          validateStatus={value.province ? 'success' : 'error'}
+          help={!value.province && 'Vui lòng chọn Tỉnh/Thành phố'}
         >
           <Select
             placeholder="Chọn Tỉnh/Thành phố"
-            value={value.provinceId}
-            onChange={(val) => handleChange('provinceId', val)}
+            value={value.province}
+            onChange={(val) => handleChange('province', val)}
             className="w-full"
             loading={loading.provinces}
             notFoundContent={loading.provinces ? <Spin size="small" /> : null}
@@ -143,7 +153,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
             optionFilterProp="children"
           >
             {provinces.map((province) => (
-              <Option key={province.ProvinceID} value={province.ProvinceID}>
+              <Option key={province.ProvinceID} value={province.ProvinceName}>
                 {province.ProvinceName}
               </Option>
             ))}
@@ -153,22 +163,22 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
         <Form.Item
           label="Quận/Huyện"
           required
-          validateStatus={value.districtId ? 'success' : 'error'}
-          help={!value.districtId && 'Vui lòng chọn Quận/Huyện'}
+          validateStatus={value.district ? 'success' : 'error'}
+          help={!value.district && 'Vui lòng chọn Quận/Huyện'}
         >
           <Select
             placeholder="Chọn Quận/Huyện"
-            value={value.districtId}
-            onChange={(val) => handleChange('districtId', val)}
+            value={value.district}
+            onChange={(val) => handleChange('district', val)}
             className="w-full"
-            disabled={!value.provinceId}
+            disabled={!value.province}
             loading={loading.districts}
             notFoundContent={loading.districts ? <Spin size="small" /> : null}
             showSearch
             optionFilterProp="children"
           >
             {districts.map((district) => (
-              <Option key={district.DistrictID} value={district.DistrictID}>
+              <Option key={district.DistrictID} value={district.DistrictName}>
                 {district.DistrictName}
               </Option>
             ))}
@@ -178,22 +188,22 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
         <Form.Item
           label="Phường/Xã"
           required
-          validateStatus={value.wardCode ? 'success' : 'error'}
-          help={!value.wardCode && 'Vui lòng chọn Phường/Xã'}
+          validateStatus={value.commune ? 'success' : 'error'}
+          help={!value.commune && 'Vui lòng chọn Phường/Xã'}
         >
           <Select
             placeholder="Chọn Phường/Xã"
-            value={value.wardCode}
-            onChange={(val) => handleChange('wardCode', val)}
+            value={value.commune}
+            onChange={(val) => handleChange('commune', val)}
             className="w-full"
-            disabled={!value.districtId}
+            disabled={!value.district}
             loading={loading.wards}
             notFoundContent={loading.wards ? <Spin size="small" /> : null}
             showSearch
             optionFilterProp="children"
           >
             {wards.map((ward) => (
-              <Option key={ward.WardCode} value={ward.WardCode}>
+              <Option key={ward.WardCode} value={ward.WardName}>
                 {ward.WardName}
               </Option>
             ))}
@@ -204,13 +214,13 @@ const AddressForm: React.FC<AddressFormProps> = ({ onChange, value = {} }) => {
       <Form.Item
         label="Địa chỉ cụ thể"
         required
-        validateStatus={value.address ? 'success' : 'error'}
-        help={!value.address && 'Vui lòng nhập địa chỉ cụ thể'}
+        validateStatus={value.hamlet ? 'success' : 'error'}
+        help={!value.hamlet && 'Vui lòng nhập địa chỉ cụ thể'}
       >
         <Input.TextArea
           placeholder="Số nhà, tên đường, khu phố/thôn/xóm..."
-          value={value.address}
-          onChange={(e) => handleChange('address', e.target.value)}
+          value={value.hamlet}
+          onChange={(e) => handleChange('hamlet', e.target.value)}
           className="w-full p-2 border rounded-md"
           rows={3}
         />

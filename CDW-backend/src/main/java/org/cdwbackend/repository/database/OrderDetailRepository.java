@@ -17,4 +17,6 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
             ORDER BY SUM(od.quantity) DESC
             """)
     List<Product> findProductsByBestSelling(Pageable pageable);
+
+    List<OrderDetail> findByOrder_Id(Long orderId);
 }

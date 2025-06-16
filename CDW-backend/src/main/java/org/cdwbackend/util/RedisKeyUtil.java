@@ -46,6 +46,14 @@ public class RedisKeyUtil {
     public static String getOrderKey(Long orderId) {
         return String.format("order:%d", orderId);
     }
+    
+    public static String getUserOrdersKey(Long userId) {
+        return String.format("user:%d:orders", userId);
+    }
+    
+    public static String getUserOrderKey(Long userId, Long orderId) {
+        return String.format("user:%d:order:%d", userId, orderId);
+    }
 
     public static String getKeyForProductList(Pageable pageable) {
         String sort = getSortString(pageable.getSort());

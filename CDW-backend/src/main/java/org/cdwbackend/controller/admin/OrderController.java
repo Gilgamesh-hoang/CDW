@@ -49,9 +49,5 @@ public class OrderController {
         return new ResponseObject<>(HttpStatus.CREATED, orderService.updateStatus(request));
     }
 
-//    @PostMapping
-//    public ResponseObject<OrderDTO> createOrder(@RequestBody @Valid CreateOrderRequest request) {
-//        return new ResponseObject<>(HttpStatus.CREATED, orderService.createOrder(request));
-//    }
 
 }
