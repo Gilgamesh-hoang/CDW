@@ -16,6 +16,7 @@ import SizeTable from '../pages/admin/size/SizeTable.tsx';
 import OrderTable from '../pages/admin/order/OrderTable.tsx';
 import OrderDetail from '../pages/admin/order/OrderDetail.tsx';
 import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail.tsx';
+import Checkout from '@/pages/customer/Checkout/Checkout.tsx';
 
 export interface RouteType {
   path: string;
