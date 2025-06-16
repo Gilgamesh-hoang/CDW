@@ -41,38 +41,72 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const newClient = new Client({
-      webSocketFactory: () => new SockJS(`${API_URL}/ws`),
-      debug: (str) => {
-        console.log('STOMP: ' + str);
-      },
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-    });
+    const wsUrl = `${API_URL}/ws`;
+    console.log('🔌 Attempting to connect to WebSocket at:', wsUrl);
 
-    newClient.onConnect = () => {
-      setConnected(true);
-      console.log('Connected to WebSocket');
-    };
+    try {
+      // Create SockJS instance with detailed logging
+      const socket = new SockJS(wsUrl);
 
-    newClient.onDisconnect = () => {
-      setConnected(false);
-      console.log('Disconnected from WebSocket');
-    };
+      // Add event handlers directly to the SockJS instance for better debugging
+      socket.onopen = () => {
+        console.log('🔌 SockJS connection opened successfully');
+      };
 
-    newClient.onStompError = (frame) => {
-      console.error('STOMP error', frame);
-    };
+      socket.onclose = (event) => {
+        console.log('🔌 SockJS connection closed', event);
+      };
 
-    newClient.activate();
-    setClient(newClient);
+      socket.onerror = (error) => {
+        console.error('🔌 SockJS connection error:', error);
+      };
 
-    return () => {
-      if (newClient.connected) {
-        newClient.deactivate();
-      }
-    };
+      const newClient = new Client({
+        webSocketFactory: () => socket,
+        debug: (str) => {
+          console.log('🔌 STOMP: ' + str);
+        },
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+      });
+
+      newClient.onConnect = (frame) => {
+        setConnected(true);
+        console.log('🔌 Connected to WebSocket with STOMP', frame);
+      };
+
+      newClient.onDisconnect = () => {
+        setConnected(false);
+        console.log('🔌 Disconnected from WebSocket');
+      };
+
+      newClient.onStompError = (frame) => {
+        console.error('🔌 STOMP error', frame);
+      };
+
+      newClient.onWebSocketError = (event) => {
+        console.error('🔌 WebSocket error:', event);
+      };
+
+      newClient.onWebSocketClose = (event) => {
+        console.log('🔌 WebSocket connection closed', event);
+      };
+
+      console.log('🔌 Activating STOMP client...');
+      newClient.activate();
+      setClient(newClient);
+
+      return () => {
+        console.log('🔌 Cleaning up WebSocket connection');
+        if (newClient.connected) {
+          newClient.deactivate();
+        }
+      };
+    } catch (error) {
+      console.error('🔌 Error creating WebSocket connection:', error);
+      return () => {};
+    }
   }, []);
 
   const subscribe = (
@@ -80,16 +114,21 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     callback: (message: any) => void
   ): StompSubscription | undefined => {
     if (!client || !connected) {
-      console.warn('WebSocket not connected. Cannot subscribe.');
+      console.warn(
+        '🔌 WebSocket not connected. Cannot subscribe to:',
+        destination
+      );
       return undefined;
     }
 
+    console.log('🔌 Subscribing to:', destination);
     return client.subscribe(destination, (message) => {
       try {
+        console.log(`🔌 Message received from ${destination}:`, message.body);
         const parsedBody = JSON.parse(message.body);
         callback(parsedBody);
       } catch (error) {
-        console.error('Error parsing message body', error);
+        console.error('🔌 Error parsing message body', error);
         callback(message.body);
       }
     });
@@ -97,16 +136,21 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 
   const unsubscribe = (subscription: StompSubscription) => {
     if (subscription) {
+      console.log('🔌 Unsubscribing from:', subscription.id);
       subscription.unsubscribe();
     }
   };
 
   const publish = (destination: string, body: any) => {
     if (!client || !connected) {
-      console.warn('WebSocket not connected. Cannot publish.');
+      console.warn(
+        '🔌 WebSocket not connected. Cannot publish to:',
+        destination
+      );
       return;
     }
 
+    console.log('🔌 Publishing to:', destination, body);
     client.publish({
       destination,
       body: JSON.stringify(body),
