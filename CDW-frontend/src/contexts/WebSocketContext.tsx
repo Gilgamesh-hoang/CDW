@@ -42,7 +42,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 
   useEffect(() => {
     const wsUrl = `${API_URL}/ws`;
-    console.log('🔌 Attempting to connect to WebSocket at:', wsUrl);
+
+    console.log('🔌 WebSocket connection options:');
+
+    console.log('🔌 Attempting to connect using: ', wsUrl);
 
     try {
       // Create SockJS instance with detailed logging

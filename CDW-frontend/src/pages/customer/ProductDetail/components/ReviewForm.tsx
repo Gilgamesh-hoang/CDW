@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Rate } from 'antd';
 import { toast } from 'react-toastify';
 import { useWebSocket } from '@/contexts/WebSocketContext';
-import axios from 'axios';
-import { API_URL } from '@/config';
+import { createReview } from '@/services/review';
 import { ACCESS_TOKEN_LOCALSTORAGE } from '@/utils/constant';
 
 const { TextArea } = Input;
@@ -34,8 +33,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onSuccess }) => {
         productId,
       };
 
-      // Send via REST API
-      await axios.post(`${API_URL}/opinions`, reviewData);
+      // Gửi đánh giá qua service
+      await createReview(reviewData);
 
       // Or alternatively, publish to WebSocket topic
       // publish('/app/opinions/create', reviewData);

@@ -62,6 +62,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
       const newSubscription = subscribe(
         `/topic/product/${productId}/opinions`,
         (message) => {
+          console.log('Socket received review:', message);
           // Transform the received opinion to match our Review interface
           const newReview: Review = {
             id: message.id,
