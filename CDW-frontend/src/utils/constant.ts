@@ -62,6 +62,14 @@ export const ROUTES = Object.freeze({
     url: '/gio-hang',
     name: 'Giỏ hàng',
   },
+  CHECKOUT: {
+    url: '/thanh-toan',
+    name: 'Thanh toán',
+  },
+  ORDER_SUCCESS: {
+    url: '/thanh-toan/thanh-cong/:slug',
+    name: 'Đặt hàng thành công',
+  },
   ADMIN_CATEGORY: {
     url: '/admin/danh-muc',
     name: 'Danh mục',

@@ -7,13 +7,13 @@ import { Review } from '@/models';
 interface ProductTabsProps {
   content: string;
   productId: number;
-  reviews: Review[];
+  reviews?: Review[];
 }
 
 const ProductTabs: React.FC<ProductTabsProps> = ({
   content,
   productId,
-  reviews,
+  reviews = [],
 }) => {
   return (
     <div className="border-t border-gray-200 pt-12">
@@ -36,11 +36,11 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
           },
           {
             key: 'reviews',
-            label: `Đánh giá (${reviews.length})`,
+            label: 'Đánh giá',
             children: (
               <div>
                 <ReviewForm productId={productId} />
-                <ReviewList reviews={reviews} />
+                <ReviewList productId={productId} initialReviews={reviews} />
               </div>
             ),
           },

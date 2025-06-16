@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Rate, Radio, InputNumber, Button } from 'antd';
 import {
   ShoppingCartOutlined,
@@ -11,6 +11,7 @@ import { ROUTES } from '@/utils/constant';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import ProductBenefits from './ProductBenefits';
+import { addOrUpdateCartItem } from '@/services/cart';
 
 interface ProductInfoProps {
   product: ProductDetails;
@@ -18,6 +19,7 @@ interface ProductInfoProps {
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product, reviewCount }) => {
+  const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState<Size | null>(() => {
     if (product.sizes && product.sizes.length > 0) {
       const sortedSizes = [...product.sizes].sort((a, b) => a.id - b.id);
@@ -26,6 +28,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, reviewCount }) => {
     return null;
   });
   const [quantity, setQuantity] = useState<number>(1);
+  const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
 
   const handleSizeChange = (size: Size) => {
     setSelectedSize(size);
@@ -37,18 +40,32 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, reviewCount }) => {
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedSize) {
       toast.warning('Vui lòng chọn kích thước');
       return;
     }
 
-    // Add to cart logic here
-    toast.success(
-      `Đã thêm ${quantity} ${
-        quantity > 1 ? 'sản phẩm' : 'sản phẩm'
-      } vào giỏ hàng`
-    );
+    try {
+      setIsAddingToCart(true);
+      // Call API to add to cart
+      await addOrUpdateCartItem(product.id, selectedSize.id, quantity);
+
+      toast.success(
+        `Đã thêm ${quantity} ${
+          quantity > 1 ? 'sản phẩm' : 'sản phẩm'
+        } vào giỏ hàng`
+      );
+    } catch (error) {
+      console.error('Failed to add to cart:', error);
+      toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
+  const goToCart = () => {
+    navigate(ROUTES.CART.url);
   };
 
   const renderPrice = () => {
@@ -150,9 +167,17 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, reviewCount }) => {
           size="large"
           icon={<ShoppingCartOutlined />}
           onClick={handleAddToCart}
+          loading={isAddingToCart}
           className="flex h-12 items-center justify-center bg-[#291D4C] px-8 text-white hover:bg-[#1a1233]"
         >
           Thêm vào giỏ hàng
+        </Button>
+        <Button
+          size="large"
+          onClick={goToCart}
+          className="flex h-12 items-center justify-center border-[#291D4C] px-8 text-[#291D4C] hover:bg-[#291D4C] hover:text-white"
+        >
+          Xem giỏ hàng
         </Button>
         <Button
           size="large"
@@ -160,13 +185,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, reviewCount }) => {
           className="flex h-12 items-center justify-center border-gray-300 px-8 hover:border-[#291D4C] hover:text-[#291D4C]"
         >
           Thêm vào yêu thích
-        </Button>
-        <Button
-          size="large"
-          icon={<ShareAltOutlined />}
-          className="flex h-12 items-center justify-center border-gray-300 px-8 hover:border-[#291D4C] hover:text-[#291D4C]"
-        >
-          Chia sẻ
         </Button>
       </div>
       <ProductBenefits />

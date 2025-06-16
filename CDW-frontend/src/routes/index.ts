@@ -16,6 +16,8 @@ import SizeTable from '../pages/admin/size/SizeTable.tsx';
 import OrderTable from '../pages/admin/order/OrderTable.tsx';
 import OrderDetail from '../pages/admin/order/OrderDetail.tsx';
 import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail.tsx';
+import Checkout from '@/pages/customer/Checkout/Checkout.tsx';
+import OrderSuccess from '@/pages/customer/OrderSuccess/OrderSuccess.tsx';
 
 export interface RouteType {
   path: string;
@@ -86,6 +88,18 @@ export const privateRoutes: RouteType[] = [
   {
     path: ROUTES.CART.url,
     element: Cart,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.CHECKOUT.url,
+    element: Checkout,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.ORDER_SUCCESS.url,
+    element: OrderSuccess,
     layout: DefaultLayout,
     fullScreen: true,
   },

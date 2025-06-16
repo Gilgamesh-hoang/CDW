@@ -29,6 +29,8 @@ public class EndPoint {
                 "/api/v1/cart/**",
                 "/api/v1/users/me",
                 "/api/v1/auth/logout",
+                "/api/v1/orders/**",
+                "/api/v1/opinions/**"
         };
     }
 }

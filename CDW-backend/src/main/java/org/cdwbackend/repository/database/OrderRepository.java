@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.cdwbackend.dto.response.SalesData;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.createAt BETWEEN :startDate AND :endDate AND o.isDeleted = false")
@@ -26,4 +27,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
            "GROUP BY DATE_FORMAT(o.createAt, '%Y-%m-%d') " +
            "ORDER BY date", nativeQuery = true)
     List<SalesData[]> getSalesDataByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    
+    Optional<Order> findBySlugAndIsDeletedFalse(String slug);
 }

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Rate } from 'antd';
 import { toast } from 'react-toastify';
+import { useWebSocket } from '@/contexts/WebSocketContext';
+import { createReview } from '@/services/review';
+import { ACCESS_TOKEN_LOCALSTORAGE } from '@/utils/constant';
 
 const { TextArea } = Input;
 
@@ -12,15 +15,29 @@ interface ReviewFormProps {
 const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onSuccess }) => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
+  const { publish } = useWebSocket();
+  const isAuthenticated = localStorage.getItem(ACCESS_TOKEN_LOCALSTORAGE)
+    ? true
+    : false;
 
   const handleSubmit = async (values: any) => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để gửi đánh giá');
+      return;
+    }
+
     setSubmitting(true);
     try {
-      // Mô phỏng gửi đánh giá thành công
-      console.log('Submitting review:', { productId, ...values });
+      const reviewData = {
+        ...values,
+        productId,
+      };
 
-      // Đây là nơi bạn sẽ gọi API để gửi đánh giá`
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Gửi đánh giá qua service
+      await createReview(reviewData);
+
+      // Or alternatively, publish to WebSocket topic
+      // publish('/app/opinions/create', reviewData);
 
       toast.success('Cảm ơn bạn đã gửi đánh giá!');
       form.resetFields();
@@ -30,6 +47,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onSuccess }) => {
       }
     } catch (error) {
       toast.error('Không thể gửi đánh giá. Vui lòng thử lại sau.');
+      console.error('Error submitting review:', error);
     } finally {
       setSubmitting(false);
     }
@@ -53,6 +71,10 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onSuccess }) => {
           <Rate className="text-[#FFD700]" />
         </Form.Item>
 
+        <Form.Item name="title" label="Tiêu đề">
+          <Input placeholder="Tiêu đề ngắn gọn cho đánh giá của bạn" />
+        </Form.Item>
+
         <Form.Item
           name="content"
           label="Nội dung đánh giá"
@@ -72,8 +94,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onSuccess }) => {
             htmlType="submit"
             loading={submitting}
             className="bg-[#291D4C] hover:bg-[#1a1233]"
+            disabled={!isAuthenticated}
           >
-            Gửi đánh giá
+            {isAuthenticated ? 'Gửi đánh giá' : 'Đăng nhập để đánh giá'}
           </Button>
         </Form.Item>
       </Form>

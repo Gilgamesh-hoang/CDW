@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import ProductImages from './components/ProductImages';
 import ProductInfo from './components/ProductInfo';
 import ProductTabs from './components/ProductTabs';
-import { mockReviews } from './mockData';
+import { WebSocketProvider } from '@/contexts/WebSocketContext';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
@@ -55,49 +55,48 @@ const ProductDetail: React.FC = () => {
   }
 
   return (
-    <div className="bg-white pb-16 pt-8">
-      <div className="container mx-auto px-4">
-        {/* Breadcrumb */}
-        <Breadcrumb className="mb-8">
-          <Breadcrumb.Item>
-            <Link to={ROUTES.HOME.url}>Trang chủ</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link to={ROUTES.SHOP.url}>Cửa hàng</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link
-              to={`${ROUTES.SHOP.url}?category=${productDetails.categoryId}`}
-            >
-              {productDetails.categoryName}
-            </Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>{productDetails.name}</Breadcrumb.Item>
-        </Breadcrumb>
+    <WebSocketProvider>
+      <div className="bg-white pb-16 pt-8">
+        <div className="container mx-auto px-4">
+          {/* Breadcrumb */}
+          <Breadcrumb className="mb-8">
+            <Breadcrumb.Item>
+              <Link to={ROUTES.HOME.url}>Trang chủ</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to={ROUTES.SHOP.url}>Cửa hàng</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link
+                to={`${ROUTES.SHOP.url}?category=${productDetails.categoryId}`}
+              >
+                {productDetails.categoryName}
+              </Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>{productDetails.name}</Breadcrumb.Item>
+          </Breadcrumb>
 
-        <div className="mb-16 grid gap-12 md:grid-cols-2">
-          {/* Product Images */}
-          <ProductImages
-            thumbnail={productDetails.thumbnail}
-            images={productDetails.images}
-            productName={productDetails.name}
-          />
+          <div className="mb-16 grid gap-12 md:grid-cols-2">
+            {/* Product Images */}
+            <ProductImages
+              thumbnail={productDetails.thumbnail}
+              images={productDetails.images}
+              productName={productDetails.name}
+            />
 
-          {/* Product Info */}
-          <ProductInfo
-            product={productDetails}
-            reviewCount={mockReviews.length}
+            {/* Product Info */}
+            <ProductInfo product={productDetails} reviewCount={0} />
+          </div>
+
+          {/* Product Tabs - Description, Reviews, Shipping */}
+          <ProductTabs
+            content={productDetails.content}
+            productId={productDetails.id}
+            reviews={[]}
           />
         </div>
-
-        {/* Product Tabs - Description, Reviews, Shipping */}
-        <ProductTabs
-          content={productDetails.content}
-          productId={productDetails.id}
-          reviews={mockReviews}
-        />
       </div>
-    </div>
+    </WebSocketProvider>
   );
 };
 
