@@ -149,5 +149,10 @@ export interface Review {
   rating: number;
   date: string;
   content: string;
-  helpful: number;
+  helpful?: number;
+  title?: string;
+  userId?: number;
+  productId?: number;
+  createAt?: string;
+  updateAt?: string;
 }
