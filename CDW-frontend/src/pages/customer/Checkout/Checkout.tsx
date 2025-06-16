@@ -25,7 +25,6 @@ const Checkout: React.FC = () => {
   const [address, setAddress] = useState<Partial<ShippingAddress>>({});
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [note, setNote] = useState('');
-  const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
   const navigate = useNavigate();
 
@@ -94,10 +93,11 @@ const Checkout: React.FC = () => {
 
       const result = await submitOrder(checkoutData);
 
-      if (result.success) {
-        setOrderSuccess(true);
-        setOrderId(result.orderId || null);
-        // Clear cart or any other post-order operations
+      if (result.success && result.data) {
+        // Navigate to order success page with the order slug
+        const slug = result.data.slug;
+        navigate(ROUTES.ORDER_SUCCESS.url.replace(':slug', slug));
+        return;
       }
     } catch (error) {
       console.error('Error during checkout:', error);
@@ -105,42 +105,6 @@ const Checkout: React.FC = () => {
       setLoading((prev) => ({ ...prev, submit: false }));
     }
   };
-
-  // If order has been successfully created, show success message
-  if (orderSuccess) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <HeroSectionSimple
-          imageUrl="https://images.unsplash.com/photo-1460353581641-37baddab0fa2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80"
-          title="ĐẶT HÀNG THÀNH CÔNG"
-          heightStyle={'h-[30vh]'}
-        />
-        <div className="max-w-6xl mx-auto px-4 py-12">
-          <Result
-            status="success"
-            title="Đặt hàng thành công!"
-            subTitle={`Mã đơn hàng: ${orderId}. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.`}
-            extra={[
-              <button
-                key="home"
-                onClick={() => navigate(ROUTES.HOME.url)}
-                className="px-6 py-2 mr-4 bg-[#291D4C] text-white rounded-md hover:bg-[#1a1233] transition-colors"
-              >
-                Về trang chủ
-              </button>,
-              <button
-                key="profile"
-                onClick={() => navigate(ROUTES.PROFILE.url)}
-                className="px-6 py-2 border border-[#291D4C] text-[#291D4C] rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Xem đơn hàng
-              </button>,
-            ]}
-          />
-        </div>
-      </div>
-    );
-  }
 
   // Show loading if cart is being fetched
   if (loading.cart) {

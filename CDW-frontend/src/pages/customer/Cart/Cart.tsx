@@ -52,7 +52,7 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    navigate('/payment');
+    navigate(ROUTES.CHECKOUT.url);
   };
 
   return (

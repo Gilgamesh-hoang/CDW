@@ -23,8 +23,14 @@ public class RedisKeyUtil {
         String sizeIdsString = sizeIds.toString();
         sizeIdsString = sizeIdsString.replaceAll(" ", "");
 
-        return String.format("search:%s:page:%d:size:%d:sort:%s:direction:%s:categoryIds:%s:sizeIds:%s:priceRange:%s",
-                keyword, pageable.getPageNumber(), pageable.getPageSize(), order.getProperty(), order.getDirection().name(), categoryIdsString, sizeIdsString, priceRange);
+        return String.format("search:%s:%s:%s:%s:%s:%d:%d",
+                keyword,
+                categoryIdsString,
+                sizeIdsString,
+                priceRange,
+                order.getProperty() + "-" + order.getDirection(),
+                pageable.getPageNumber(),
+                pageable.getPageSize());
     }
 
     public static String getListSizesKey(int pageNumber, int pageSize) {
@@ -70,6 +76,10 @@ public class RedisKeyUtil {
     }
     public static String getProductKey(Long productId) {
         return String.format("product:%d", productId);
+    }
+
+    public static String getOrderSlugKey(String slug) {
+        return String.format("order:slug:%s", slug);
     }
 
     private String getSortString(Sort sort) {

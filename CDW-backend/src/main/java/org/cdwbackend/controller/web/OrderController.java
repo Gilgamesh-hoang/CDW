@@ -57,6 +57,14 @@ public class OrderController {
         return new ResponseObject<>(HttpStatus.OK, order);
     }
     
+    @GetMapping("/slug/{slug}")
+    public ResponseObject<OrderDTO> getOrderBySlug(
+            @PathVariable String slug) {
+        // Get order by slug - this is publicly accessible to allow sharing order confirmations
+        OrderDTO order = orderService.findBySlug(slug);
+        return new ResponseObject<>(HttpStatus.OK, order);
+    }
+    
     @PutMapping("/{id}/cancel")
     public ResponseObject<OrderDTO> cancelOrder(
             @AuthenticationPrincipal CustomUserSecurity user,

@@ -12,6 +12,25 @@ export interface PageResponse<T = null> {
   data: T;
 }
 
+export interface ProductSize {
+  id: number;
+  sizeId: number;
+  sizeName: string;
+  productId: number;
+  productName: string;
+  productThumbnail: string;
+  price: number;
+}
+
+export interface OrderDetail {
+  id: number;
+  orderId: number;
+  productId: number;
+  quantity: number;
+  subTotal: number;
+  productSize: ProductSize;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -86,6 +105,7 @@ export interface Order {
   slug: string;
   createAt: Date;
   listProduct: Product[];
+  orderDetails: OrderDetail[];
 }
 
 export interface User {

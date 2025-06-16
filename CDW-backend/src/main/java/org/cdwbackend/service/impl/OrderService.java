@@ -15,10 +15,8 @@ import org.cdwbackend.dto.request.UpdateStatusOrderRequest;
 import org.cdwbackend.dto.response.PageResponse;
 import org.cdwbackend.entity.database.*;
 import org.cdwbackend.exception.ResourceNotFoundException;
-import org.cdwbackend.mapper.AddressMapper;
-import org.cdwbackend.mapper.OrderDetailMapper;
-import org.cdwbackend.mapper.OrderMapper;
-import org.cdwbackend.mapper.ProductMapper;
+import org.cdwbackend.mapper.*;
+import org.cdwbackend.dto.ProductSizeDTO;
 import org.cdwbackend.repository.database.OrderRepository;
 import org.cdwbackend.repository.database.AddressRepository;
 import org.cdwbackend.repository.database.OrderDetailRepository;
@@ -56,6 +54,7 @@ public class OrderService implements IOrderService {
     AddressMapper addressMapper;
     OrderDetailMapper orderDetailMapper;
     ProductMapper productMapper;
+    ProductSizeMapper productSizeMapper;
     
     IRedisService redisService;
     ObjectMapper objectMapper;
@@ -267,29 +266,12 @@ public class OrderService implements IOrderService {
 
     @Override
     public OrderDTO findByIdAndUserId(Long id, Long userId) {
-        String redisKey = RedisKeyUtil.getUserOrderKey(userId, id);
-        OrderDTO result = redisService.getValue(redisKey, OrderDTO.class);
-        if (result != null) {
-            return result;
-        }
-
-        // Find the user order
-        UserOrder userOrder = userOrderRepository.findByUser_IdAndOrder_Id(userId,id)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id + " for user: " + userId));
+        // Check if user has this order
+        userOrderRepository.findByOrder_IdAndUser_IdAndIsDeletedFalse(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found or does not belong to the user"));
         
-        // Get order and details
-        Order order = userOrder.getOrder();
-        List<OrderDetail> orderDetails = orderDetailRepository.findByOrder_Id(order.getId());
-        
-        // Convert to DTOs using mappers
-        OrderDTO orderDTO = orderMapper.toDTO(order);
-        orderDTO.setOrderDetails(orderDetailMapper.toDTOs(orderDetails));
-        
-        // Cache the result
-        redisService.saveValue(redisKey, orderDTO);
-        redisService.setTTL(redisKey, 30, TimeUnit.MINUTES);
-        
-        return orderDTO;
+        // Use the standard findById method to retrieve and map the order
+        return findById(id);
     }
 
     @Override
@@ -367,5 +349,27 @@ public class OrderService implements IOrderService {
 
         // Allow all other transitions
         return true;
+    }
+
+    @Override
+    public OrderDTO findBySlug(String slug) {
+        String redisKey = RedisKeyUtil.getOrderSlugKey(slug);
+        OrderDTO result = redisService.getValue(redisKey, OrderDTO.class);
+        if (result != null) {
+            return result;
+        }
+
+        // Retrieve the order from the repository, throw an exception if not found
+        Order order = orderRepository.findBySlugAndIsDeletedFalse(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        
+        // Get order details using the existing findById method
+        OrderDTO orderDTO = findById(order.getId());
+        
+        // Cache the result with the slug key
+        redisService.saveValue(redisKey, orderDTO);
+        redisService.setTTL(redisKey, 30, TimeUnit.MINUTES);
+        
+        return orderDTO;
     }
 }

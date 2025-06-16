@@ -29,19 +29,22 @@ export interface OrderResponse {
   status: string;
   totalAmount: number;
   createAt: string;
+  slug: string;
 }
 
 export const submitOrder = async (
   checkoutData: CheckoutData
-): Promise<{ success: boolean; orderId?: number }> => {
+): Promise<{ success: boolean; data?: OrderResponse }> => {
   try {
     const response = await httpPost<ApiResponse<OrderResponse>>(
       'orders',
       checkoutData
     );
+
     if (response.status === 200 || response.status === 201) {
       toast.success('Đặt hàng thành công!');
-      return { success: true, orderId: response.data.id };
+      // Access the data from the API response
+      return { success: true, data: response.data };
     } else {
       toast.error(response.message || 'Đặt hàng thất bại');
       return { success: false };

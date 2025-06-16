@@ -48,6 +48,13 @@ public interface IOrderService {
     OrderDTO findByIdAndUserId(Long id, Long userId);
     
     /**
+     * Find an order by its slug
+     * @param slug The order slug
+     * @return The order details
+     */
+    OrderDTO findBySlug(String slug);
+    
+    /**
      * Update the status of an order (admin function)
      * @param request The update request containing the order ID and new status
      * @return The updated order

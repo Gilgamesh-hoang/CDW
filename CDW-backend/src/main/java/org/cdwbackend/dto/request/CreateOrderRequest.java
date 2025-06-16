@@ -3,6 +3,7 @@ package org.cdwbackend.dto.request;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -36,7 +37,8 @@ public class CreateOrderRequest {
         @NotNull(message = "Full name is required")
         String fullName;
         
-        @NotNull(message = "Phone number is required")
+        @Pattern(regexp = "^(0|84)([0-9]{9})$", message = "Phone number must start with 0 or 84 followed by 9 digits")
+        @NotNull(message = "Phone number is required") 
         String phoneNumber;
         
         @NotNull(message = "Province is required")

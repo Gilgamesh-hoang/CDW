@@ -1,9 +1,8 @@
 package org.cdwbackend.util;
 public class SlugUtil {
     public static String generateUniqueSlugByOrderId(Long orderId) {
-        // Generate random string of length 10
-        String randomStr1 = generateRandomString(10);
-        String randomStr2 = generateRandomString(10);
+        String randomStr1 = generateRandomString(5);
+        String randomStr2 = generateRandomString(5);
         
         // Combine all parts with hyphens
         return String.format("%s-%s-%s", randomStr1, orderId, randomStr2);

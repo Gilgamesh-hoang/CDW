@@ -10,5 +10,5 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Long> {
     List<UserOrder> findByUser_Id(Long userId);
     List<UserOrder> findByOrder_Id(Long orderId);
     Optional<UserOrder> findByUser_IdAndOrder_Id(Long userId, Long orderId);
-
+    Optional<UserOrder> findByOrder_IdAndUser_IdAndIsDeletedFalse(Long orderId, Long userId);
 }
