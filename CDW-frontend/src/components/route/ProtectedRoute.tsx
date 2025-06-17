@@ -68,12 +68,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ route, children }) => {
 
   if (!hasAccess(route, me)) {
     // Nếu không có quyền, chuyển hướng dựa trên trạng thái đăng nhập
-    if (!me) {
-      toastError('Bạn cần đăng nhập để truy cập trang này!', 1500);
-    } else {
-      toastError('Bạn không có quyền truy cập trang này!', 1500);
-
-    }
+    // if (!me) {
+    //   toastError('Bạn cần đăng nhập để truy cập trang này!', 1500);
+    // } else {
+    //   toastError('Bạn không có quyền truy cập trang này!', 1500);
+    //
+    // }
     return <Navigate to={ROUTES.HOME} replace />;
   }
 

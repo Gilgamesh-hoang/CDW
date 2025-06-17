@@ -55,6 +55,16 @@ const Cart = () => {
     navigate(ROUTES.CHECKOUT.url);
   };
 
+  const updateQuantity = (productId: number, sizeId: number, quantity: number) => {
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === productId && item.sizeId === sizeId
+          ? { ...item, quantity }
+          : item
+      )
+    );
+  };
+
   return (
     <div className="w-full">
       <HeroSectionSimple
@@ -105,6 +115,7 @@ const Cart = () => {
                   item={item}
                   key={`${item.id}-${item.sizeId}`}
                   removeItem={removeItem}
+                  updateQuantity={updateQuantity}
                 />
               ))}
             </div>
