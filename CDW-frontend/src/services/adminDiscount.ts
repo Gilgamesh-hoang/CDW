@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { API_URL } from '../constants';
+import { API_URL } from '@/config';
+import { httpDelete, httpGet, httpPost, httpPut } from '@/axios';
 
 export interface DiscountType {
   id?: number;
@@ -61,76 +62,73 @@ const adminDiscountService = {
     size: number = 10,
     sort: string = 'id'
   ) => {
-    const response = await axios.get<PageResponse<DiscountType[]>>(
+    const response = await httpGet<PageResponse<DiscountType[]>>(
       `${API_URL}/api/admin/discounts`,
       {
         params: { page, size, sort },
         withCredentials: true,
       }
     );
-    return response.data;
+    return response;
   },
 
   getActiveDiscounts: async () => {
-    const response = await axios.get<DiscountType[]>(
+    const response = await httpGet<DiscountType[]>(
       `${API_URL}/api/admin/discounts/active`,
       {
         withCredentials: true,
       }
     );
-    return response.data;
+    return response;
   },
 
   getDiscountById: async (id: number) => {
-    const response = await axios.get<DiscountType>(
+    const response = await httpGet<DiscountType>(
       `${API_URL}/api/admin/discounts/${id}`,
       {
         withCredentials: true,
       }
     );
-    return response.data;
+    return response;
   },
 
   getDiscountByCode: async (code: string) => {
-    const response = await axios.get<DiscountType>(
+    const response = await httpGet<DiscountType>(
       `${API_URL}/api/admin/discounts/code/${code}`,
       {
         withCredentials: true,
       }
     );
-    return response.data;
+    return response;
   },
 
   createDiscount: async (discount: CreateDiscountRequest) => {
-    const response = await axios.post<DiscountType>(
+    const response = await httpPost<DiscountType>(
       `${API_URL}/api/admin/discounts`,
       discount,
       {
         withCredentials: true,
       }
     );
-    return response.data;
+    return response;
   },
 
   updateDiscount: async (discount: UpdateDiscountRequest) => {
-    const response = await axios.put<DiscountType>(
+    const response = await httpPut<DiscountType>(
       `${API_URL}/api/admin/discounts`,
       discount,
       {
         withCredentials: true,
       }
     );
-    return response.data;
+    return response;
   },
 
   deleteDiscount: async (id: number) => {
-    const response = await axios.delete(
-      `${API_URL}/api/admin/discounts/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data;
+    const response = await httpDelete(`${API_URL}/api/admin/discounts/${id}`, {
+      withCredentials: true,
+    });
+    return response;
   },
 };
 

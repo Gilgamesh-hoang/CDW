@@ -10,8 +10,10 @@ import org.cdwbackend.constant.SystemConstant;
 import org.cdwbackend.dto.OrderDTO;
 import org.cdwbackend.dto.OrderDetailDTO;
 import org.cdwbackend.dto.ProductDTO;
+import org.cdwbackend.dto.request.ApplyDiscountRequest;
 import org.cdwbackend.dto.request.CreateOrderRequest;
 import org.cdwbackend.dto.request.UpdateStatusOrderRequest;
+import org.cdwbackend.dto.response.DiscountValidationResponse;
 import org.cdwbackend.dto.response.PageResponse;
 import org.cdwbackend.entity.database.*;
 import org.cdwbackend.exception.ResourceNotFoundException;
@@ -333,6 +335,11 @@ public class OrderService implements IOrderService {
         orderDTO.setOrderDetails(orderDetailMapper.toDTOs(orderDetails));
         
         return orderDTO;
+    }
+
+    @Override
+    public DiscountValidationResponse applyDiscountToCart(Long userId, ApplyDiscountRequest request) {
+        return null;
     }
 
     // Validate if the status transition is allowed
