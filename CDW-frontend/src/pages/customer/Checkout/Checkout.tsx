@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Steps, Spin, Result } from 'antd';
+import { Steps, Spin, Result, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getCart } from '@/services/cart';
 import { Product } from '@/models';
@@ -14,18 +14,28 @@ import PaymentMethods from './components/PaymentMethods';
 import OrderSummary from './components/OrderSummary';
 import HeroSectionSimple from '@/components/HeroSectionSimple';
 import { ROUTES } from '@/utils/constant';
+import { getAvailableDiscounts, validateDiscount } from '@/services/discount';
+import { DiscountType } from '@/services/adminDiscount';
+import adminDiscountService from '@/services/adminDiscount';
+import { toast } from 'react-toastify';
 
 const Checkout: React.FC = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState({
     cart: true,
     submit: false,
+    discount: false,
   });
   const [step, setStep] = useState(0);
   const [address, setAddress] = useState<Partial<ShippingAddress>>({});
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [note, setNote] = useState('');
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [discountList, setDiscountList] = useState<DiscountType[]>([]);
+  const [selectedDiscount, setSelectedDiscount] = useState<
+    DiscountType | undefined
+  >(undefined);
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
   const navigate = useNavigate();
 
   // Fetch cart items on component mount
@@ -35,8 +45,6 @@ const Checkout: React.FC = () => {
       try {
         const items = await getCart();
         setCartItems(items);
-
-        // Redirect to cart if there are no items
         if (items.length === 0) {
           navigate(ROUTES.CART.url);
         }
@@ -46,9 +54,51 @@ const Checkout: React.FC = () => {
         setLoading((prev) => ({ ...prev, cart: false }));
       }
     };
-
     fetchCartItems();
   }, [navigate]);
+
+  // Load discount list
+  useEffect(() => {
+    const fetchDiscounts = async () => {
+      setLoading((prev) => ({ ...prev, discount: true }));
+      try {
+        const discounts = await getAvailableDiscounts();
+        setDiscountList(discounts);
+      } catch (error) {
+        message.error('Không thể tải mã giảm giá');
+      } finally {
+        setLoading((prev) => ({ ...prev, discount: false }));
+      }
+    };
+    fetchDiscounts();
+  }, []);
+
+  // Khi chọn mã giảm giá, chỉ hiển thị ước lượng discountAmount (không gửi lên server)
+  const handleDiscountChange = async (discount: DiscountType | undefined) => {
+    setSelectedDiscount(undefined);
+    setDiscountAmount(0);
+    if (!discount) return;
+    try {
+      const productIds = cartItems.map((item) => item.id);
+      const subtotal = cartItems.reduce(
+        (sum, item) => sum + item.price * (item.quantity || 1),
+        0
+      );
+      const res = await validateDiscount(discount.code, productIds, subtotal);
+      if (res.valid) {
+        setSelectedDiscount(discount);
+        setDiscountAmount(res.discountAmount || 0);
+      } else {
+        toast.error(
+          res.message ||
+            'Mã giảm giá không hợp lệ hoặc không áp dụng cho sản phẩm trong giỏ hàng!'
+        );
+      }
+    } catch (error) {
+      setDiscountAmount(0);
+      message.error('Không thể kiểm tra mã giảm giá.');
+    }
+  };
 
   // Check if form is valid
   const isFormValid = () => {
@@ -60,7 +110,6 @@ const Checkout: React.FC = () => {
       'commune',
       'hamlet',
     ];
-
     return requiredAddressFields.every((field) => Boolean(address[field]));
   };
 
@@ -78,23 +127,20 @@ const Checkout: React.FC = () => {
     if (!isFormValid()) {
       return;
     }
-
     setLoading((prev) => ({ ...prev, submit: true }));
-
     try {
       const orderItems = prepareOrderItems();
-
       const checkoutData: CheckoutData = {
         shippingAddress: address as ShippingAddress,
         paymentMethod: paymentMethod,
         orderItems: orderItems,
         note: note || undefined,
+        discountCode: selectedDiscount?.code, // chỉ truyền code
       };
-
       const result = await submitOrder(checkoutData);
-
       if (result.success && result.data) {
-        // Navigate to order success page with the order slug
+        // Lấy discountAmount thực tế từ order trả về (nếu muốn hiển thị)
+        // const discountAmountFromServer = result.data.discountAmount;
         const slug = result.data.slug;
         navigate(ROUTES.ORDER_SUCCESS.url.replace(':slug', slug));
         return;
@@ -240,6 +286,10 @@ const Checkout: React.FC = () => {
               onSubmit={handleSubmit}
               loading={loading.submit}
               isFormValid={step === 2}
+              discountList={discountList}
+              selectedDiscount={selectedDiscount}
+              onDiscountChange={handleDiscountChange}
+              discountAmount={discountAmount}
             />
           </div>
         </div>

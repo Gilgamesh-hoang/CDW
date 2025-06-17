@@ -50,8 +50,11 @@ public class ProductService implements IProductService {
         String redisKey = RedisKeyUtil.getKeyForProductList(pageable);
         String jsonValue = redisService.getValue(redisKey, String.class);
         if (jsonValue != null) {
-            return objectMapper.convertValue(jsonValue, new TypeReference<PageResponse<List<ProductDTO>>>() {
-            });
+            try {
+                return objectMapper.readValue(jsonValue, new TypeReference<PageResponse<List<ProductDTO>>>() {});
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         Page<Product> products = productRepository.findAll(pageable);

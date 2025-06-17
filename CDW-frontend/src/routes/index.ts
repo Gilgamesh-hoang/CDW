@@ -18,6 +18,7 @@ import OrderDetail from '../pages/admin/order/OrderDetail.tsx';
 import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail.tsx';
 import Checkout from '@/pages/customer/Checkout/Checkout.tsx';
 import OrderSuccess from '@/pages/customer/OrderSuccess/OrderSuccess.tsx';
+import Discount from '@/pages/admin/discount/Discount.tsx';
 
 export interface RouteType {
   path: string;
@@ -133,6 +134,12 @@ export const adminRoutes: RouteType[] = [
   {
     path: ROUTES.ADMIN_ORDER_DETAIL.url,
     element: OrderDetail,
+    layout: AdminLayout,
+    fullScreen: true,
+  },
+  {
+    path: ROUTES.ADMIN_DISCOUNT.url,
+    element: Discount,
     layout: AdminLayout,
     fullScreen: true,
   },

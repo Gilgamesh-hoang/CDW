@@ -32,6 +32,12 @@ public class Order {
 
     @Column(name = "totalAmount")
     private Double totalAmount ;
+    
+    @Column(name = "subtotalAmount")
+    private Double subtotalAmount;
+    
+    @Column(name = "discountAmount")
+    private Double discountAmount = 0.0;
 
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
@@ -39,6 +45,10 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "addressId")
     private Address address;
+    
+    @ManyToOne
+    @JoinColumn(name = "discountId")
+    private Discount discount;
 
     @Column(name = "isPaid")
     private Boolean isPaid = false;

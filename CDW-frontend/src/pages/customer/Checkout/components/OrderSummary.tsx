@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Input } from 'antd';
+import { Button, Input, Select } from 'antd';
 import { Product } from '@/models';
+import { DiscountType } from '@/services/adminDiscount';
 
 interface OrderSummaryProps {
   cartItems: Product[];
@@ -9,6 +10,10 @@ interface OrderSummaryProps {
   onSubmit: () => void;
   loading: boolean;
   isFormValid: boolean;
+  discountList: DiscountType[];
+  selectedDiscount?: DiscountType;
+  onDiscountChange: (discount: DiscountType | undefined) => void;
+  discountAmount: number;
 }
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
@@ -18,6 +23,10 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   onSubmit,
   loading,
   isFormValid,
+  discountList,
+  selectedDiscount,
+  onDiscountChange,
+  discountAmount,
 }) => {
   // Calculate subtotal
   const subtotal = cartItems.reduce(
@@ -29,7 +38,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const shippingCost = 30000; // Fixed shipping cost for this example
 
   // Calculate total
-  const total = subtotal + shippingCost;
+  const total = subtotal + shippingCost - discountAmount;
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
@@ -72,6 +81,31 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         ))}
       </div>
 
+      {/* Discount select */}
+      <div className="mb-6">
+        <label className="block text-gray-700 mb-2">Mã giảm giá</label>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Chọn mã giảm giá"
+          value={selectedDiscount?.code}
+          onChange={(code) => {
+            const found = discountList.find((d) => d.code === code);
+            onDiscountChange(found);
+          }}
+          allowClear
+        >
+          {discountList.map((discount) => (
+            <Select.Option
+              key={discount.code}
+              value={discount.code}
+              disabled={!discount.isActive}
+            >
+              {discount.code} - {discount.description}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
+
       {/* Order note */}
       <div className="mb-6">
         <label className="block text-gray-700 mb-2">Ghi chú đơn hàng</label>
@@ -94,6 +128,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <span className="text-gray-600">Phí vận chuyển</span>
           <span>{shippingCost.toLocaleString('vi-VN')}₫</span>
         </div>
+        {discountAmount > 0 && (
+          <div className="flex justify-between text-green-600">
+            <span>Giảm giá</span>
+            <span>-{discountAmount.toLocaleString('vi-VN')}₫</span>
+          </div>
+        )}
         <div className="border-t pt-2 mt-2 flex justify-between font-semibold">
           <span>Tổng cộng</span>
           <span className="text-xl text-[#291D4C]">

@@ -17,7 +17,10 @@ public class OrderDTO {
     private String status;
     private String note;
     private Double totalAmount;
+    private Double subtotalAmount;
+    private Double discountAmount;
     private AddressDTO address;
+    private DiscountDTO discount;
     private Boolean isPaid;
     private String slug;
     private Date createAt;

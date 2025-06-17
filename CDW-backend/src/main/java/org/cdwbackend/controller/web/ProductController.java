@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.cdwbackend.dto.CategoryDTO;
 import org.cdwbackend.dto.ProductDTO;
 import org.cdwbackend.dto.ProductDetailDTO;
+import org.cdwbackend.dto.response.PageResponse;
 import org.cdwbackend.dto.response.ResponseObject;
 import org.cdwbackend.service.IProductService;
 import org.hibernate.validator.constraints.Range;
@@ -25,6 +27,15 @@ import java.util.List;
 public class ProductController {
     IProductService productService;
 
+    @GetMapping
+    public ResponseObject<PageResponse<List<ProductDTO>>> getProducts(
+            @RequestParam(value = "page", defaultValue = "1") @Range(min = 1) int page,
+            @RequestParam(value = "size", defaultValue = "10") @Range(min = 1, max = 50) int size) {
+        Sort sort = Sort.by(Sort.Order.desc("createAt"));
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        PageResponse<List<ProductDTO>> products = productService.findAll(pageable);
+        return new ResponseObject<>(HttpStatus.OK, products);
+    }
 
     @GetMapping("/{id}")
     public ResponseObject<ProductDetailDTO> getProductById(@PathVariable("id") @NotNull @Range(min = 1) Long id) {

@@ -1,8 +1,10 @@
 package org.cdwbackend.service;
 
 import org.cdwbackend.dto.OrderDTO;
+import org.cdwbackend.dto.request.ApplyDiscountRequest;
 import org.cdwbackend.dto.request.CreateOrderRequest;
 import org.cdwbackend.dto.request.UpdateStatusOrderRequest;
+import org.cdwbackend.dto.response.DiscountValidationResponse;
 import org.cdwbackend.dto.response.PageResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -70,4 +72,6 @@ public interface IOrderService {
      * @return The canceled order
      */
     OrderDTO cancelOrder(Long id, Long userId);
+    
+
 }

@@ -6,6 +6,7 @@ import { BiCategory } from 'react-icons/bi';
 import { RiDashboard2Line } from 'react-icons/ri';
 import { AiOutlineFontSize } from 'react-icons/ai';
 import { IoBagCheckOutline } from 'react-icons/io5';
+import { FaMoneyBill } from 'react-icons/fa';
 
 type NavItem = {
   name: string;
@@ -34,6 +35,11 @@ const navItems: NavItem[] = [
     icon: <IoBagCheckOutline className="size-6" />,
     name: ROUTES.ADMIN_ORDER.name,
     path: ROUTES.ADMIN_ORDER.url,
+  },
+  {
+    icon: <FaMoneyBill className="size-6" />,
+    name: ROUTES.ADMIN_DISCOUNT.name,
+    path: ROUTES.ADMIN_DISCOUNT.url,
   },
 ];
 
