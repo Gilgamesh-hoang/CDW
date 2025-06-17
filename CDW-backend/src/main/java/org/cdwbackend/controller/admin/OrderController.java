@@ -34,6 +34,11 @@ public class OrderController {
         return new ResponseObject<>(HttpStatus.OK, orderService.findById(id));
     }
 
+    @GetMapping("/{id}/detail")
+    public ResponseObject<OrderDTO> getOrderDetailById(@PathVariable("id") @NotNull @Range(min = 1) Long id) {
+        return new ResponseObject<>(HttpStatus.OK, orderService.getDetailById(id));
+    }
+
 
     @GetMapping
     public ResponseObject<PageResponse<List<OrderDTO>>> getOrders(

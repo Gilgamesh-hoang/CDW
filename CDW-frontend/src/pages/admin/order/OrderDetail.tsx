@@ -7,8 +7,9 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { useNavigate, useParams } from 'react-router-dom';
 import { getOrder } from '@/services/order.ts';
 import { toastSuccess } from '@/utils/showToast.ts';
-import { updateOrderStatus } from '../../../services/order.ts';
+import { getOrderDetail, updateOrderStatus } from '../../../services/order.ts';
 import { Order } from '../../../models';
+import { toastError } from '../../../utils/showToast.ts';
 
 const { Option } = Select;
 export default function OrderDetail() {
@@ -32,7 +33,7 @@ export default function OrderDetail() {
       return;
     }
 
-    getOrder(Number(id)).then((res) => {
+    getOrderDetail(Number(id)).then((res) => {
       setOrder(res);
     });
   }, [id]);
@@ -56,6 +57,7 @@ export default function OrderDetail() {
       });
       setDisableChangeStatus(statusSelected === 'DELIVERED' || statusSelected === 'CANCELED');
     }).catch((err) => {
+      toastError('Trang thái không thể thay đổi')
       console.log(err);
     });
   };
@@ -168,6 +170,35 @@ export default function OrderDetail() {
 
         {/* Table Body */}
         <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+          {/*{order.orderDetails.map((orderDetail) => (*/}
+          {/*  <TableRow key={`${product.id}${product.sizeId}`}>*/}
+          {/*    <TableCell className="py-4 sm:px-6 text-start">*/}
+          {/*      <div className="flex items-center justify-between">*/}
+          {/*        /!* Hình ảnh sản phẩm *!/*/}
+          {/*        <div className="w-24 h-24 bg-gray-300 rounded-md">*/}
+          {/*          <img src={product.thumbnail} alt={product.name}*/}
+          {/*               className="w-full h-full object-cover rounded-md" />*/}
+          {/*        </div>*/}
+
+          {/*        /!* Thông tin sản phẩm *!/*/}
+          {/*        <div className="flex-1 ml-4">*/}
+          {/*          <h2 className="text-sm font-medium">{product.name}</h2>*/}
+          {/*          <p className="text-sm text-gray-500">{product.categoryName}</p>*/}
+          {/*          <p className="text-sm text-gray-500">Size: {product.sizeName}</p>*/}
+          {/*        </div>*/}
+          {/*      </div>*/}
+          {/*    </TableCell>*/}
+          {/*    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">*/}
+          {/*      {product.price.toLocaleString('vi-VN')}₫*/}
+          {/*    </TableCell>*/}
+          {/*    <TableCell className="px-4 py-3 text-gray-500 text-center text-theme-sm dark:text-gray-400">*/}
+          {/*      {product.quantity}*/}
+          {/*    </TableCell>*/}
+          {/*    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">*/}
+          {/*      {product.subTotal?.toLocaleString('vi-VN')}₫*/}
+          {/*    </TableCell>*/}
+          {/*  </TableRow>*/}
+          {/*))}*/}
           {order.listProduct.map((product) => (
             <TableRow key={`${product.id}${product.sizeId}`}>
               <TableCell className="py-4 sm:px-6 text-start">

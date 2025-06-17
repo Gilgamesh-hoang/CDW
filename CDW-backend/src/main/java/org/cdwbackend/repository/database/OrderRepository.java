@@ -26,7 +26,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
            "AND o.isDeleted = false " +
            "GROUP BY DATE_FORMAT(o.createAt, '%Y-%m-%d') " +
            "ORDER BY date", nativeQuery = true)
-    List<SalesData[]> getSalesDataByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    List<Object[]> getSalesDataByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
     
     Optional<Order> findBySlugAndIsDeletedFalse(String slug);
 }

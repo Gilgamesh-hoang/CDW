@@ -9,9 +9,11 @@ import { ROUTES } from '../../../../utils/constant';
 interface CartItemProps {
   item: Product;
   removeItem: (productId: number, sizeId: number) => void;
+  updateQuantity: (productId: number, sizeId: number, quantity: number) => void;
 }
 
-const CartItem: FC<CartItemProps> = ({ item, removeItem }) => {
+
+const CartItem: FC<CartItemProps> = ({ item, removeItem, updateQuantity }) => {
   const [quantity, setQuantity] = useState(item.quantity || 1);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -32,6 +34,7 @@ const CartItem: FC<CartItemProps> = ({ item, removeItem }) => {
         const newQuantity = quantity + 1;
         setQuantity(newQuantity);
         await addOrUpdateCartItem(item.id, sizeId, newQuantity);
+        updateQuantity(item.id, sizeId, newQuantity);
       } catch (error) {
         console.error('Failed to increase quantity', error);
         setQuantity(quantity);
@@ -49,6 +52,7 @@ const CartItem: FC<CartItemProps> = ({ item, removeItem }) => {
         const newQuantity = quantity - 1;
         setQuantity(newQuantity);
         await addOrUpdateCartItem(item.id, sizeId, newQuantity);
+        updateQuantity(item.id, sizeId, newQuantity);
       } catch (error) {
         console.error('Failed to decrease quantity', error);
         setQuantity(quantity);
@@ -65,6 +69,7 @@ const CartItem: FC<CartItemProps> = ({ item, removeItem }) => {
         setIsUpdating(true);
         setQuantity(value);
         await addOrUpdateCartItem(item.id, sizeId, value);
+        updateQuantity(item.id, sizeId, value);
       } catch (error) {
         console.error('Failed to update quantity', error);
         setQuantity(quantity);
@@ -77,7 +82,8 @@ const CartItem: FC<CartItemProps> = ({ item, removeItem }) => {
   const subtotal = item.price * quantity;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+    <div
+      className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition-shadow">
       {/* Sản phẩm */}
       <div className="md:col-span-5 flex items-center">
         <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden">

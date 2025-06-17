@@ -6,7 +6,7 @@ import {
   FaMoneyBillWave,
   FaLayerGroup,
 } from 'react-icons/fa';
-
+import { formatCurrency } from '@/utils/format';
 interface DashboardStatsProps {
   data: {
     totalUsers: number;
@@ -47,7 +47,7 @@ export const DashboardStats = ({ data }: DashboardStatsProps) => {
     },
     {
       title: 'Total Revenue',
-      value: `$${totalRevenue.toLocaleString()}`,
+      value: `${formatCurrency(totalRevenue)}`,
       icon: <FaMoneyBillWave className="text-yellow-500" size={24} />,
       bgColor: 'bg-yellow-100',
     },

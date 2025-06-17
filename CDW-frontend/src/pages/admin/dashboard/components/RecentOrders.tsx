@@ -1,6 +1,6 @@
 import { Order } from '@/models';
 import { useState } from 'react';
-
+import { formatCurrency } from '@/utils/format';
 interface RecentOrdersProps {
   orders: Order[];
 }
@@ -84,7 +84,7 @@ export const RecentOrders = ({ orders }: RecentOrdersProps) => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  ${order.totalAmount.toLocaleString()}
+                  {formatCurrency(order.totalAmount)}
                 </td>
               </tr>
             ))}

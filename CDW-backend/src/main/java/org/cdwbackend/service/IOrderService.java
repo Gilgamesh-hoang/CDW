@@ -26,7 +26,9 @@ public interface IOrderService {
      * @return The order details
      */
     OrderDTO findById(Long id);
-    
+
+    OrderDTO getDetailById(Long id);
+
     /**
      * Find all orders (admin function)
      * @param pageable Pagination information

@@ -79,7 +79,7 @@ export const SalesChart = ({ salesData }: SalesChartProps) => {
         position: 'left' as const,
         title: {
           display: true,
-          text: 'Revenue ($)',
+          text: 'Revenue (đ)',
         },
       },
       y1: {
