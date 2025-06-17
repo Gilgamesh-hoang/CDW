@@ -22,6 +22,7 @@ export interface CheckoutData {
   paymentMethod: string;
   orderItems: OrderItem[];
   note?: string;
+  discountCode?: string;
 }
 
 export interface OrderResponse {

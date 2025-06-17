@@ -153,8 +153,8 @@ public class DiscountServiceImpl implements IDiscountService {
 
     @Override
     public List<DiscountDTO> findAllActive() {
-        List<Discount> activeDiscounts = discountRepository.findAllActiveDiscounts(new Date());
-        return discountMapper.toDTOs(activeDiscounts);
+        List<Discount> validDiscounts = discountRepository.findAllValidDiscounts(new Date());
+        return discountMapper.toDTOs(validDiscounts);
     }
 
     @Override
@@ -169,15 +169,23 @@ public class DiscountServiceImpl implements IDiscountService {
     @Override
     public DiscountValidationResponse validateDiscount(String code, List<Long> productIds, Double totalAmount) {
         try {
-            // Find valid discount by code
+            // Find valid discount by code (active, not deleted, in date, usage limit)
             Discount discount = discountRepository.findValidDiscountByCode(code, new Date())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid or expired discount code"));
+                    .orElseThrow(() -> new IllegalArgumentException("Mã giảm giá không hợp lệ hoặc đã hết hạn"));
+
+            // Check usage limit
+            if (discount.getUsageLimit() != null && discount.getUsageCount() != null && discount.getUsageCount() >= discount.getUsageLimit()) {
+                return DiscountValidationResponse.builder()
+                        .valid(false)
+                        .message("Mã giảm giá đã hết lượt sử dụng")
+                        .build();
+            }
 
             // Check minimum order value
             if (discount.getMinimumOrderValue() != null && totalAmount < discount.getMinimumOrderValue()) {
                 return DiscountValidationResponse.builder()
                         .valid(false)
-                        .message("Order total does not meet the minimum amount required for this discount")
+                        .message("Đơn hàng chưa đạt giá trị tối thiểu để áp dụng mã giảm giá")
                         .build();
             }
 
@@ -186,16 +194,16 @@ public class DiscountServiceImpl implements IDiscountService {
             if (!isApplicable) {
                 return DiscountValidationResponse.builder()
                         .valid(false)
-                        .message("Discount is not applicable to the items in your cart")
+                        .message("Mã giảm giá không áp dụng cho sản phẩm trong giỏ hàng")
                         .build();
             }
 
-            // Calculate discount amount
+            // Calculate discount amount (server side)
             Double discountAmount = calculateDiscountAmount(discount.getId(), productIds, totalAmount);
 
             return DiscountValidationResponse.builder()
                     .valid(true)
-                    .message("Discount applied successfully")
+                    .message("Áp dụng mã giảm giá thành công")
                     .discount(discountMapper.toDTO(discount))
                     .discountAmount(discountAmount)
                     .build();
@@ -276,5 +284,16 @@ public class DiscountServiceImpl implements IDiscountService {
         }
 
         return false;
+    }
+
+    // Hàm tăng usageCount khi mã được dùng thành công
+    @Override
+    @Transactional
+    public void increaseUsageCount(Long discountId) {
+        Discount discount = discountRepository.findById(discountId)
+                .orElseThrow(() -> new EntityNotFoundException("Discount not found"));
+        if (discount.getUsageCount() == null) discount.setUsageCount(1);
+        else discount.setUsageCount(discount.getUsageCount() + 1);
+        discountRepository.save(discount);
     }
 }

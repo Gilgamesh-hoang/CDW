@@ -75,4 +75,5 @@ public interface IDiscountService {
      * @return The calculated discount amount
      */
     Double calculateDiscountAmount(Long discountId, List<Long> productIds, Double totalAmount);
-} 
+    void increaseUsageCount(Long discountId);
+}

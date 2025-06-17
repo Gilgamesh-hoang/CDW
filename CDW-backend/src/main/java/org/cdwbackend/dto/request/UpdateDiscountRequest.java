@@ -33,7 +33,6 @@ public class UpdateDiscountRequest {
     @PositiveOrZero(message = "Maximum discount amount must be positive or zero")
     private Double maximumDiscountAmount;
     
-    @FutureOrPresent(message = "Start date must be in the present or future")
     private Date startDate;
     
     @Future(message = "End date must be in the future")

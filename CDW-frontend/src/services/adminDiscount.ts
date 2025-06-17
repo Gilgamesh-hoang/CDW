@@ -63,7 +63,7 @@ const adminDiscountService = {
     sort: string = 'id'
   ) => {
     const response = await httpGet<PageResponse<DiscountType[]>>(
-      `${API_URL}/api/admin/discounts`,
+      `${API_URL}/admin/discounts`,
       {
         params: { page, size, sort },
         withCredentials: true,
@@ -74,7 +74,7 @@ const adminDiscountService = {
 
   getActiveDiscounts: async () => {
     const response = await httpGet<DiscountType[]>(
-      `${API_URL}/api/admin/discounts/active`,
+      `${API_URL}/admin/discounts/active`,
       {
         withCredentials: true,
       }
@@ -84,7 +84,7 @@ const adminDiscountService = {
 
   getDiscountById: async (id: number) => {
     const response = await httpGet<DiscountType>(
-      `${API_URL}/api/admin/discounts/${id}`,
+      `${API_URL}/admin/discounts/${id}`,
       {
         withCredentials: true,
       }
@@ -94,7 +94,7 @@ const adminDiscountService = {
 
   getDiscountByCode: async (code: string) => {
     const response = await httpGet<DiscountType>(
-      `${API_URL}/api/admin/discounts/code/${code}`,
+      `${API_URL}/admin/discounts/code/${code}`,
       {
         withCredentials: true,
       }
@@ -104,7 +104,7 @@ const adminDiscountService = {
 
   createDiscount: async (discount: CreateDiscountRequest) => {
     const response = await httpPost<DiscountType>(
-      `${API_URL}/api/admin/discounts`,
+      `${API_URL}/admin/discounts`,
       discount,
       {
         withCredentials: true,
@@ -115,7 +115,7 @@ const adminDiscountService = {
 
   updateDiscount: async (discount: UpdateDiscountRequest) => {
     const response = await httpPut<DiscountType>(
-      `${API_URL}/api/admin/discounts`,
+      `${API_URL}/admin/discounts`,
       discount,
       {
         withCredentials: true,
@@ -125,7 +125,7 @@ const adminDiscountService = {
   },
 
   deleteDiscount: async (id: number) => {
-    const response = await httpDelete(`${API_URL}/api/admin/discounts/${id}`, {
+    const response = await httpDelete(`${API_URL}/admin/discounts/${id}`, {
       withCredentials: true,
     });
     return response;

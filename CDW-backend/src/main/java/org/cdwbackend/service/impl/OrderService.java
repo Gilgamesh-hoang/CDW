@@ -20,6 +20,7 @@ import org.cdwbackend.exception.ResourceNotFoundException;
 import org.cdwbackend.mapper.*;
 import org.cdwbackend.repository.database.*;
 import org.cdwbackend.service.IOrderService;
+import org.cdwbackend.service.IDiscountService;
 import org.cdwbackend.service.IRedisService;
 import org.cdwbackend.util.RedisKeyUtil;
 import org.cdwbackend.util.SlugUtil;
@@ -54,6 +55,7 @@ public class OrderService implements IOrderService {
 
     IRedisService redisService;
     ObjectMapper objectMapper;
+    private final IDiscountService discountService;
 
     @Override
     @Transactional
@@ -86,19 +88,14 @@ public class OrderService implements IOrderService {
         order.setSlug(SlugUtil.generateUniqueSlugByOrderId(order.getId()));
         order = orderRepository.save(order);
 
-        // 4. Create order details and calculate total amount
+        // 4. Create order details and calculate subtotal
         List<OrderDetail> orderDetails = new ArrayList<>();
-        double totalAmount = 0.0;
-
+        double subtotal = 0.0;
         for (CreateOrderRequest.OrderItemRequest item : request.getOrderItems()) {
             ProductSize productSize = productSizeRepository.findById(item.getSizeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Product size not found with id: " + item.getSizeId()));
-
-            // Calculate subtotal
             double subTotal = productSize.getPrice() * item.getQuantity();
-            totalAmount += subTotal;
-
-            // Create order detail
+            subtotal += subTotal;
             OrderDetail orderDetail = OrderDetail.builder()
                     .order(order)
                     .productSize(productSize)
@@ -106,29 +103,47 @@ public class OrderService implements IOrderService {
                     .subTotal(subTotal)
                     .isDeleted(false)
                     .build();
-
             orderDetails.add(orderDetailRepository.save(orderDetail));
         }
-
-        // 5. Update total amount in order
-        order.setTotalAmount(totalAmount);
+        // 5. Áp dụng giảm giá nếu có
+        double discountAmount = 0.0;
+        Discount discount = null;
+        if (request.getDiscountCode() != null && !request.getDiscountCode().isEmpty()) {
+            List<Long> productIds = request.getOrderItems().stream().map(CreateOrderRequest.OrderItemRequest::getProductId).toList();
+            double subtotalOrder = orderDetails.stream().mapToDouble(OrderDetail::getSubTotal).sum();
+            DiscountValidationResponse validation = discountService.validateDiscount(request.getDiscountCode(), productIds, subtotalOrder);
+            if (validation.isValid() && validation.getDiscount() != null) {
+                discountAmount = validation.getDiscountAmount() != null ? validation.getDiscountAmount() : 0.0;
+                discount = new Discount();
+                discount.setId(validation.getDiscount().getId());
+                // Tăng usageCount
+                discountService.increaseUsageCount(discount.getId());
+            }
+        }
+        // 6. Update total amount in order
+        order.setSubtotalAmount(subtotal);
+        order.setDiscountAmount(discountAmount);
+        order.setTotalAmount(subtotal - discountAmount);
+        if (discount != null) {
+            order.setDiscount(discount);
+        }
         order = orderRepository.save(order);
 
-        // 6. Create user order relationship
+        // 7. Create user order relationship
         UserOrder userOrder = new UserOrder();
         userOrder.setUser(user);
         userOrder.setOrder(order);
         userOrder.setIsDeleted(false);
         userOrderRepository.save(userOrder);
 
-        // 7. Clear cache
+        // 8. Clear cache
         redisService.deleteByPattern("order:*");
 
-        // 8. Convert to DTO and return using mapper
+        // 9. Convert to DTO and return using mapper
         OrderDTO orderDTO = orderMapper.toDTO(order);
         orderDTO.setOrderDetails(orderDetailMapper.toDTOs(orderDetails));
 
-        // 9. Cache the result
+        // 10. Cache the result
         String redisKey = RedisKeyUtil.getOrderKey(order.getId());
         redisService.saveValue(redisKey, orderDTO);
 
@@ -378,10 +393,6 @@ public class OrderService implements IOrderService {
         return orderDTO;
     }
 
-    @Override
-    public DiscountValidationResponse applyDiscountToCart(Long userId, ApplyDiscountRequest request) {
-        return null;
-    }
 
     // Validate if the status transition is allowed
     private boolean isValidStatusTransition(String currentStatus, String newStatus) {

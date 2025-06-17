@@ -34,7 +34,7 @@ public class OrderController {
         // Set initial status to PROCESSING
         request.setStatus(SystemConstant.ORDER_PROCESSING);
         
-        // Call service to create order
+        // Call service to create order (đã hỗ trợ discountCode)
         OrderDTO orderDTO = orderService.createOrder(userId, request);
         
         return new ResponseObject<>(HttpStatus.CREATED, "Order created successfully", orderDTO);

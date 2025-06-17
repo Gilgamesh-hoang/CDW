@@ -58,46 +58,46 @@ const DiscountTable: React.FC<DiscountTableProps> = ({
     startDate: Date | string,
     endDate: Date | string
   ) => {
-    if (status === false) return 'Inactive';
+    if (status === false) return 'Không hoạt động';
 
     const now = dayjs();
     const start = dayjs(startDate);
     const end = dayjs(endDate);
 
-    if (now.isBefore(start)) return 'Upcoming';
-    if (now.isAfter(end)) return 'Expired';
-    return 'Active';
+    if (now.isBefore(start)) return 'Sắp diễn ra';
+    if (now.isAfter(end)) return 'Hết hạn';
+    return 'Đang hoạt động';
   };
 
   const columns = [
     {
-      title: 'Code',
+      title: 'Mã giảm giá',
       dataIndex: 'code',
       key: 'code',
       render: (text: string) => <span className="font-medium">{text}</span>,
     },
     {
-      title: 'Description',
+      title: 'Mô tả',
       dataIndex: 'description',
       key: 'description',
       ellipsis: true,
     },
     {
-      title: 'Type',
+      title: 'Loại',
       dataIndex: 'discountType',
       key: 'discountType',
       render: (type: string) => (
         <Tag color={getDiscountTypeColor(type)}>
           {type === 'PERCENTAGE'
-            ? 'Percentage'
+            ? 'Phần trăm'
             : type === 'FIXED_AMOUNT'
-            ? 'Fixed Amount'
-            : 'Free Shipping'}
+            ? 'Số tiền cố định'
+            : 'Miễn phí vận chuyển'}
         </Tag>
       ),
     },
     {
-      title: 'Value',
+      title: 'Giá trị',
       dataIndex: 'discountValue',
       key: 'discountValue',
       render: (value: number, record: DiscountType) => (
@@ -105,23 +105,23 @@ const DiscountTable: React.FC<DiscountTableProps> = ({
           {record.discountType === 'PERCENTAGE'
             ? `${value}%`
             : record.discountType === 'FIXED_AMOUNT'
-            ? `$${value.toFixed(2)}`
-            : 'Free'}
+            ? `${value.toLocaleString('vi-VN')}₫`
+            : 'Miễn phí'}
         </span>
       ),
     },
     {
-      title: 'Valid Period',
+      title: 'Thời gian áp dụng',
       key: 'validPeriod',
       render: (_: any, record: DiscountType) => (
         <span>
-          {dayjs(record.startDate).format('MMM D, YYYY')} -{' '}
-          {dayjs(record.endDate).format('MMM D, YYYY')}
+          {dayjs(record.startDate).format('DD/MM/YYYY')} -{' '}
+          {dayjs(record.endDate).format('DD/MM/YYYY')}
         </span>
       ),
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       key: 'status',
       render: (_: any, record: DiscountType) => (
         <Tag
@@ -136,17 +136,17 @@ const DiscountTable: React.FC<DiscountTableProps> = ({
       ),
     },
     {
-      title: 'Usage',
+      title: 'Số lượt sử dụng',
       key: 'usage',
       render: (_: any, record: DiscountType) => (
         <span>
           {record.usageCount || 0} /{' '}
-          {record.usageLimit ? record.usageLimit : '∞'}
+          {record.usageLimit ? record.usageLimit : 'Không giới hạn'}
         </span>
       ),
     },
     {
-      title: 'Actions',
+      title: 'Thao tác',
       key: 'actions',
       render: (_: any, record: DiscountType) => (
         <Space size="middle">
@@ -156,13 +156,13 @@ const DiscountTable: React.FC<DiscountTableProps> = ({
             onClick={() => onEdit(record)}
             size="small"
           >
-            Edit
+            Sửa
           </Button>
           <Popconfirm
-            title="Are you sure you want to delete this discount?"
+            title="Bạn có chắc chắn muốn xóa mã giảm giá này?"
             onConfirm={() => record.id && onDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
+            okText="Xóa"
+            cancelText="Hủy"
           >
             <Button
               type="primary"
@@ -170,7 +170,7 @@ const DiscountTable: React.FC<DiscountTableProps> = ({
               icon={<DeleteOutlined />}
               size="small"
             >
-              Delete
+              Xóa
             </Button>
           </Popconfirm>
         </Space>

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController("AdminDiscountController")
-@RequestMapping("/api/admin/discounts")
+@RequestMapping("${API_PREFIX}/admin/discounts")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class DiscountController {

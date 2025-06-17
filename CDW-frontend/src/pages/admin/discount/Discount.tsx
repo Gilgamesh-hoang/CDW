@@ -53,7 +53,7 @@ const DiscountPage: React.FC = () => {
       setTotalItems(response.totalPage * pageSize); // Approximation
     } catch (error) {
       console.error('Error fetching discounts:', error);
-      message.error('Failed to load discount codes');
+      message.error('Không thể tải danh sách mã giảm giá');
     } finally {
       setLoading(false);
     }
@@ -78,11 +78,11 @@ const DiscountPage: React.FC = () => {
     try {
       setLoading(true);
       await adminDiscountService.deleteDiscount(id);
-      message.success('Discount code deleted successfully');
+      message.success('Xóa mã giảm giá thành công');
       fetchDiscounts();
     } catch (error) {
       console.error('Error deleting discount:', error);
-      message.error('Failed to delete discount code');
+      message.error('Xóa mã giảm giá thất bại');
     } finally {
       setLoading(false);
     }
@@ -97,18 +97,18 @@ const DiscountPage: React.FC = () => {
           ...values,
         };
         await adminDiscountService.updateDiscount(updateRequest);
-        message.success('Discount code updated successfully');
+        message.success('Cập nhật mã giảm giá thành công');
       } else {
         const createRequest: CreateDiscountRequest = values;
         await adminDiscountService.createDiscount(createRequest);
-        message.success('Discount code created successfully');
+        message.success('Tạo mã giảm giá thành công');
       }
       setIsModalVisible(false);
       fetchDiscounts();
     } catch (error) {
       console.error('Error submitting form:', error);
       message.error(
-        `Failed to ${editingDiscount ? 'update' : 'create'} discount code`
+        `Không thể ${editingDiscount ? 'cập nhật' : 'tạo'} mã giảm giá`
       );
     } finally {
       setFormLoading(false);
@@ -128,12 +128,12 @@ const DiscountPage: React.FC = () => {
       <Card>
         <Row justify="space-between" align="middle" gutter={[16, 16]}>
           <Col>
-            <Title level={2}>Discount Codes</Title>
+            <Title level={2}>Quản lý mã giảm giá</Title>
           </Col>
           <Col>
             <Space>
               <Input
-                placeholder="Search discount codes"
+                placeholder="Tìm kiếm mã giảm giá"
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onPressEnter={handleSearch}
@@ -145,14 +145,14 @@ const DiscountPage: React.FC = () => {
                 onClick={fetchDiscounts}
                 loading={loading}
               >
-                Refresh
+                Làm mới
               </Button>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={handleCreateDiscount}
               >
-                New Discount
+                Thêm mã giảm giá
               </Button>
             </Space>
           </Col>
@@ -174,7 +174,7 @@ const DiscountPage: React.FC = () => {
         </div>
 
         <Modal
-          title={`${editingDiscount ? 'Edit' : 'Create'} Discount Code`}
+          title={`${editingDiscount ? 'Chỉnh sửa' : 'Tạo mới'} mã giảm giá`}
           open={isModalVisible}
           onCancel={handleModalCancel}
           footer={null}

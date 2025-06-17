@@ -38,7 +38,6 @@ public class CreateDiscountRequest {
     private Double maximumDiscountAmount;
     
     @NotNull(message = "Start date is required")
-    @FutureOrPresent(message = "Start date must be in the present or future")
     private Date startDate;
     
     @NotNull(message = "End date is required")

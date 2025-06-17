@@ -80,8 +80,8 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
       const response = await categoryService.getCategories();
       setCategories(response);
     } catch (error) {
-      console.error('Error fetching categories:', error);
-      message.error('Failed to load categories');
+      console.error('Lỗi khi tải danh mục:', error);
+      message.error('Không thể tải danh mục');
     } finally {
       setLoadingCategories(false);
     }
@@ -91,10 +91,10 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
     try {
       setLoadingProducts(true);
       const response = await productService.getProducts();
-      setProducts(response);
+      setProducts(response.data);
     } catch (error) {
-      console.error('Error fetching products:', error);
-      message.error('Failed to load products');
+      console.error('Lỗi khi tải sản phẩm:', error);
+      message.error('Không thể tải sản phẩm');
     } finally {
       setLoadingProducts(false);
     }
@@ -113,7 +113,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         form.resetFields();
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Lỗi khi gửi form:', error);
     }
   };
 
@@ -135,31 +135,33 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <Col xs={24} md={12}>
           <Form.Item
             name="code"
-            label="Discount Code"
+            label="Mã giảm giá"
             rules={[
-              { required: true, message: 'Please enter discount code' },
+              { required: true, message: 'Vui lòng nhập mã giảm giá' },
               {
                 pattern: /^[A-Z0-9_]+$/,
-                message:
-                  'Code must contain only uppercase letters, numbers, and underscores',
+                message: 'Mã chỉ được chứa chữ in hoa, số và dấu gạch dưới',
               },
-              { min: 3, max: 20, message: 'Code must be 3-20 characters' },
+              { min: 3, max: 20, message: 'Mã phải từ 3-20 ký tự' },
             ]}
-            tooltip="Discount code must be uppercase letters, numbers, and underscores only"
+            tooltip="Chỉ nhập chữ in hoa, số và dấu gạch dưới (_)."
           >
-            <Input placeholder="e.g., SUMMER_SALE" disabled={isEditing} />
+            <Input placeholder="VD: SUMMER_SALE" disabled={isEditing} />
           </Form.Item>
         </Col>
         <Col xs={24} md={12}>
           <Form.Item
             name="discountType"
-            label="Discount Type"
-            rules={[{ required: true, message: 'Please select discount type' }]}
+            label="Loại giảm giá"
+            rules={[{ required: true, message: 'Vui lòng chọn loại giảm giá' }]}
           >
-            <Select onChange={handleDiscountTypeChange}>
-              <Option value="PERCENTAGE">Percentage</Option>
-              <Option value="FIXED_AMOUNT">Fixed Amount</Option>
-              <Option value="FREE_SHIPPING">Free Shipping</Option>
+            <Select
+              onChange={handleDiscountTypeChange}
+              placeholder="Chọn loại giảm giá"
+            >
+              <Option value="PERCENTAGE">Phần trăm</Option>
+              <Option value="FIXED_AMOUNT">Số tiền cố định</Option>
+              <Option value="FREE_SHIPPING">Miễn phí vận chuyển</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -169,58 +171,56 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <Col xs={24} md={12}>
           <Form.Item
             name="discountValue"
-            label="Discount Value"
+            label="Giá trị giảm"
             rules={[
-              { required: true, message: 'Please enter discount value' },
+              { required: true, message: 'Vui lòng nhập giá trị giảm' },
               {
                 type: 'number',
                 min: 0,
-                message: 'Value must be greater than 0',
+                message: 'Giá trị phải lớn hơn 0',
               },
               {
                 type: 'number',
                 max: discountType === 'PERCENTAGE' ? 100 : 1000000,
                 message:
                   discountType === 'PERCENTAGE'
-                    ? 'Percentage cannot exceed 100%'
-                    : 'Amount is too large',
+                    ? 'Phần trăm không vượt quá 100%'
+                    : 'Số tiền quá lớn',
               },
             ]}
             tooltip={
               discountType === 'PERCENTAGE'
-                ? 'Enter percentage value (0-100)'
+                ? 'Nhập giá trị phần trăm (0-100)'
                 : discountType === 'FIXED_AMOUNT'
-                ? 'Enter fixed amount value'
-                : 'Enter shipping cost value'
+                ? 'Nhập số tiền giảm cố định'
+                : 'Nhập giá trị miễn phí vận chuyển'
             }
           >
             <InputNumber
               style={{ width: '100%' }}
               placeholder={
-                discountType === 'PERCENTAGE'
-                  ? 'e.g., 10 for 10%'
-                  : 'e.g., 15.99'
+                discountType === 'PERCENTAGE' ? 'VD: 10 cho 10%' : 'VD: 15000'
               }
               disabled={discountType === 'FREE_SHIPPING'}
               min={0}
               max={discountType === 'PERCENTAGE' ? 100 : undefined}
               precision={discountType === 'PERCENTAGE' ? 0 : 2}
-              addonAfter={discountType === 'PERCENTAGE' ? '%' : '$'}
+              addonAfter={discountType === 'PERCENTAGE' ? '%' : '₫'}
             />
           </Form.Item>
         </Col>
         <Col xs={24} md={12}>
           <Form.Item
             name="minimumOrderValue"
-            label="Minimum Order Value"
-            tooltip="Minimum order value required to apply this discount (optional)"
+            label="Giá trị đơn hàng tối thiểu"
+            tooltip="Đơn hàng tối thiểu để áp dụng mã (không bắt buộc)"
           >
             <InputNumber
               style={{ width: '100%' }}
-              placeholder="e.g., 50"
+              placeholder="VD: 50000"
               min={0}
               precision={2}
-              addonAfter="$"
+              addonAfter="₫"
             />
           </Form.Item>
         </Col>
@@ -230,12 +230,12 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <Col xs={24} md={12}>
           <Form.Item
             name="startDate"
-            label="Start Date"
-            rules={[{ required: true, message: 'Please select start date' }]}
+            label="Ngày bắt đầu"
+            rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu' }]}
           >
             <DatePicker
               style={{ width: '100%' }}
-              format="YYYY-MM-DD"
+              format="DD/MM/YYYY"
               disabledDate={(current) =>
                 current && current < dayjs().startOf('day')
               }
@@ -245,9 +245,9 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <Col xs={24} md={12}>
           <Form.Item
             name="endDate"
-            label="End Date"
+            label="Ngày kết thúc"
             rules={[
-              { required: true, message: 'Please select end date' },
+              { required: true, message: 'Vui lòng chọn ngày kết thúc' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
@@ -258,7 +258,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error('End date must be after start date')
+                    new Error('Ngày kết thúc phải sau ngày bắt đầu')
                   );
                 },
               }),
@@ -266,7 +266,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
           >
             <DatePicker
               style={{ width: '100%' }}
-              format="YYYY-MM-DD"
+              format="DD/MM/YYYY"
               disabledDate={(current) => {
                 const startDate = form.getFieldValue('startDate');
                 return (
@@ -283,12 +283,12 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <Col xs={24} md={12}>
           <Form.Item
             name="usageLimit"
-            label="Usage Limit"
-            tooltip="Maximum number of times this discount can be used (leave empty for unlimited)"
+            label="Giới hạn lượt sử dụng"
+            tooltip="Số lần mã được sử dụng tối đa (để trống nếu không giới hạn)"
           >
             <InputNumber
               style={{ width: '100%' }}
-              placeholder="e.g., 100"
+              placeholder="VD: 100"
               min={1}
               precision={0}
             />
@@ -297,15 +297,15 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <Col xs={24} md={12}>
           <Form.Item
             name="maximumDiscountAmount"
-            label="Maximum Discount Amount"
-            tooltip="Maximum amount that can be discounted (for percentage discounts)"
+            label="Số tiền giảm tối đa"
+            tooltip="Số tiền giảm tối đa cho mã phần trăm"
           >
             <InputNumber
               style={{ width: '100%' }}
-              placeholder="e.g., 50"
+              placeholder="VD: 50000"
               min={0}
               precision={2}
-              addonAfter="$"
+              addonAfter="₫"
               disabled={discountType !== 'PERCENTAGE'}
             />
           </Form.Item>
@@ -314,29 +314,27 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
 
       <Form.Item
         name="description"
-        label="Description"
-        rules={[
-          { max: 500, message: 'Description cannot exceed 500 characters' },
-        ]}
+        label="Mô tả"
+        rules={[{ max: 500, message: 'Mô tả không vượt quá 500 ký tự' }]}
       >
         <TextArea
-          placeholder="Enter discount description"
+          placeholder="Nhập mô tả cho mã giảm giá"
           autoSize={{ minRows: 3, maxRows: 6 }}
         />
       </Form.Item>
 
-      <Divider orientation="left">Discount Scope</Divider>
+      <Divider orientation="left">Phạm vi áp dụng</Divider>
 
       <Row gutter={16}>
         <Col xs={24} md={12}>
           <Form.Item
             name="categoryIds"
-            label="Apply to Categories"
-            tooltip="Select categories to apply this discount (leave empty to apply to all categories)"
+            label="Áp dụng cho danh mục"
+            tooltip="Chọn danh mục áp dụng (để trống để áp dụng cho tất cả)"
           >
             <Select
               mode="multiple"
-              placeholder="Select categories"
+              placeholder="Chọn danh mục"
               loading={loadingCategories}
               allowClear
               showSearch
@@ -353,12 +351,12 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <Col xs={24} md={12}>
           <Form.Item
             name="productIds"
-            label="Apply to Products"
-            tooltip="Select products to apply this discount (leave empty to apply based on categories)"
+            label="Áp dụng cho sản phẩm"
+            tooltip="Chọn sản phẩm áp dụng (để trống để áp dụng theo danh mục)"
           >
             <Select
               mode="multiple"
-              placeholder="Select products"
+              placeholder="Chọn sản phẩm"
               loading={loadingProducts}
               allowClear
               showSearch
@@ -375,14 +373,14 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
       </Row>
 
       {isEditing && (
-        <Form.Item name="isActive" label="Active" valuePropName="checked">
-          <Switch />
+        <Form.Item name="isActive" label="Kích hoạt" valuePropName="checked">
+          <Switch checkedChildren="Bật" unCheckedChildren="Tắt" />
         </Form.Item>
       )}
 
       <Form.Item>
         <Button type="primary" htmlType="submit" loading={loading}>
-          {isEditing ? 'Update Discount' : 'Create Discount'}
+          {isEditing ? 'Cập nhật' : 'Tạo mới'}
         </Button>
       </Form.Item>
     </Form>
