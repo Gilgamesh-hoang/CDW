@@ -75,19 +75,17 @@ public class DashboardService implements IDashboardService {
      * Get sales data for the chart
      */
     private List<SalesData> getSalesData(Date startDate, Date endDate) {
-        List<SalesData[]> rawSalesData = orderRepository.getSalesDataByDateRange(startDate, endDate);
+        List<Object[]> rawSalesData = orderRepository.getSalesDataByDateRange(startDate, endDate);
         List<SalesData> salesDataList = new ArrayList<>();
-        
+
         for (Object[] row : rawSalesData) {
             String date = (String) row[0];
             int revenue = ((Number) row[1]).intValue();
             int orders = ((Number) row[2]).intValue();
-            
-            // Use mapper to create SalesData object
-            SalesData salesData = salesDataMapper.toSalesData(date, revenue, orders);
-            salesDataList.add(salesData);
+
+            salesDataList.add(new SalesData(date, revenue, orders));
         }
-        
+
         return salesDataList;
     }
     
