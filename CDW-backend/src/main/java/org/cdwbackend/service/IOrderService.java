@@ -1,8 +1,10 @@
 package org.cdwbackend.service;
 
 import org.cdwbackend.dto.OrderDTO;
+import org.cdwbackend.dto.request.ApplyDiscountRequest;
 import org.cdwbackend.dto.request.CreateOrderRequest;
 import org.cdwbackend.dto.request.UpdateStatusOrderRequest;
+import org.cdwbackend.dto.response.DiscountValidationResponse;
 import org.cdwbackend.dto.response.PageResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -68,4 +70,12 @@ public interface IOrderService {
      * @return The canceled order
      */
     OrderDTO cancelOrder(Long id, Long userId);
+    
+    /**
+     * Apply a discount code to a cart before creating an order
+     * @param userId The user ID
+     * @param request The discount code request
+     * @return Validation response with discount details if valid
+     */
+    DiscountValidationResponse applyDiscountToCart(Long userId, ApplyDiscountRequest request);
 }

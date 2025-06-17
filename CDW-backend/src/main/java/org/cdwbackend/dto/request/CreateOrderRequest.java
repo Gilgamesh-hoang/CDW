@@ -27,6 +27,9 @@ public class CreateOrderRequest {
     
     String note;
     
+    // Optional discount code
+    String discountCode;
+    
     // This will be set by the controller
     String status;
     

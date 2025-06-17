@@ -90,4 +90,8 @@ export const ROUTES = Object.freeze({
     url: '/admin/don-hang/:id',
     name: 'Chi tiết đơn hàng',
   },
+  ADMIN_DISCOUNT: {
+    url: '/admin/khuyen-mai',
+    name: 'Khuyến mãi',
+  },
 });
