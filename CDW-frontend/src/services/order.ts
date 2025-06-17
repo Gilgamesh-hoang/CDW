@@ -14,6 +14,12 @@ export const getOrder = async (orderId: number) => {
   );
 };
 
+export const getOrderDetail = async (orderId: number) => {
+  return await httpGet<ApiResponse<Order>>('admin/orders/' + orderId+"/detail").then(
+    (response) => response.data
+  );
+};
+
 export const updateOrderStatus = async (id: number, status: string) => {
   return await httpPut<ApiResponse<void>>('admin/orders', { id, status });
 };
