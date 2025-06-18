@@ -51,14 +51,12 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
   );
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
-  const [loadingProducts, setLoadingProducts] = useState<boolean>(false);
+  const [loadingData, setLoadingData] = useState<boolean>(false);
 
   const isEditing = !!initialValues?.id;
 
   useEffect(() => {
-    fetchCategories();
-    fetchProducts();
+    fetchCategoriesAndProducts();
   }, []);
 
   useEffect(() => {
@@ -74,29 +72,22 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
     }
   }, [initialValues, form]);
 
-  const fetchCategories = async () => {
+  const fetchCategoriesAndProducts = async () => {
     try {
-      setLoadingCategories(true);
-      const response = await categoryService.getCategories();
-      setCategories(response);
-    } catch (error) {
-      console.error('Lỗi khi tải danh mục:', error);
-      message.error('Không thể tải danh mục');
-    } finally {
-      setLoadingCategories(false);
-    }
-  };
+      setLoadingData(true);
 
-  const fetchProducts = async () => {
-    try {
-      setLoadingProducts(true);
-      const response = await productService.getProducts();
-      setProducts(response.data);
+      const [categoriesResponse, productsResponse] = await Promise.all([
+        categoryService.getCategories(),
+        productService.getProducts(),
+      ]);
+
+      setCategories(categoriesResponse);
+      setProducts(productsResponse.data);
     } catch (error) {
-      console.error('Lỗi khi tải sản phẩm:', error);
-      message.error('Không thể tải sản phẩm');
+      console.error('Lỗi khi tải dữ liệu:', error);
+      message.error('Không thể tải danh mục và sản phẩm');
     } finally {
-      setLoadingProducts(false);
+      setLoadingData(false);
     }
   };
 
@@ -335,7 +326,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
             <Select
               mode="multiple"
               placeholder="Chọn danh mục"
-              loading={loadingCategories}
+              loading={loadingData}
               allowClear
               showSearch
               optionFilterProp="children"
@@ -357,7 +348,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
             <Select
               mode="multiple"
               placeholder="Chọn sản phẩm"
-              loading={loadingProducts}
+              loading={loadingData}
               allowClear
               showSearch
               optionFilterProp="children"
